@@ -48,179 +48,32 @@ function centralSite_menu() {
     'access arguments' => array('access centralSite'),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['admin/config/centralSite'] = array(
-	  'title' => 'central site',
-	  'description' => 'Configuration for centralSite module',
-	  'page callback' => 'drupal_get_form',
-	  'page arguments' => array('centralSite_configure_form'),
-	  'access arguments' => array('access administration pages'),
-	  'type' => MENU_NORMAL_ITEM,
-  );
   return $items;
 }
 
 /**
- * Form constructor for the configure page.
- */
-function centralSite_configure_form($form, &$form_state) {
-  
-	$form['centralSite_onepage_max'] = array(
-		'#type' => 'textfield',
-		'#title' => t('Maximum number of items'),
-		'#default_value' => variable_get('centralSite_onepage_max',8),//the variable'name and the element'name must be same.
-		'#size' => 3,
-		'#maxlength' => 4,
-		'#description' => t('The maximum number of items to display'),
-		'#required' => TRUE,
-	);
-	
-	return system_settings_form($form);
-}
-
-/**
  * a function used in the form.
  *
- * Use Database API to retrieve the content in naonepage table.
+ * Use Database API to retrieve the patterns from patterns table.
  */
-function centralSite_onepage_getcontents() {
-  //$max_num = variable_get('centralSite_onepage_max',100);	
-  //$query = db_select('patterns', 'pt')
-  //  ->fields('pt')
-  //  //->fields('pt', array('pid', 'name'))
-  //  ->orderBy('pid', 'DESC'); //use pid,the last item's pid is the biggest.
- 	//$query->range(0,$max_num);
-  //return $query->execute(); 
-
+function centralSite_get_pattern_from_db() {
   $result = db_select('patterns', 'p')
                   ->fields('p', array())
-               //   ->orderBy('pid', 'DESC')
-                //  ->range(0,10)
+                  ->orderBy('pid', 'DESC')
+                  ->range(0,10)
                   ->execute()
                   ->fetchAll();
 
-  //print_r($result);
-  $messages = array();
   $patterns = array();
-  $patterns[PATTERNS_STATUS_OK] = array();
-  $patterns[PATTERNS_STATUS_TRASHED] = array();
 
   foreach ($result as $pattern) {
-    // Skip pattern if its name is missing.
-    if (!isset($pattern->name)) {
-      continue;
-    }
-    if (!$pattern->public) {
-      continue;
-    }
-    $status = $pattern->status;
-    if (in_array($status, array(PATTERNS_STATUS_OK, PATTERNS_STATUS_ENABLED, PATTERNS_STATUS_INVALID))) {
-      $status = PATTERNS_STATUS_OK;
-    }
-    else {
-      $status = PATTERNS_STATUS_TRASHED;
-    }
-
-    $patterns[$status][$pattern->pid] = $pattern;
+    $patterns[$pattern->pid] = $pattern;
     $data = unserialize($pattern->pattern);
-    $patterns[$status][$pattern->pid]->pattern = $data;
-    $patterns[$status][$pattern->pid]->info = $data['info'];
+    $patterns[$pattern->pid]->pattern = $data;
+    $patterns[$pattern->pid]->info = $data['info'];
   }
 
   return $patterns;
-}
-
-/**
- * a function used in the form.
- *
- * theme the database'result.
- */
-function centralSite_onepage_inoutcontents() {
-  $result = centralSite_onepage_getcontents();
-  //Array to contain items for the page to render.
-  //$items = array();
-  //Iterate over the resultset and format.
-  //foreach ($result as $item) {
-  //  $items[] = array(
-  //  'data' => $item->pid.'---'.$item->name.'--------'.$item->format,
-  //  ); 
-  //}
-  //if (empty($items)) { 
-  //  //No content in the last week.
-  //  $page_array = t('No posts available.');
-  //}
-  //else {
-  //  $page_array = theme('item_list',array(
-  //    'items' => $items,
-  //    'attributes' => array (
-  //      'id' => 'list2update'
-  //    ),
-  //  ));
-  //}
-  $page_array = theme('centralSite_pattern_list',array(
-    'patterns' => $result,
-  ));
-
-  //print_r($page_array);
-  return $page_array; 
-}
-
-/**
- * Implements hook_form().
- *
- * this is the navigation page's form. 
- */
-function centralSite_form() {
-  $form = array();
-  $form['pager'] = array(
-	  '#prefix' => '<div id="nitem-list">',
-	  '#markup' => centralSite_onepage_inoutcontents(),
-	  '#suffix' => '</div>',
-  );
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-  	'#ajax' => array(  
-  		'callback' => 'centralSite_form_callback',
-  		'wrapper' => 'list2update',
-  	),
-  );
-  return $form;
-}
-
-/**
- * validate the input,the name must be different.
- */
-function centralSite_form_validate($form,$form_state) {
-  //$result = centralSite_onepage_getcontents('page');
-  //$navg_name = $form_state['values']['navg_onepage_textname'];
-  //Iterate over the resultset and format.
-  //foreach ($result as $nao) {
-  //	if($navg_name == $nao->name) {
-  //      form_set_error('xxxx',t('the name is already in the database,please change one.'));
-  //	}
-  //}
-}
-
-/**
- * ajax callback.
- */
-function centralSite_form_callback($form,$form_state) {
-	return navg_onepage_inoutcontents(); //this give a lot of enlighten.
-}
-
-/**
- * form submit.
- */
-function centralSite_form_submit($form,&$form_state) {
-  //$ncontent = $form_state['values']['navg_onepage_maintext'];
-  //$nname = $form_state['values']['navg_onepage_textname'];
-  ////use db_insert,insert the name and content into the naonepage table.
-  //$query = db_insert('naonepage')   
-  //  ->fields(array(
-  //    'a' => $ncontent,
-  //    'name' => $nname,
-  //  ))
-  //  ->execute();
 }
 
 /**
@@ -228,10 +81,9 @@ function centralSite_form_submit($form,&$form_state) {
  */
 function _centralSite_page() {
   drupal_add_css(drupal_get_path('module', 'centralSite') . '/centralSite.css');
-	$kk = centralSite_onepage_inoutcontents();
-  //$kk = drupal_get_form('centralSite_form');
-  //$output = drupal_render($kk);
-  return $kk;
-  //return $output;
+  $result = centralSite_get_pattern_from_db();
+  $page_array = theme('centralSite_pattern_list',array(
+                    'patterns' => $result,
+  ));
+  return $page_array; 
 }
-

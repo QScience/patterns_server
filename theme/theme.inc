@@ -118,7 +118,7 @@ function theme_centralSite_pattern_list($args) {
   drupal_add_js('misc/drupal.js');
 
   //print_t($arg);
-  $patterns = $args['patterns'][PATTERNS_STATUS_OK];
+  $patterns = $args['patterns'];
 
   $patterns_title = '<div id="all_patterns_div">';
 
