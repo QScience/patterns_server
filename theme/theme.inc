@@ -161,7 +161,6 @@ function theme_centralSite_pattern_list($args) {
   return drupal_render($form);
 }
 
- /*
 // Theming freely inspired by the Install Modules interface
 // in /modules/system/system.admin.inc
 // theme_system_modules_fieldset
@@ -198,17 +197,12 @@ function theme_centralSite_pattern_fieldset($variables) {
     $row[] = array('data' => $description, 'class' => array('description'));
 
     // Display links (such as help or permissions) in their own columns.
-    foreach ($pattern['links'] as $key => $value) {
-      $row[] = array('data' => $value);
-    }
+    //foreach ($pattern['links'] as $key => $value) {
+    //  $row[] = array('data' => $value);
+    //}
 
     $rows[] = $row;
   }
 
   return theme('table', array('header' => $form['#header'], 'rows' => $rows));
 }
-
-*/
-
-
-
