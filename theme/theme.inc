@@ -24,20 +24,20 @@ function centralSite_theme() {
  */
 function _centralSite_pattern_build_row($pid, $pattern, $options = array()) {
 
+  $form['category'] = array(
+    '#markup' => $pattern->info['category'],
+  );
   $form['name'] = array(
     '#markup' => $pattern->name,
   );
-  $form['title'] = array(
+  $form['author'] = array(
+    '#markup' =>  @$pattern->author,
+  );
+  $form['uuuid'] = array(
     '#markup' => @$pattern->uuuid,
   );
   $form['description'] = array(
     '#markup' => $pattern->description,
-  );
-  $form['version'] = array(
-    '#markup' =>  @$pattern->author,
-  );
-  $form['enable'] = array(
-    '#markup' => $pattern->info['category'],
   );
 
   return $form;
@@ -73,14 +73,11 @@ function theme_centralSite_pattern_list($args) {
       '#collapsed' => TRUE,
       '#theme' => 'centralSite_pattern_fieldset',
       '#header' => array(
-        array(
-          'data' => t('Category'), 
-          'class' => array('checkbox')),
+          t('Category'),
           t('Name'),
+          t('Author'),
           t('uuuid'),
-          t('Author'),// t('Title'),
           t('Description'),
-        array('data' => t('Operations'), 'colspan' => 7),
       ),
     );
   }
@@ -90,41 +87,16 @@ function theme_centralSite_pattern_list($args) {
 
 function theme_centralSite_pattern_fieldset($variables) {
   $form = $variables['form'];
-
-  // Individual table headers.
   $rows = array();
-  // Iterate through all the modules, which are
-  // children of this fieldset.
   foreach (element_children($form) as $key) {
-    // Stick it into $pattern for easier accessing.
     $pattern = $form[$key];
     $row = array();
-    unset($pattern['enable']['#title']);
-    $row[] = array('class' => array('checkbox'), 'data' => drupal_render($pattern['enable']));
-    $label = '<label ';
-    if (isset($pattern['enable']['#id'])) {
-      $label .= ' for="' . $pattern['enable']['#id'] . '"';
-    }
-
-    $row[] = $label . '><strong>' . drupal_render($pattern['name']) . '</strong></label>';
-    //$row[] = drupal_render($pattern['format']);
-
-
-    $row[] = drupal_render($pattern['title']);
-
-    $row[] = drupal_render($pattern['version']);
-    // Add the description, along with any modules it requires.
-    $description = drupal_render($pattern['description']);
-
-    $row[] = array('data' => $description, 'class' => array('description'));
-
-    // Display links (such as help or permissions) in their own columns.
-    //foreach ($pattern['links'] as $key => $value) {
-    //  $row[] = array('data' => $value);
-    //}
-
+    $row[] =  drupal_render($pattern['category']);
+    $row[] = '<strong>' . drupal_render($pattern['name']) . '</strong>';
+    $row[] = drupal_render($pattern['author']);
+    $row[] = drupal_render($pattern['uuuid']);
+    $row[] = drupal_render($pattern['description']);
     $rows[] = $row;
   }
-
   return theme('table', array('header' => $form['#header'], 'rows' => $rows));
 }
