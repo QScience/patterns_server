@@ -59,7 +59,7 @@ function centralSite_menu() {
 function centralSite_get_pattern_from_db() {
   $result = db_select('patterns', 'p')
                   ->fields('p', array())
-                  ->orderBy('pid', 'DESC')
+                  ->orderBy('updated', 'DESC')
                   ->range(0,10)
                   ->execute()
                   ->fetchAll();
@@ -73,6 +73,7 @@ function centralSite_get_pattern_from_db() {
     $patterns[$pattern->pid]->info = $data['info'];
   }
 
+//  print_r($patterns);
   return $patterns;
 }
 

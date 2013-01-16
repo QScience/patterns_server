@@ -49,22 +49,25 @@ function _patterns_pattern_build_row($pid, $pattern, $options = array()) {
 
   $title .= '<div id="pid-' . $pid . '-info" class="pattern-info">' . $author . '</div>';
 
-  $form['format'] = array(
-    '#markup' => $pattern->format,
-  );
 
   $form['name'] = array(
     '#markup' => $pattern->name,
   );
 
+  //$form['format'] = array(
+  //  '#markup' => $pattern->format,
+  //);
+
   $form['title'] = array(
-    '#markup' => $title,
+    '#markup' => @$pattern->uuuid,
+    //'#markup' => $title,
   );
   $form['description'] = array(
     '#markup' => $pattern->description,
   );
   $form['version'] = array(
-    '#markup' =>  @$pattern->info['version'],
+    '#markup' =>  @$pattern->author,
+    //'#markup' =>  @$pattern->info['version'],
   );
 
 
@@ -93,7 +96,7 @@ function _patterns_pattern_build_row($pid, $pattern, $options = array()) {
 //    if ($extra['disabled']) {
 //      $form['enable']['#disabled'] = TRUE;
 //    }
-    '#markup' =>  ($pattern->status) ? t('Enabled') : t('Disabled'),
+    '#markup' => $pattern->info['category'],
     );
   }
   else {
@@ -117,7 +120,6 @@ function theme_centralSite_pattern_list($args) {
   drupal_add_js('misc/collapse.js');
   drupal_add_js('misc/drupal.js');
 
-  //print_t($arg);
   $patterns = $args['patterns'];
 
   $patterns_title = '<div id="all_patterns_div">';
@@ -138,19 +140,24 @@ function theme_centralSite_pattern_list($args) {
 
       $category = $pattern->info['category'] ? $pattern->info['category'] : t('Other');
 
-      $form['patterns'][$category][] = _patterns_pattern_build_row($pid, $pattern);
-        $form['patterns'][$category] += array(
+      //$form['patterns'][$category][] = _patterns_pattern_build_row($pid, $pattern);
+      //  $form['patterns'][$category] += array(
+      $form['patterns'][] = _patterns_pattern_build_row($pid, $pattern);
+        $form['patterns'] += array(
           '#type' => 'fieldset',
-          '#title' => $category,
+          '#title' => 'Latest Patterns',
+          //'#title' => $category,
           '#collapsible' => TRUE,
           '#collapsed' => TRUE,
           '#theme' => 'centralSite_pattern_fieldset',
           '#header' => array(
-            array('data' => t('Enabled'), 'class' => array('checkbox')),
-              t('Format'),
+            array(
+              'data' => t('Category'), 
+              'class' => array('checkbox')),
               t('Name'),
-              t('Title'),
-              t('Version'),
+//              t('Format'),
+              t('uuuid'),
+              t('Author'),// t('Title'),
               t('Description'),
             array('data' => t('Operations'), 'colspan' => 7),
           ),
@@ -184,9 +191,9 @@ function theme_centralSite_pattern_fieldset($variables) {
       $label .= ' for="' . $pattern['enable']['#id'] . '"';
     }
 
-    $row[] = drupal_render($pattern['format']);
-
     $row[] = $label . '><strong>' . drupal_render($pattern['name']) . '</strong></label>';
+    //$row[] = drupal_render($pattern['format']);
+
 
     $row[] = drupal_render($pattern['title']);
 
