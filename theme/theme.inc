@@ -23,93 +23,22 @@ function centralSite_theme() {
  * @param array $extra associative array of extra parameters. Not used now.
  */
 function _centralSite_pattern_build_row($pid, $pattern, $options = array()) {
-  // Add in the defaults.
-  $extra = array(
-    'requires' => array(),
-    'required_by' => array(),
-    'disabled' => FALSE,
-    'enabled' => FALSE,
-    'links' => array(),
-  );
-
-  $form = array(
-    '#tree' => TRUE,
-  );
-
-  // Set the basic properties.
-
-  // Creating overlay div with extra info
-  $title = '<span id="pid-' . $pid . '" class="pattern-title">' . $pattern->title . '</span>';
-
-  $info = array();
-  $info[] = t('Author:') . ' ' . @$pattern->info['author'];
-  $info[] = t('Email:') . ' ' . @$pattern->info['author_email'];
-  $info[] = t('Web:') . ' ' . @$pattern->info['author_website'];
-  $author = theme('item_list', array('items' => $info));
-
-  $title .= '<div id="pid-' . $pid . '-info" class="pattern-info">' . $author . '</div>';
-
 
   $form['name'] = array(
     '#markup' => $pattern->name,
   );
-
-  //$form['format'] = array(
-  //  '#markup' => $pattern->format,
-  //);
-
   $form['title'] = array(
     '#markup' => @$pattern->uuuid,
-    //'#markup' => $title,
   );
   $form['description'] = array(
     '#markup' => $pattern->description,
   );
   $form['version'] = array(
     '#markup' =>  @$pattern->author,
-    //'#markup' =>  @$pattern->info['version'],
   );
-
-
-
-
-  #$form['#requires'] = $extra['requires'];
-  #$form['#required_by'] = $extra['required_by'];
-
-  // Check the compatibilities.
-  $compatible = TRUE;
-  $status_short = '';
-  $status_long = '';
-
-  //@TODO: do some checking about pattern compatibility
-  $compatible = TRUE;
-
-  // If this module is compatible, present a checkbox indicating
-  // this module may be installed. Otherwise, show a big red X.
-  if ($compatible) {
-    $form['enable'] = array(
-//      '#type' => 'checkbox',
-//      '#title' => t('Enable'),
-//      '#value' => $pattern->status,
-//      //'#attributes' =>  array('checked' => $pattern->status),
-//    );
-//    if ($extra['disabled']) {
-//      $form['enable']['#disabled'] = TRUE;
-//    }
+  $form['enable'] = array(
     '#markup' => $pattern->info['category'],
-    );
-  }
-  else {
-    $form['enable'] = array(
-      '#markup' =>  theme('image', array('path' => 'misc/watchdog-error.png', 'alt' => $status_short, 'title' => $status_short)),
-    );
-    $form['description']['#markup'] .= theme('system_modules_incompatible', array('message' => $status_long));
-  }
-
-
-  //$actions = patterns_get_patterns_links($pattern);
-  $actions = NULL;
-  $form['links'] = $actions;
+  );
 
   return $form;
 }
@@ -123,55 +52,41 @@ function theme_centralSite_pattern_list($args) {
   $patterns = $args['patterns'];
 
   $patterns_title = '<div id="all_patterns_div">';
-
   $form['patterns'] = array(
     '#prefix' => $patterns_title,
     '#suffix' => ' </div>',
     '#tree' => TRUE,
   );
 
-
   if (empty($patterns)) {
     $form['patterns']['#markup'] =  t('No patterns available.');
   }
   else {
-
     foreach ($patterns as $pid => $pattern) {
-
-      //$category = $pattern->info['category'] ? $pattern->info['category'] : t('Other');
-
-      //$form['patterns'][$category][] = _patterns_pattern_build_row($pid, $pattern);
-      //  $form['patterns'][$category] += array(
       $form['patterns'][] = _centralSite_pattern_build_row($pid, $pattern);
-        $form['patterns'] += array(
-          '#type' => 'fieldset',
-          '#title' => 'Latest Patterns',
-          //'#title' => $category,
-          '#collapsible' => TRUE,
-          '#collapsed' => TRUE,
-          '#theme' => 'centralSite_pattern_fieldset',
-          '#header' => array(
-            array(
-              'data' => t('Category'), 
-              'class' => array('checkbox')),
-              t('Name'),
-//              t('Format'),
-              t('uuuid'),
-              t('Author'),// t('Title'),
-              t('Description'),
-            array('data' => t('Operations'), 'colspan' => 7),
-          ),
-        );
     }
+    $form['patterns'] += array(
+      '#type' => 'fieldset',
+      '#title' => 'Latest Patterns',
+      //'#title' => $category,
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#theme' => 'centralSite_pattern_fieldset',
+      '#header' => array(
+        array(
+          'data' => t('Category'), 
+          'class' => array('checkbox')),
+          t('Name'),
+          t('uuuid'),
+          t('Author'),// t('Title'),
+          t('Description'),
+        array('data' => t('Operations'), 'colspan' => 7),
+      ),
+    );
   }
 
   return drupal_render($form);
 }
-
-// Theming freely inspired by the Install Modules interface
-// in /modules/system/system.admin.inc
-// theme_system_modules_fieldset
-// _system_modules_build_row
 
 function theme_centralSite_pattern_fieldset($variables) {
   $form = $variables['form'];
