@@ -28,16 +28,19 @@ function _centralSite_pattern_build_row($pid, $pattern, $options = array()) {
     '#markup' => $pattern->info['category'],
   );
   $form['name'] = array(
-    '#markup' => $pattern->name,
+    '#markup' => $pattern->description,
   );
   $form['author'] = array(
-    '#markup' =>  @$pattern->author,
+    '#markup' =>  $pattern->author,
   );
   $form['uuuid'] = array(
-    '#markup' => @$pattern->uuuid,
+    '#markup' => $pattern->uuuid,
   );
-  $form['description'] = array(
-    '#markup' => $pattern->description,
+//  $form['description'] = array(
+//    '#markup' => $pattern->description,
+//  );
+  $form['link'] = array(
+    '#markup' => l(t('Get'), 'patterns/get/' . $pid),
   );
 
   return $form;
@@ -68,7 +71,6 @@ function theme_centralSite_pattern_list($args) {
     $form['patterns'] += array(
       '#type' => 'fieldset',
       '#title' => 'Latest Patterns',
-      //'#title' => $category,
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#theme' => 'centralSite_pattern_fieldset',
@@ -77,7 +79,8 @@ function theme_centralSite_pattern_list($args) {
           t('Name'),
           t('Author'),
           t('uuuid'),
-          t('Description'),
+          t('link'),
+          //t('Description'),
       ),
     );
   }
@@ -95,7 +98,8 @@ function theme_centralSite_pattern_fieldset($variables) {
     $row[] = '<strong>' . drupal_render($pattern['name']) . '</strong>';
     $row[] = drupal_render($pattern['author']);
     $row[] = drupal_render($pattern['uuuid']);
-    $row[] = drupal_render($pattern['description']);
+    //$row[] = drupal_render($pattern['description']);
+    $row[] = drupal_render($pattern['link']);
     $rows[] = $row;
   }
   return theme('table', array('header' => $form['#header'], 'rows' => $rows));
