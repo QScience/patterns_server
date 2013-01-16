@@ -22,7 +22,7 @@ function centralSite_theme() {
  * @param StdClass $pattern A pattern object as loaded from database
  * @param array $extra associative array of extra parameters. Not used now.
  */
-function _patterns_pattern_build_row($pid, $pattern, $options = array()) {
+function _centralSite_pattern_build_row($pid, $pattern, $options = array()) {
   // Add in the defaults.
   $extra = array(
     'requires' => array(),
@@ -138,11 +138,11 @@ function theme_centralSite_pattern_list($args) {
 
     foreach ($patterns as $pid => $pattern) {
 
-      $category = $pattern->info['category'] ? $pattern->info['category'] : t('Other');
+      //$category = $pattern->info['category'] ? $pattern->info['category'] : t('Other');
 
       //$form['patterns'][$category][] = _patterns_pattern_build_row($pid, $pattern);
       //  $form['patterns'][$category] += array(
-      $form['patterns'][] = _patterns_pattern_build_row($pid, $pattern);
+      $form['patterns'][] = _centralSite_pattern_build_row($pid, $pattern);
         $form['patterns'] += array(
           '#type' => 'fieldset',
           '#title' => 'Latest Patterns',
