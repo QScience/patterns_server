@@ -10,6 +10,8 @@
  * 			two path: one is on the Navigation.the other is a configure page.
  */
 
+module_load_include('inc', 'centralSite', 'theme/theme');
+
 /**
  * Implements hook_help().
  */
@@ -81,13 +83,50 @@ function centralSite_configure_form($form, &$form_state) {
  * Use Database API to retrieve the content in naonepage table.
  */
 function centralSite_onepage_getcontents() {
-  $max_num = variable_get('centralSite_onepage_max',100);	
-  $query = db_select('patterns', 'pt')
-    ->fields('pt')
-    //->fields('pt', array('pid', 'name'))
-    ->orderBy('pid', 'DESC'); //use pid,the last item's pid is the biggest.
- 	$query->range(0,$max_num);
-  return $query->execute(); 
+  //$max_num = variable_get('centralSite_onepage_max',100);	
+  //$query = db_select('patterns', 'pt')
+  //  ->fields('pt')
+  //  //->fields('pt', array('pid', 'name'))
+  //  ->orderBy('pid', 'DESC'); //use pid,the last item's pid is the biggest.
+ 	//$query->range(0,$max_num);
+  //return $query->execute(); 
+
+  $result = db_select('patterns', 'p')
+                  ->fields('p', array())
+               //   ->orderBy('pid', 'DESC')
+                //  ->range(0,10)
+                  ->execute()
+                  ->fetchAll();
+
+  //print_r($result);
+  $messages = array();
+  $patterns = array();
+  $patterns[PATTERNS_STATUS_OK] = array();
+  $patterns[PATTERNS_STATUS_TRASHED] = array();
+
+  foreach ($result as $pattern) {
+    // Skip pattern if its name is missing.
+    if (!isset($pattern->name)) {
+      continue;
+    }
+    if (!$pattern->public) {
+      continue;
+    }
+    $status = $pattern->status;
+    if (in_array($status, array(PATTERNS_STATUS_OK, PATTERNS_STATUS_ENABLED, PATTERNS_STATUS_INVALID))) {
+      $status = PATTERNS_STATUS_OK;
+    }
+    else {
+      $status = PATTERNS_STATUS_TRASHED;
+    }
+
+    $patterns[$status][$pattern->pid] = $pattern;
+    $data = unserialize($pattern->pattern);
+    $patterns[$status][$pattern->pid]->pattern = $data;
+    $patterns[$status][$pattern->pid]->info = $data['info'];
+  }
+
+  return $patterns;
 }
 
 /**
@@ -98,25 +137,30 @@ function centralSite_onepage_getcontents() {
 function centralSite_onepage_inoutcontents() {
   $result = centralSite_onepage_getcontents();
   //Array to contain items for the page to render.
-  $items = array();
+  //$items = array();
   //Iterate over the resultset and format.
-  foreach ($result as $item) {
-    $items[] = array(
-    'data' => $item->pid.'---'.$item->name.'--------'.$item->format,
-    ); 
-  }
-  if (empty($items)) { 
-    //No content in the last week.
-    $page_array = t('No posts available.');
-  }
-  else {
-    $page_array = theme('item_list',array(
-      'items' => $items,
-      'attributes' => array (
-        'id' => 'list2update'
-      ),
-    ));
-  }
+  //foreach ($result as $item) {
+  //  $items[] = array(
+  //  'data' => $item->pid.'---'.$item->name.'--------'.$item->format,
+  //  ); 
+  //}
+  //if (empty($items)) { 
+  //  //No content in the last week.
+  //  $page_array = t('No posts available.');
+  //}
+  //else {
+  //  $page_array = theme('item_list',array(
+  //    'items' => $items,
+  //    'attributes' => array (
+  //      'id' => 'list2update'
+  //    ),
+  //  ));
+  //}
+  $page_array = theme('centralSite_pattern_list',array(
+    'patterns' => $result,
+  ));
+
+  //print_r($page_array);
   return $page_array; 
 }
 
