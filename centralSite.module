@@ -48,6 +48,13 @@ function centralSite_menu() {
     'access arguments' => array('access centralSite'),
     'type' => MENU_NORMAL_ITEM,
   );
+  
+  $items['centralSite/upload'] = array(
+    'title' => 'centralSite',
+    'page callback' => 'centralSite_upload',
+    'type' => MENU_CALLBACK,
+  );
+  
   return $items;
 }
 
