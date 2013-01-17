@@ -89,7 +89,7 @@ function centralSite_get_pattern_from_db() {
  * hook_menu callback function.
  */
 function _centralSite_page() {
-  drupal_add_css(drupal_get_path('module', 'centralSite') . '/centralSite.css');
+  //drupal_add_css(drupal_get_path('module', 'centralSite') . '/centralSite.css');
   $result = centralSite_get_pattern_from_db();
   $page_array = theme('centralSite_pattern_list',array(
                     'patterns' => $result,

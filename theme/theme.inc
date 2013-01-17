@@ -28,6 +28,7 @@ function _centralSite_pattern_build_row($pid, $pattern, $options = array()) {
     '#markup' => $pattern->info['category'],
   );
   $form['title'] = array(
+    //'#markup' => l($pattern->title, 'centralSite/download/' . $pid),
     '#markup' => $pattern->title,
   );
   $form['author'] = array(
