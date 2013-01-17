@@ -1,0 +1,4 @@
+name = Patterns Server beta
+description = patterns server for all patterns.
+
+core = 7.x

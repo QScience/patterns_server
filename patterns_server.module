@@ -1,24 +1,20 @@
 <?php
 /*
  * @file
- * central site module for patterns.
+ * Patterns Server module.
  *
- * the module'name is centralSite.
- * there are three parts:
- * 		1,hook_help.
- * 		2,hook_menu.
- * 			two path: one is on the Navigation.the other is a configure page.
+ * the module'name is patterns_server.
  */
 
-module_load_include('inc', 'centralSite', 'theme/theme');
+module_load_include('inc', 'patterns_server', 'theme/theme');
 
 /**
  * Implements hook_help().
  */
-function centralSite_help($path,$arg) {
+function patterns_server_help($path,$arg) {
   switch ($path) {
-    case "admin/help#centralSite":
-      return '<p>'.t("help for centralSite module").'<p>';
+    case "admin/help#patterns_server":
+      return '<p>'.t("help for patterns_server module").'<p>';
       break;
   }
 }
@@ -26,10 +22,10 @@ function centralSite_help($path,$arg) {
 /**
  * Implements hook_permission().
  */
-function centralSite_permission() {
+function patterns_server_permission() {
   return array(
-    'access centralSite' => array(
-      'title' => t('Access permission for the centralSite module'),
+    'access patterns_server' => array(
+      'title' => t('Access permission for the patterns_server module'),
       )
     );
 }
@@ -37,27 +33,27 @@ function centralSite_permission() {
 /**
  * Implements hook_menu().
  *
- * the path'callback function is _centralSite_page().
+ * the path'callback function is _patterns_server_page().
  * second: configure form page.
  */
-function centralSite_menu() {
+function patterns_server_menu() {
   $items = array();  
-  $items['centralSite'] = array(
-    'title' => 'centralSite',
-    'page callback' => '_centralSite_page',
-    'access arguments' => array('access centralSite'),
+  $items['patterns_server'] = array(
+    'title' => 'patterns_server',
+    'page callback' => '_patterns_server_page',
+    'access arguments' => array('access patterns_server'),
     'type' => MENU_NORMAL_ITEM,
   );
   
-  $items['centralSite/upload'] = array(
-    'title' => 'centralSite',
-    'page callback' => 'centralSite_upload',
+  $items['patterns_server/upload'] = array(
+    'title' => 'patterns_server',
+    'page callback' => 'patterns_server_upload',
     'type' => MENU_CALLBACK,
   );
   
-  $items['centralSite/download'] = array(
+  $items['patterns_server/download'] = array(
     'title' => 'Download Pattern Source',
-    'page callback' => 'centralSite_pattern_download_service',
+    'page callback' => 'patterns_server_pattern_download_service',
     'access arguments' => array('get patterns'),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
@@ -71,7 +67,7 @@ function centralSite_menu() {
  *
  * Use Database API to retrieve the patterns from patterns table.
  */
-function centralSite_get_pattern_from_db() {
+function patterns_server_get_pattern_from_db() {
   $result = db_select('patterns', 'p')
                   ->fields('p', array())
                   ->orderBy('updated', 'DESC')
@@ -95,10 +91,10 @@ function centralSite_get_pattern_from_db() {
 /**
  * hook_menu callback function.
  */
-function _centralSite_page() {
-  //drupal_add_css(drupal_get_path('module', 'centralSite') . '/centralSite.css');
-  $result = centralSite_get_pattern_from_db();
-  $page_array = theme('centralSite_pattern_list',array(
+function _patterns_server_page() {
+  //drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
+  $result = patterns_server_get_pattern_from_db();
+  $page_array = theme('patterns_server_pattern_list',array(
                     'patterns' => $result,
   ));
   return $page_array; 
@@ -107,14 +103,14 @@ function _centralSite_page() {
 /**
  *
  */
-function centralSite_pattern_download($file, $filename) {
+function patterns_server_pattern_download($file, $filename) {
   drupal_add_http_header("Content-type", " text/plain; charset=utf-8");
   drupal_add_http_header("Content-Disposition", "attachment;filename=" . $filename);
   print $file;
   exit;
 }
 
-function centralSite_pattern_download_service($id) {
+function patterns_server_pattern_download_service($id) {
   $result = db_select('patterns', 'p')
                   ->fields('p')
                   ->condition('p.pid', $id)
@@ -122,6 +118,6 @@ function centralSite_pattern_download_service($id) {
                   ->fetchAll();
   $result[0]->pattern = unserialize($result[0]->pattern);
 
-  centralSite_pattern_download(file_get_contents($result[0]->file), $result[0]->name);
+  patterns_server_pattern_download(file_get_contents($result[0]->file), $result[0]->name);
   exit;
 }

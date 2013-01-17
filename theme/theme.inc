@@ -4,12 +4,12 @@
  * Theme related functions, hooks.
  */
 
-function centralSite_theme() {
+function patterns_server_theme() {
   return array(
-    'centralSite_pattern_list' => array(
+    'patterns_server_pattern_list' => array(
       'variables' => array('patterns' => array()),
     ),
-    'centralSite_pattern_fieldset' => array(
+    'patterns_server_pattern_fieldset' => array(
       'render element' => 'form',
     ),
   );
@@ -22,13 +22,13 @@ function centralSite_theme() {
  * @param StdClass $pattern A pattern object as loaded from database
  * @param array $extra associative array of extra parameters. Not used now.
  */
-function _centralSite_pattern_build_row($pid, $pattern, $options = array()) {
+function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) {
 
   $form['category'] = array(
     '#markup' => $pattern->info['category'],
   );
   $form['title'] = array(
-    //'#markup' => l($pattern->title, 'centralSite/download/' . $pid),
+    //'#markup' => l($pattern->title, 'patterns_server/download/' . $pid),
     '#markup' => $pattern->title,
   );
   $form['author'] = array(
@@ -41,7 +41,7 @@ function _centralSite_pattern_build_row($pid, $pattern, $options = array()) {
 //    '#markup' => $pattern->description,
 //  );
   $form['link'] = array(
-    '#markup' => l(t('Download'), 'centralSite/download/' . $pid),
+    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid),
   );
 
   return $form;
@@ -49,7 +49,7 @@ function _centralSite_pattern_build_row($pid, $pattern, $options = array()) {
 
 
 
-function theme_centralSite_pattern_list($args) {
+function theme_patterns_server_pattern_list($args) {
   drupal_add_js('misc/collapse.js');
   drupal_add_js('misc/drupal.js');
 
@@ -67,14 +67,14 @@ function theme_centralSite_pattern_list($args) {
   }
   else {
     foreach ($patterns as $pid => $pattern) {
-      $form['patterns'][] = _centralSite_pattern_build_row($pid, $pattern);
+      $form['patterns'][] = _patterns_server_pattern_build_row($pid, $pattern);
     }
     $form['patterns'] += array(
       '#type' => 'fieldset',
       '#title' => 'Latest Patterns',
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-      '#theme' => 'centralSite_pattern_fieldset',
+      '#theme' => 'patterns_server_pattern_fieldset',
       '#header' => array(
           t('Category'),
           t('Title'),
@@ -89,7 +89,7 @@ function theme_centralSite_pattern_list($args) {
   return drupal_render($form);
 }
 
-function theme_centralSite_pattern_fieldset($variables) {
+function theme_patterns_server_pattern_fieldset($variables) {
   $form = $variables['form'];
   $rows = array();
   foreach (element_children($form) as $key) {

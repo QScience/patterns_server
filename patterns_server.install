@@ -1,0 +1,13 @@
+<?php
+/**
+ * @file
+ * Install, uninstall functions for the Patterns Server module
+ */
+function patterns_server_install() {
+}
+
+//function navg_onepage_schema() {
+//}
+
+function patterns_server_uninstall() {
+}

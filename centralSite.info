@@ -1,4 +1,0 @@
-name = centralSite
-description = central server for all patterns.
-
-core = 7.x
