@@ -6,8 +6,30 @@
 function patterns_server_install() {
 }
 
-//function navg_onepage_schema() {
-//}
+function patterns_server_schema() {
+
+  $schema['patterns_server'] = array(
+    'description' => 'Store pattern server information.',
+    'fields' => array(
+      'pid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique pattern ID.',
+      ),
+      'downloadnum' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'Record the times which this pattern was downloaded',
+      )
+    ),
+    'primary key' => array('pid'),
+  );
+  return $schema;
+}
 
 function patterns_server_uninstall() {
+  drupal_uninstall_schema('patterns_server');
 }

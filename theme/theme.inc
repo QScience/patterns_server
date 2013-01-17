@@ -49,6 +49,17 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     '#markup' => l(t('Download'), 'patterns_server/download/' . $pid),
   );
 
+  $download_origin_times = db_select('patterns_server', 'ps')
+    ->fields('ps', array('downloadnum'))
+    ->condition('pid', $pattern->pid)
+    ->execute()
+    ->fetchAssoc();
+  if(empty($download_origin_times['downloadnum'])) {
+    $download_origin_times['downloadnum'] = 0;
+  }
+  $form['downloadnum'] = array(
+    '#markup' => $download_origin_times['downloadnum'],
+  );
   return $form;
 }
 
@@ -86,6 +97,7 @@ function theme_patterns_server_pattern_list($args) {
           t('Author'),
           t('upload time'),
           t('Download'),
+          t('Download Times'),
           //t('Description'),
       ),
     );
@@ -106,6 +118,7 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $row[] = drupal_render($pattern['upload time']);
     //$row[] = drupal_render($pattern['description']);
     $row[] = drupal_render($pattern['download']);
+    $row[] = drupal_render($pattern['downloadnum']);
     $rows[] = $row;
   }
   return theme('table', array('header' => $form['#header'], 'rows' => $rows));
