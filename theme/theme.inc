@@ -9,10 +9,13 @@ function patterns_server_theme() {
     'patterns_server_pattern_list' => array(
       'variables' => array('patterns' => array()),
     ),
+    'patterns_server_pattern_fieldset' => array(
+      'render element' => 'form',
+    ),
     'patterns_server_one_pattern_info' => array(
       'variables' => array('patterns' => array()),
     ),
-    'patterns_server_pattern_fieldset' => array(
+    'patterns_server_pattern_family_fieldset' => array(
       'render element' => 'form',
     ),
   );
@@ -36,13 +39,13 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   $form['author'] = array(
     '#markup' =>  $pattern->author,
   );
-  $form['uuuid'] = array(
-    '#markup' => $pattern->uuuid,
+  $form['upload time'] = array(
+    '#markup' => date('j-m-Y H:i:s (P)', $pattern->updated),
   );
 //  $form['description'] = array(
 //    '#markup' => $pattern->description,
 //  );
-  $form['link'] = array(
+  $form['download'] = array(
     '#markup' => l(t('Download'), 'patterns_server/download/' . $pid),
   );
 
@@ -81,8 +84,8 @@ function theme_patterns_server_pattern_list($args) {
           t('Category'),
           t('Title'),
           t('Author'),
-          t('uuuid'),
-          t('link'),
+          t('upload time'),
+          t('Download'),
           //t('Description'),
       ),
     );
@@ -100,52 +103,88 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $row[] =  drupal_render($pattern['category']);
     $row[] = '<strong>' . drupal_render($pattern['title']) . '</strong>';
     $row[] = drupal_render($pattern['author']);
-    $row[] = drupal_render($pattern['uuuid']);
+    $row[] = drupal_render($pattern['upload time']);
     //$row[] = drupal_render($pattern['description']);
-    $row[] = drupal_render($pattern['link']);
+    $row[] = drupal_render($pattern['download']);
     $rows[] = $row;
   }
   return theme('table', array('header' => $form['#header'], 'rows' => $rows));
 }
 
+// For one patterns page.
+function _patterns_server_pattern_family_build_row($pid, $pattern, $options = array()) {
+
+  $form['UUUID'] = array( 
+    '#markup' => $pattern->uuuid,
+  );
+  $form['title'] = array(
+    //'#markup' => l($pattern->title, 'patterns_server/info/' . $pid),
+    '#markup' => $pattern->title,
+  );
+  $form['author'] = array(
+    '#markup' =>  $pattern->author,
+  );
+  $form['parent'] = array(
+    '#markup' => '@TODO',
+  );
+  $form['child'] = array(
+    '#markup' => '@TODO',
+  );
+  $form['Download'] = array(
+    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid),
+  );
+
+  return $form;
+}
+
 function theme_patterns_server_one_pattern_info($args) {
-  //$part_page = '<div id="_rui_all_patterns_div">';
-  //$pattern = $args['patterns'][0];
-  //$part_page = $pattern->name . '<br/>';
-  //$part_page .= $pattern->title. '<br/>';
-  //$part_page .= $pattern->pid;
-  //return $part_page;
-  $patterns_title = '<div id="all_patterns_div">';
+  drupal_add_js('misc/collapse.js');
+  drupal_add_js('misc/drupal.js');
+
+  $patterns = $args['patterns'];
+  $patterns_title = '<div id="one_pattern_family_div">';
   $form['patterns'] = array(
     '#prefix' => $patterns_title,
     '#suffix' => ' </div>',
     '#tree' => TRUE,
   );
-
-  if (empty($patterns)) {
-    $form['patterns']['#markup'] =  t('No patterns available.');
+  foreach ($patterns as $pid => $pattern) {
+    $form['patterns'][] = _patterns_server_pattern_family_build_row($pid, $pattern);
   }
-  else {
-    foreach ($patterns as $pid => $pattern) {
-      $form['patterns'][] = _patterns_server_pattern_build_row($pid, $pattern);
-    }
-    $form['patterns'] += array(
+  $form['patterns'] += array(
       '#type' => 'fieldset',
-      '#title' => 'Latest Patterns',
+      '#title' => 'One pattern\'s history',
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-      '#theme' => 'patterns_server_pattern_fieldset',
+      '#theme' => 'patterns_server_pattern_family_fieldset',
       '#header' => array(
-          t('Category'),
+          t('UUUID'),
           t('Title'),
           t('Author'),
-          t('uuuid'),
-          t('link'),
+          t('parent'),
+          t('child'),
+          t('Download'),
           //t('Description'),
       ),
     );
-  }
 
   return drupal_render($form);
+}
 
+function theme_patterns_server_pattern_family_fieldset($variables) {
+  $form = $variables['form'];
+  $rows = array();
+  foreach (element_children($form) as $key) {
+    $pattern = $form[$key];
+    $row = array();
+    $row[] =  drupal_render($pattern['UUUID']);
+    $row[] = '<strong>' . drupal_render($pattern['title']) . '</strong>';
+    $row[] = drupal_render($pattern['author']);
+    $row[] = drupal_render($pattern['parent']);
+    $row[] = drupal_render($pattern['child']);
+    //$row[] = drupal_render($pattern['description']);
+    $row[] = drupal_render($pattern['Download']);
+    $rows[] = $row;
+  }
+  return theme('table', array('header' => $form['#header'], 'rows' => $rows));
 }
