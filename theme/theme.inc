@@ -40,7 +40,7 @@ function _centralSite_pattern_build_row($pid, $pattern, $options = array()) {
 //    '#markup' => $pattern->description,
 //  );
   $form['link'] = array(
-    '#markup' => l(t('Get'), 'patterns/get/' . $pid),
+    '#markup' => l(t('Download'), 'centralSite/download/' . $pid),
   );
 
   return $form;
