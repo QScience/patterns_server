@@ -39,8 +39,8 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   $form['author'] = array(
     '#markup' =>  $pattern->author,
   );
-  $form['uuuid'] = array(
-    '#markup' => $pattern->uuuid,
+  $form['upload time'] = array(
+    '#markup' => date('j-m-Y H:i:s (P)', $pattern->updated),
   );
 //  $form['description'] = array(
 //    '#markup' => $pattern->description,
@@ -84,7 +84,7 @@ function theme_patterns_server_pattern_list($args) {
           t('Category'),
           t('Title'),
           t('Author'),
-          t('uuuid'),
+          t('upload time'),
           t('Download'),
           //t('Description'),
       ),
@@ -103,7 +103,7 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $row[] =  drupal_render($pattern['category']);
     $row[] = '<strong>' . drupal_render($pattern['title']) . '</strong>';
     $row[] = drupal_render($pattern['author']);
-    $row[] = drupal_render($pattern['uuuid']);
+    $row[] = drupal_render($pattern['upload time']);
     //$row[] = drupal_render($pattern['description']);
     $row[] = drupal_render($pattern['download']);
     $rows[] = $row;
