@@ -44,6 +44,17 @@ function patterns_server_menu() {
     'access arguments' => array('access patterns_server'),
     'type' => MENU_NORMAL_ITEM,
   );
+
+  /*this used for user search the categoried patterns
+
+       $items['patterns_server/category'] = array(
+            'title' => 'Patterns Server',
+	        'page callback' => 'patterns_server_pattern_category',
+	        'access arguments' => array('access patterns_server'),
+	        'type' => MENU_NORMAL_ITEM,
+	       );
+   
+   */
   
   $items['patterns_server/upload'] = array(
     'title' => 'patterns_server',
@@ -88,6 +99,30 @@ function patterns_server_get_pattern_pid_from_db($pid) {
                   ->fetchAll();
   return $result;
 }
+/* this used for user search the categoried patterns
+function patterns_server_get_category_patterns_from_db($category_name){
+          $result = db_select('patterns', 'p')
+                   ->fields('p', array())
+                   ->condition('p.category', $category_name)
+                   ->execute()
+                   ->fetchAll();
+        return $result;
+
+}
+
+function patterns_server_get_category_list(){
+	$terms = entity_load('taxonomy_term');
+	$result = array();
+	   foreach ($terms as $term) {
+	   			$result[] = ($term ->name)
+	   }
+	 $category_list = array_unique($result);
+}
+
+ */
+
+
+
 /**
  * a function used in the form.
  *
@@ -198,3 +233,14 @@ function patterns_server_pattern_info($id) {
   ));
   return $page;
 }
+/*this used for user search the categoried patterns
+
+  function patterns_server_pattern_category($id) {
+      drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
+      $result = patterns_server_get_pattern_pid_from_db($id);
+      $page = theme('patterns_server_one_pattern_info',array(
+                       'patterns' => $result,
+      ));
+
+ 
+ */
