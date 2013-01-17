@@ -9,6 +9,9 @@ function patterns_server_theme() {
     'patterns_server_pattern_list' => array(
       'variables' => array('patterns' => array()),
     ),
+    'patterns_server_one_pattern_info' => array(
+      'variables' => array('patterns' => array()),
+    ),
     'patterns_server_pattern_fieldset' => array(
       'render element' => 'form',
     ),
@@ -24,12 +27,11 @@ function patterns_server_theme() {
  */
 function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) {
 
-  $form['category'] = array(
-    '#markup' => $pattern->info['category'],
+  $form['category'] = array( '#markup' => $pattern->info['category'],
   );
   $form['title'] = array(
-    //'#markup' => l($pattern->title, 'patterns_server/download/' . $pid),
-    '#markup' => $pattern->title,
+    '#markup' => l($pattern->title, 'patterns_server/info/' . $pid),
+    //'#markup' => $pattern->title,
   );
   $form['author'] = array(
     '#markup' =>  $pattern->author,
@@ -104,4 +106,46 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $rows[] = $row;
   }
   return theme('table', array('header' => $form['#header'], 'rows' => $rows));
+}
+
+function theme_patterns_server_one_pattern_info($args) {
+  //$part_page = '<div id="_rui_all_patterns_div">';
+  //$pattern = $args['patterns'][0];
+  //$part_page = $pattern->name . '<br/>';
+  //$part_page .= $pattern->title. '<br/>';
+  //$part_page .= $pattern->pid;
+  //return $part_page;
+  $patterns_title = '<div id="all_patterns_div">';
+  $form['patterns'] = array(
+    '#prefix' => $patterns_title,
+    '#suffix' => ' </div>',
+    '#tree' => TRUE,
+  );
+
+  if (empty($patterns)) {
+    $form['patterns']['#markup'] =  t('No patterns available.');
+  }
+  else {
+    foreach ($patterns as $pid => $pattern) {
+      $form['patterns'][] = _patterns_server_pattern_build_row($pid, $pattern);
+    }
+    $form['patterns'] += array(
+      '#type' => 'fieldset',
+      '#title' => 'Latest Patterns',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#theme' => 'patterns_server_pattern_fieldset',
+      '#header' => array(
+          t('Category'),
+          t('Title'),
+          t('Author'),
+          t('uuuid'),
+          t('link'),
+          //t('Description'),
+      ),
+    );
+  }
+
+  return drupal_render($form);
+
 }
