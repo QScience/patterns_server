@@ -1,5 +1,4 @@
 name = centralSite
 description = central server for all patterns.
-configure = admin/config/centralSite
 
 core = 7.x

@@ -55,6 +55,14 @@ function centralSite_menu() {
     'type' => MENU_CALLBACK,
   );
   
+  $items['centralSite/download'] = array(
+    'title' => 'Download Pattern Source',
+    'page callback' => 'centralSite_pattern_download_service',
+    'access arguments' => array('get patterns'),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );	 
+
   return $items;
 }
 
@@ -94,4 +102,26 @@ function _centralSite_page() {
                     'patterns' => $result,
   ));
   return $page_array; 
+}
+
+/**
+ *
+ */
+function centralSite_pattern_download($file, $filename) {
+  drupal_add_http_header("Content-type", " text/plain; charset=utf-8");
+  drupal_add_http_header("Content-Disposition", "attachment;filename=" . $filename);
+  print $file;
+  exit;
+}
+
+function centralSite_pattern_download_service($id) {
+  $result = db_select('patterns', 'p')
+                  ->fields('p')
+                  ->condition('p.pid', $id)
+                  ->execute()
+                  ->fetchAll();
+  $result[0]->pattern = unserialize($result[0]->pattern);
+
+  centralSite_pattern_download(file_get_contents($result[0]->file), $result[0]->name);
+  exit;
 }
