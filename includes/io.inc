@@ -35,7 +35,8 @@ function patterns_server_incoming_patterns($arguments = NULL) {
     drupal_json_output('empty');
     return;
   }
-  
+  print_r($arguments);
+  exit(0);
   drupal_json_output($arguments);
   
   $imploded_credentials = $arguments['credentials'];
