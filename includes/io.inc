@@ -7,31 +7,7 @@
 
 
 module_load_include('module', 'pils');
-
-function patterns_server_authorize($user, $pwd) {
-
-  // recreate a form structure
-  $form_state = array();
-  $form = array();
-  
-  $form_state['values']['name'] = $user;
-  $form_state['values']['pass'] = $pwd;
-  
-  user_login_authenticate_validate($form, $form_state);
-  
-  // Too many log-in attempts
-  if ($form_state['flood_control_triggered']) {
-    // DO SOMETHING
-    return FALSE;
-  }
-  
-  if (isset($form_state['uid'])) {
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
-}
+module_load_include('inc', 'patterns_server', 'includes/auth');
 
 function patterns_server_save_pattern($pattern_name, $pattern, $format) {  
   
@@ -48,6 +24,11 @@ function patterns_server_save_pattern($pattern_name, $pattern, $format) {
 
 function patterns_server_incoming_patterns($arguments) {
   
+  if (empty($arguments)) {
+    drupal_json_output('empty');
+    return;
+  }
+  
   $imploded_credentials = $arguments['credentials'];
   $exploded_credentials = pils_explode($imploded_credentials);
   
@@ -63,15 +44,16 @@ function patterns_server_incoming_patterns($arguments) {
   );
   
   if (!pils_check_array($exploded_credentials, $check)) {
-    
     print 'NO2!';
   }
   
   $user = $exploded_credentials['user'];
   $pwd = $exploded_credentials['pwd'];
 
-  if (!patterns_server_authorize($user, $pwd)) {
-    print 'NO3!'
+  $result = _patterns_server_login_authenticate_validate($user, $pwd);
+  
+  if ($result['status'] !== PATTERNS_SUCCESS) {
+    print $result['msg'];
     exit();   
   }
   
@@ -79,7 +61,7 @@ function patterns_server_incoming_patterns($arguments) {
   
   $exploded_patterns = pils_explode($imploded_patterns);
   if ($exploded_patterns === FALSE) {
-    print 'NO4!'
+    print 'NO4!';
     exit();
   }
   
@@ -108,5 +90,5 @@ function patterns_server_incoming_patterns($arguments) {
       }
     }
   }
-  return $n_patterns . ' pattern(s) received';
+  print $n_patterns . ' pattern(s) received and saved.';
 }
