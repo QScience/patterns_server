@@ -22,12 +22,21 @@ function patterns_server_save_pattern($pattern_name, $pattern, $format) {
   return TRUE;
 }
 
-function patterns_server_incoming_patterns($arguments) {
+function patterns_server_incoming_patterns($arguments = NULL) {
+//  variable_set('AAAA', );
+//  drupal_set_message($arguments);
+//  drupal_json_output($_POST);
+//  return;
+  
+
+  $arguments = $_POST;
   
   if (empty($arguments)) {
     drupal_json_output('empty');
     return;
   }
+  
+  drupal_json_output($arguments);
   
   $imploded_credentials = $arguments['credentials'];
   $exploded_credentials = pils_explode($imploded_credentials);
