@@ -45,12 +45,13 @@ function patterns_server_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
-  $items['patterns_server/search/%key'] = array(
+  $items['patterns_server/search/%'] = array(
     'title' => 'patterns_server search result',
     'page callback' => '_patterns_search_page',
     'page arguments' => array(2),
     'access arguments' => array('access patterns_server'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'access callback' => TRUE,
+    'type' =>  MENU_CALLBACK,
   );
 
 
@@ -161,18 +162,19 @@ function patterns_server_get_pattern_from_db($numOrid, $sign = TRUE) {
  * Use Database API to retrieve the patterns from patterns table.
  */
 function patterns_server_search_pattern_by_title($key,$page=0) {
-  $result = db_select('patterns', 'p')
-                  ->fields('p', array());
-  $or = db_or();
-  foreach (explode(' ', $key) as $value) {
-        $or->condition('title', '%'.$value.'%');
-   }
-   $result->condition($or);             
-   $result ->orderBy('updated', 'DESC')
-                  ->range($page*10,10)
-                  ->execute()
+  $result = db_select('patterns', 'p') 
+                  ->fields('p', array())
+                  ->condition('title', '%'.db_like($key).'%','LIKE')
+                  ->orderBy('updated', 'DESC')
+                  ->range(0,10)
+                  ->execute()    
                   ->fetchAll();
-
+ // $or = db_or(); 
+ // $values=explode(' ', $key);
+//  foreach ( $values as $value) {
+   //     $result->condition('title', '%'.db_like($key).'%','LIKE');
+//   }
+ //  $result->condition($or);             
   $patterns = array();
 
   foreach ($result as $pattern) {
@@ -185,7 +187,7 @@ function patterns_server_search_pattern_by_title($key,$page=0) {
 //  print_r($patterns);
   return $patterns;
 }
-function patterns_search_box_form_submit($form, &$form_state) {
+function patterns_server_search_form_submit($form, &$form_state) {
 
   if ($form_state['values']['patterns_search'] == '') {
     form_set_error('keys', t('Please enter some keywords.'));
@@ -203,19 +205,25 @@ function patterns_server_search_form($form, &$form_state,$args='') {
     '#suffix' => ' </div>',
   //  '#tree' => TRUE,
   );*/
-    $form['patterns_search'] = array(
+    $form['patterns_search']= array(
+    '#type' => 'container',
+    '#attributes' => array('class' => array('container-inline')),
+
+  );
+    $form['patterns_search']['serach'] = array(
     '#type' => 'textfield',
     '#title' => t('Search'),
     '#title_display' => 'invisible',
     '#size' => 15,
     '#default_value' => $args,
-    '#attributes' => array('title' => t('Enter the terms you wish to search for.')),
-  );
-  $form['actions'] = array('#type' => 'actions');
-  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Search'));
-  $form['#submit'][] = 'patterns_search_box_form_submit';
+    '#attributes' => array('title' => t('Enter the terms you wish to search for.'),'class' => array('container-inline')),
 
-  return $form;
+  );
+  $form['patterns_search']['actions'] = array('#type' => 'actions');
+  $form['patterns_search']['actions']['submit'] = array('#type' => 'submit', '#value' => t('Search'));
+  $form['patterns_search']['#submit'][] = 'patterns_server_search_form_submit';
+
+  return $form;   
 }
 /**
  * hook_menu callback function.
@@ -251,9 +259,9 @@ function _patterns_server_page() {
 function _patterns_search_page($keys) {
   //drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
  $result = patterns_server_search_pattern_by_title($keys);
- print_r($result);
   $page_array = theme('patterns_server_pattern_list',array(
                     'patterns' => $result,
+                    'searchkey' => $keys,
   ));
 
   //One pattern info part.
