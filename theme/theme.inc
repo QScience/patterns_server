@@ -73,6 +73,7 @@ function theme_patterns_server_pattern_list($args) {
   $patterns = $args['patterns'];
 
   $form['search-box']=drupal_get_form('patterns_server_search_form');
+ //$form['Pattern-Category-Search']=drupal_get_form('patterns_server_search_category_form');
   $patterns_title = '<div id="all_patterns_div">';
   $form['patterns'] = array(
     '#prefix' => $patterns_title,
