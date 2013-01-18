@@ -67,14 +67,8 @@ function theme_patterns_server_pattern_list($args) {
   drupal_add_js('misc/drupal.js');
 
   $patterns = $args['patterns'];
-<<<<<<< HEAD
-
-  $form['search-box']=drupal_get_form('patterns_server_search_form');
- //$form['Pattern-Category-Search']=drupal_get_form('patterns_server_search_category_form');
-=======
   if(!isset($args['searchkey'])) $args['searchkey']='';
   $form['search-box']=drupal_get_form('patterns_server_search_form',$args['searchkey']);
->>>>>>> 5f5fc41da1971239d86614b2b06708ed6d39ee84
   $patterns_title = '<div id="all_patterns_div">';
   $form['patterns'] = array(
     '#prefix' => $patterns_title,
