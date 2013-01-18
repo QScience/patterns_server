@@ -26,8 +26,8 @@ function patterns_server_permission() {
   return array(
     'access patterns_server' => array(
       'title' => t('Access permission for the patterns_server module'),
-      )
-    );
+    )
+  );
 }
 
 /**
@@ -151,29 +151,11 @@ function patterns_server_get_pattern_from_db($numOrid, $sign = TRUE) {
  * hook_menu callback function.
  */
 function _patterns_server_page() {
-   $download_origin_times = db_select('patterns_server', 'ps')
-    ->fields('ps', array('downloadnum'))
-    ->condition('pid', 48)
-    ->execute()
-    ->fetchAssoc();
-    print_r($download_origin_times['downloadnum']);
-  
-  //drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
-  //$page = '<strong>NiHao</strong>';
   $page = null;
-
-  //Latest patterns part.
   $result = patterns_server_get_pattern_from_db(10);
   $page .= theme('patterns_server_pattern_list',array(
                     'patterns' => $result,
   ));
-
-  //One pattern info part.
-  //$result = patterns_server_get_pattern_timeDESC_from_db(1);
-  //$page .= theme('patterns_server_one_pattern_info',array(
-  //                  'patterns' => $result,
-  //));
-  //$page .= patterns_server_pattern_info();
   return $page; 
 }
 
@@ -195,29 +177,24 @@ function patterns_server_download_recode($id) {
     ->fetchAssoc();
   if(empty($download_origin_times['pid'])) {
     db_insert('patterns_server')
-      ->fields(array(
-        'pid' => $id,
-        'downloadnum' => 1,
-        ))
+      ->fields(array( 'pid' => $id, 'downloadnum' => 1,))
       ->execute();
   }
   else {
-    $download_origin_times['downloadnum']  = $download_origin_times['downloadnum'] + 1;
-  db_update('patterns_server')
-    ->condition('pid', $id)
-    ->fields(array(
-      'downloadnum' => $download_origin_times['downloadnum'],
-      ))
-    ->execute();
+    $download_origin_times['downloadnum']  += 1;
+    db_update('patterns_server')
+      ->condition('pid', $id)
+      ->fields(array('downloadnum' => $download_origin_times['downloadnum']))
+      ->execute();
   }
 }
 
 function patterns_server_download($id) {
   $result = db_select('patterns', 'p')
-                  ->fields('p')
-                  ->condition('p.pid', $id)
-                  ->execute()
-                  ->fetchAll();
+              ->fields('p')
+              ->condition('p.pid', $id)
+              ->execute()
+              ->fetchAll();
   $result[0]->pattern = unserialize($result[0]->pattern);
   patterns_server_download_recode($id);
   patterns_server_pattern_download(file_get_contents($result[0]->file), $result[0]->name);
