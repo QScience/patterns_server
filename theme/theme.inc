@@ -67,17 +67,30 @@ function theme_patterns_server_pattern_list($args) {
   drupal_add_js('misc/drupal.js');
 
   $patterns = $args['patterns'];
-
-  $form['search-box']=drupal_get_form('patterns_server_search_form');
+  if(!isset($args['searchkey'])) $args['searchkey']='';
+  $form['search-box']=drupal_get_form('patterns_server_search_form',$args['searchkey']);
   $patterns_title = '<div id="all_patterns_div">';
   $form['patterns'] = array(
     '#prefix' => $patterns_title,
     '#suffix' => ' </div>',
     '#tree' => TRUE,
   );
+  
+  if($args['searchkey']==''){
+  		$title='Latest Patterns';
+  	}else{
+  		$title='Patterns serach result';
+  	}
 
   if (empty($patterns)) {
-    $form['patterns']['#markup'] =  t('No patterns available.');
+  	if($args['searchkey']==''){
+  		$form['patterns']['#markup'] =  t('No patterns available.');
+  		$title='Latest Patterns';
+  	}else{
+  		$form['patterns']['#markup'] =  t('No patterns search result.');
+  		$title='Patterns serach result';
+  	}
+    
   }
   else {
     foreach ($patterns as $pid => $pattern) {
@@ -85,7 +98,7 @@ function theme_patterns_server_pattern_list($args) {
     }
     $form['patterns'] += array(
       '#type' => 'fieldset',
-      '#title' => 'Latest Patterns',
+      '#title' => $title,
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#theme' => 'patterns_server_pattern_fieldset',
