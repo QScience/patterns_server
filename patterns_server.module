@@ -58,17 +58,19 @@ function patterns_server_menu() {
     'type' =>  MENU_CALLBACK,
   );
 
+
   /*this used for user search the categoried patterns
 
        $items['patterns_server/category'] = array(
-            'title' => 'Patterns Server',
-	        'page callback' => 'patterns_server_pattern_category',
+            'title' => 'Patterns Server search category',
+	        'page callback' => 'patterns_server_pattern_category_page',
 	        'access arguments' => array('access patterns_server'),
 	        'type' => MENU_NORMAL_ITEM,
 	       );
    
    */
 
+  
   $items['patterns_server/post'] = array(
     'title' => 'patterns_server',
     'page callback' => 'patterns_server_incoming_patterns',
@@ -125,15 +127,27 @@ function patterns_server_get_category_patterns_from_db($category_name){
 }
 
 function patterns_server_get_category_list(){
-	$terms = entity_load('taxonomy_term');
-	$result = array();
-	   foreach ($terms as $term) {
-	   			$result[] = ($term ->name)
-	   }
-	 $category_list = array_unique($result);
-}
+    $result = db_select('taxonomy_term_data','t')
+				->field('t',array('name'))
+				->execute()
+				->fetchAllKeyed();
+	return $result;
 
- */
+
+//	$result = entity_load('taxonomy_term');
+//	$node = db_fetch_object($terms);
+//	$vid = $node->vid;
+	
+	$items = array();
+//	$terms = taxonomy_get_tree($vid);
+//	   foreach ($terms as $term) {
+//	   		$count = taxonomy_term_count_nodes($term->tid);
+//			 if ($count) { 
+//	   		$items[$term->tid] = $term ->name;
+//	   }
+	// $category_list = array_unique($result);
+}*/
+
 
 
 
@@ -228,6 +242,31 @@ function patterns_server_search_form($form, &$form_state,$args='') {
 
   return $form;   
 }
+
+/* used for catrgory list
+
+   function patterns_server_search_category_form($form, &$form_state,$args='') {
+
+    
+    $form['patterns_category_search'] = array(
+			    '#type' => 'select',
+			    '#title' => t('Select a category'),
+				'#title_display' => 'invisible',
+			    '#id' = 'patterns_category_search', 
+				'options' => patterns_server_get_category_list(),
+									  );
+   $form['actions'] = array('#type' => 'actions');
+   
+	    return $form;
+		}
+
+ 
+ */
+
+
+
+
+
 /**
  * hook_menu callback function.
  */
@@ -248,6 +287,8 @@ function _patterns_search_page($keys) {
                     'patterns' => $result,
                     'searchkey' => $keys,
   ));
+
+
 
   //One pattern info part.
   //$result = patterns_server_get_pattern_timeDESC_from_db(1);
@@ -309,13 +350,13 @@ function patterns_server_pattern_info($id) {
   ));
   return $page;
 }
+/*
+  function _patterns_server_pattern_category_page($category_name) {
+      drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
+      $result = patterns_server_get_category_patterns_from_db($category_name);
+      $page = theme('patterns_server_one_pattern_info',array(
+                       'patterns' => $result,
+      ));
 
-/*this used for user search the categoried patterns
-function patterns_server_pattern_category($id) {
-  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
-  $result = patterns_server_get_pattern_pid_from_db($id);
-  $page = theme('patterns_server_one_pattern_info',array(
-                   'patterns' => $result,
-  ));
-}
-*/
+ 
+ */
