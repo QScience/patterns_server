@@ -6,6 +6,7 @@
  * the module'name is patterns_server.
  */
 
+module_load_include('inc', 'patterns_server', 'include/io');
 module_load_include('inc', 'patterns_server', 'theme/theme');
 
 /**
