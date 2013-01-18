@@ -39,11 +39,12 @@ function patterns_server_permission() {
 function patterns_server_menu() {
   $items = array();  
   $items['patterns_server'] = array(
-    'title' => 'patterns_server',
+    'title' => 'Patterns Server',
     'page callback' => '_patterns_server_page',
     'access arguments' => array('access patterns_server'),
     'type' => MENU_NORMAL_ITEM,
   );
+
   $items['patterns_server/search/%key'] = array(
     'title' => 'patterns_server search result',
     'page callback' => '_patterns_search_page',
@@ -51,6 +52,19 @@ function patterns_server_menu() {
     'access arguments' => array('access patterns_server'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
+
+
+  /*this used for user search the categoried patterns
+
+       $items['patterns_server/category'] = array(
+            'title' => 'Patterns Server',
+	        'page callback' => 'patterns_server_pattern_category',
+	        'access arguments' => array('access patterns_server'),
+	        'type' => MENU_NORMAL_ITEM,
+	       );
+   
+   */
+
   
   $items['patterns_server/upload'] = array(
     'title' => 'patterns_server',
@@ -60,28 +74,77 @@ function patterns_server_menu() {
   
   $items['patterns_server/download'] = array(
     'title' => 'Download Pattern Source',
-    'page callback' => 'patterns_server_pattern_download_service',
+    'page callback' => 'patterns_server_download',
     'access arguments' => array('get patterns'),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );	 
 
+  $items['patterns_server/info'] = array(
+    'title' => 'Information of one pattern',
+    'page callback' => 'patterns_server_pattern_info',
+    'access arguments' => array('get patterns'),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
+
+function patterns_server_get_pattern_timeDESC_from_db($num) {
+  $num = is_numeric($num)?$num:10;
+  $result = db_select('patterns', 'p')
+                  ->fields('p', array())
+                  ->orderBy('updated', 'DESC')
+                  ->range(0,$num)
+                  ->execute()
+                  ->fetchAll();
+  return $result;
+}
+
+function patterns_server_get_pattern_pid_from_db($pid) {
+  $result = db_select('patterns', 'p')
+                  ->fields('p', array())
+                  ->condition('p.pid', $pid)
+                  ->execute()
+                  ->fetchAll();
+  return $result;
+}
+/* this used for user search the categoried patterns
+function patterns_server_get_category_patterns_from_db($category_name){
+          $result = db_select('patterns', 'p')
+                   ->fields('p', array())
+                   ->condition('p.category', $category_name)
+                   ->execute()
+                   ->fetchAll();
+        return $result;
+
+}
+
+function patterns_server_get_category_list(){
+	$terms = entity_load('taxonomy_term');
+	$result = array();
+	   foreach ($terms as $term) {
+	   			$result[] = ($term ->name)
+	   }
+	 $category_list = array_unique($result);
+}
+
+ */
+
+
 
 /**
  * a function used in the form.
  *
  * Use Database API to retrieve the patterns from patterns table.
  */
-function patterns_server_get_pattern_from_db() {
-  $result = db_select('patterns', 'p')
-                  ->fields('p', array())
-                  ->orderBy('updated', 'DESC')
-                  ->range(0,10)
-                  ->execute()
-                  ->fetchAll();
-
+function patterns_server_get_pattern_from_db($numOrid, $sign = TRUE) {
+  if ($sign == TRUE) {
+    $result = patterns_server_get_pattern_timeDESC_from_db($numOrid);
+  }
+  else {
+    $result = patterns_server_get_pattern_pid_from_db($numOrid);
+  }
   $patterns = array();
 
   foreach ($result as $pattern) {
@@ -91,7 +154,6 @@ function patterns_server_get_pattern_from_db() {
     $patterns[$pattern->pid]->info = $data['info'];
   }
 
-//  print_r($patterns);
   return $patterns;
 }
 /**
@@ -159,14 +221,32 @@ function patterns_server_search_form($form, &$form_state,$args='') {
  * hook_menu callback function.
  */
 function _patterns_server_page() {
+   $download_origin_times = db_select('patterns_server', 'ps')
+    ->fields('ps', array('downloadnum'))
+    ->condition('pid', 48)
+    ->execute()
+    ->fetchAssoc();
+    print_r($download_origin_times['downloadnum']);
+  
   //drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
-  $result = patterns_server_get_pattern_from_db();
- // $page_array=drupal_get_form('patterns_server_search_form');
-  $page_array = theme('patterns_server_pattern_list',array(
+  //$page = '<strong>NiHao</strong>';
+  $page = null;
+
+  //Latest patterns part.
+  $result = patterns_server_get_pattern_from_db(10);
+  $page .= theme('patterns_server_pattern_list',array(
                     'patterns' => $result,
   ));
-  return $page_array; 
+
+  //One pattern info part.
+  //$result = patterns_server_get_pattern_timeDESC_from_db(1);
+  //$page .= theme('patterns_server_one_pattern_info',array(
+  //                  'patterns' => $result,
+  //));
+  //$page .= patterns_server_pattern_info();
+  return $page; 
 }
+
 
 function _patterns_search_page($keys) {
   //drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
@@ -175,6 +255,13 @@ function _patterns_search_page($keys) {
   $page_array = theme('patterns_server_pattern_list',array(
                     'patterns' => $result,
   ));
+
+  //One pattern info part.
+  //$result = patterns_server_get_pattern_timeDESC_from_db(1);
+  //$page .= theme('patterns_server_one_pattern_info',array(
+  //                  'patterns' => $result,
+  //));
+  //$page .= patterns_server_pattern_info();
   return $page_array; 
 }
 
@@ -188,14 +275,60 @@ function patterns_server_pattern_download($file, $filename) {
   exit;
 }
 
-function patterns_server_pattern_download_service($id) {
+function patterns_server_download_recode($id) {
+  $download_origin_times = db_select('patterns_server', 'ps')
+    ->fields('ps', array('downloadnum', 'pid'))
+    ->condition('pid', $id)
+    ->execute()
+    ->fetchAssoc();
+  if(empty($download_origin_times['pid'])) {
+    db_insert('patterns_server')
+      ->fields(array(
+        'pid' => $id,
+        'downloadnum' => 1,
+        ))
+      ->execute();
+  }
+  else {
+    $download_origin_times['downloadnum']  = $download_origin_times['downloadnum'] + 1;
+  db_update('patterns_server')
+    ->condition('pid', $id)
+    ->fields(array(
+      'downloadnum' => $download_origin_times['downloadnum'],
+      ))
+    ->execute();
+  }
+}
+
+function patterns_server_download($id) {
   $result = db_select('patterns', 'p')
                   ->fields('p')
                   ->condition('p.pid', $id)
                   ->execute()
                   ->fetchAll();
   $result[0]->pattern = unserialize($result[0]->pattern);
-
+  patterns_server_download_recode($id);
   patterns_server_pattern_download(file_get_contents($result[0]->file), $result[0]->name);
   exit;
 }
+
+function patterns_server_pattern_info($id) {
+  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
+  //@TODO the result can be a series of patterns with parents or children relation ship
+  $result = patterns_server_get_pattern_from_db($id, FALSE);
+  $page = theme('patterns_server_one_pattern_info',array(
+                    'patterns' => $result,
+  ));
+  return $page;
+}
+/*this used for user search the categoried patterns
+
+  function patterns_server_pattern_category($id) {
+      drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
+      $result = patterns_server_get_pattern_pid_from_db($id);
+      $page = theme('patterns_server_one_pattern_info',array(
+                       'patterns' => $result,
+      ));
+
+ 
+ */

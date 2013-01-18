@@ -6,6 +6,8 @@
  */
 
 
+module_load_include('module', 'pils');
+
 function patterns_server_authorize($user, $pwd) {
 
   // recreate a form structure
@@ -52,19 +54,6 @@ function patterns_server_incoming_pattern($user, $pwd, $pattern_name, $pattern, 
   return TRUE;
 }
 
-/**
- * Implements hook_drupaltodrupal_secure_rpc().
- */
-function _patterns_server_drupaltodrupal_secure_rpc() {
-  $methods = array();
-  $methods['patterns_d2d_push_patterns'] = array(
-    'arguments' => array('patterns' => 'is_string'),
-    'callback' => '_patterns_server_push_patterns',
-    'description' => 'publish public patterns to remote server',
-  );
-  return $methods;
-}
-
 function _patterns_server_push_patterns($arguments, $rpc_info) {
   $imploded_patterns = $arguments['patterns'];
   $exploded_patterns = drupaltodrupal_explode($imploded_patterns);
@@ -83,7 +72,6 @@ function _patterns_server_push_patterns($arguments, $rpc_info) {
       if (drupaltodrupal_check_array($exploded_pattern, $check)) {
         $name = $rpc_info['id'] . '_' . $exploded_pattern['name'];
         
-        // TODO add real user and pwd
         $user = $exploded_pattern['user'];
         $pwd = $exploded_pattern['pwd'];
         $pattern = $exploded_pattern['content'];
