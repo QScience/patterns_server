@@ -45,6 +45,15 @@ function patterns_server_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['patterns_server/search/%key'] = array(
+    'title' => 'patterns_server search result',
+    'page callback' => '_patterns_search_page',
+    'page arguments' => array(2),
+    'access arguments' => array('access patterns_server'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+
   /*this used for user search the categoried patterns
 
        $items['patterns_server/category'] = array(
@@ -55,6 +64,7 @@ function patterns_server_menu() {
 	       );
    
    */
+
   
   $items['patterns_server/upload'] = array(
     'title' => 'patterns_server',
@@ -146,7 +156,67 @@ function patterns_server_get_pattern_from_db($numOrid, $sign = TRUE) {
 
   return $patterns;
 }
+/**
+ *
+ * Use Database API to retrieve the patterns from patterns table.
+ */
+function patterns_server_search_pattern_by_title($key,$page=0) {
+  $result = db_select('patterns', 'p')
+                  ->fields('p', array());
+  $or = db_or();
+  foreach (explode(' ', $key) as $value) {
+        $or->condition('title', '%'.$value.'%');
+   }
+   $result->condition($or);             
+   $result ->orderBy('updated', 'DESC')
+                  ->range($page*10,10)
+                  ->execute()
+                  ->fetchAll();
 
+  $patterns = array();
+
+  foreach ($result as $pattern) {
+    $patterns[$pattern->pid] = $pattern;
+    $data = unserialize($pattern->pattern);
+    $patterns[$pattern->pid]->pattern = $data;
+    $patterns[$pattern->pid]->info = $data['info'];
+  }
+
+//  print_r($patterns);
+  return $patterns;
+}
+function patterns_search_box_form_submit($form, &$form_state) {
+
+  if ($form_state['values']['patterns_search'] == '') {
+    form_set_error('keys', t('Please enter some keywords.'));
+  }
+
+  $form_id = $form['form_id']['#value'];
+    $form_state['redirect'] = 'patterns_server/search/' . trim($form_state['values']['patterns_search']);
+
+}
+function patterns_server_search_form($form, &$form_state,$args='') {
+
+ /* $patterns_title = '<div id="patterns_search">';
+  $form['patterns_search'] = array(
+    '#prefix' => $patterns_title,
+    '#suffix' => ' </div>',
+  //  '#tree' => TRUE,
+  );*/
+    $form['patterns_search'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search'),
+    '#title_display' => 'invisible',
+    '#size' => 15,
+    '#default_value' => $args,
+    '#attributes' => array('title' => t('Enter the terms you wish to search for.')),
+  );
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Search'));
+  $form['#submit'][] = 'patterns_search_box_form_submit';
+
+  return $form;
+}
 /**
  * hook_menu callback function.
  */
@@ -157,6 +227,24 @@ function _patterns_server_page() {
                     'patterns' => $result,
   ));
   return $page; 
+}
+
+
+function _patterns_search_page($keys) {
+  //drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
+ $result = patterns_server_search_pattern_by_title($keys);
+ print_r($result);
+  $page_array = theme('patterns_server_pattern_list',array(
+                    'patterns' => $result,
+  ));
+
+  //One pattern info part.
+  //$result = patterns_server_get_pattern_timeDESC_from_db(1);
+  //$page .= theme('patterns_server_one_pattern_info',array(
+  //                  'patterns' => $result,
+  //));
+  //$page .= patterns_server_pattern_info();
+  return $page_array; 
 }
 
 /**

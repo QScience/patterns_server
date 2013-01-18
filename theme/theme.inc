@@ -12,6 +12,7 @@ function patterns_server_theme() {
     'patterns_server_pattern_fieldset' => array(
       'render element' => 'form',
     ),
+
     'patterns_server_one_pattern_info' => array(
       'variables' => array('patterns' => array()),
     ),
@@ -67,6 +68,7 @@ function theme_patterns_server_pattern_list($args) {
 
   $patterns = $args['patterns'];
 
+  $form['search-box']=drupal_get_form('patterns_server_search_form');
   $patterns_title = '<div id="all_patterns_div">';
   $form['patterns'] = array(
     '#prefix' => $patterns_title,
