@@ -19,7 +19,7 @@ function _patterns_server_login_authenticate($user, $password) {
   $status = PATTERNS_SUCCESS;
   
   if (empty($user)) {
-    return patterns_results(PATTERNS_ERR, t('Cannot login empty user name'));  
+    return patterns_results(PATTERNS_ERR, t('Username cannot be empty'));  
   }
   
   if (empty($password)) {
@@ -34,10 +34,10 @@ function _patterns_server_login_authenticate($user, $password) {
   // in to many different user accounts.  We have a reasonably high limit
   // since there may be only one apparent IP for all users at an institution.
   if (!flood_is_allowed('failed_login_attempt_ip', variable_get('user_failed_login_ip_limit', 50), variable_get('user_failed_login_ip_window', 3600))) {
-    return patterns_results(PATTERNS_ERR, t('Flood control: too many logins attempts from your ip address. Please try later.')); 
+    return patterns_results(PATTERNS_ERR, t('Too many failed logins attempts from your ip address. You are temporarily blocked. Please try again later.')); 
   }
   
-  $account = db_query("SELECT * FROM {users} WHERE name = :name", array(':name' => $user)->fetchObject();
+  $account = db_query("SELECT * FROM {users} WHERE name = :name", array(':name' => $user))->fetchObject();
   
   if (!$account) {
     return patterns_results(PATTERNS_ERR, t('No such user found: :name', array(':name' => $user)));
@@ -64,19 +64,16 @@ function _patterns_server_login_authenticate($user, $password) {
   // Don't allow login if the limit for this user has been reached.
   // Default is to allow 5 failed attempts every 6 hours.
   if (!flood_is_allowed('failed_login_attempt_user', variable_get('user_failed_login_user_limit', 5), variable_get('user_failed_login_user_window', 21600), $identifier)) {
-    $form_state['flood_control_triggered'] = 'user';
-    return;
+    return patterns_results(PATTERNS_ERR, t('You have reached the maximum number of login attempts for your username: :name. Your account is temporarily disabled, please try later.', array(':name' => $user)));;
   }
   
-    
   if (!_patterns_server_check_password($user, $password)) {
-    _patterns_server_login_success($identifier)
+    _patterns_server_login_success($identifier);
   }
   else {
-   
+   _patterns_server_login_fail($identifier);
   }
       
-  
 }
 
 function _patterns_server_check_password($user, $password) {

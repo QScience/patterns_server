@@ -6,7 +6,7 @@
  * the module'name is patterns_server.
  */
 
-module_load_include('inc', 'patterns_server', 'include/io');
+module_load_include('inc', 'patterns_server', 'includes/io');
 module_load_include('inc', 'patterns_server', 'theme/theme');
 
 /**
@@ -27,6 +27,9 @@ function patterns_server_permission() {
   return array(
     'access patterns_server' => array(
       'title' => t('Access permission for the patterns_server module'),
+    ),
+    'post patterns' => array(
+      'title' => t('Post patterns through REST api'),
     )
   );
 }
@@ -55,14 +58,16 @@ function patterns_server_menu() {
     'type' =>  MENU_CALLBACK,
   );
 
-/*this used for user search the categoried patterns
-  $items['patterns_server/category'] = array(
-      'title' => 'Patterns Server',
-    'page callback' => 'patterns_server_pattern_category',
-    'access arguments' => array('access patterns_server'),
-    'type' => MENU_NORMAL_ITEM,
-  );
-*/
+  /*this used for user search the categoried patterns
+
+       $items['patterns_server/category'] = array(
+            'title' => 'Patterns Server',
+	        'page callback' => 'patterns_server_pattern_category',
+	        'access arguments' => array('access patterns_server'),
+	        'type' => MENU_NORMAL_ITEM,
+	       );
+   
+   */
 
   /*this used for user search the categoried patterns
 
@@ -76,9 +81,10 @@ function patterns_server_menu() {
    */
 
   
-  $items['patterns_server/upload'] = array(
+  $items['patterns_server/post'] = array(
     'title' => 'patterns_server',
-    'page callback' => 'patterns_server_upload',
+    'page callback' => 'patterns_server_incoming_patterns',
+    'access arguments' => array('post patterns'),
     'type' => MENU_CALLBACK,
   );
   
