@@ -35,7 +35,6 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   );
   $form['title'] = array(
     '#markup' => l($pattern->title, 'patterns_server/info/' . $pid),
-    //'#markup' => $pattern->title,
   );
   $form['author'] = array(
     '#markup' =>  $pattern->author,
@@ -43,9 +42,6 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   $form['upload time'] = array(
     '#markup' => date('j-m-Y H:i:s (P)', $pattern->updated),
   );
-//  $form['description'] = array(
-//    '#markup' => $pattern->description,
-//  );
   $form['download'] = array(
     '#markup' => l(t('Download'), 'patterns_server/download/' . $pid),
   );
@@ -71,18 +67,36 @@ function theme_patterns_server_pattern_list($args) {
   drupal_add_js('misc/drupal.js');
 
   $patterns = $args['patterns'];
+<<<<<<< HEAD
 
   $form['search-box']=drupal_get_form('patterns_server_search_form');
  //$form['Pattern-Category-Search']=drupal_get_form('patterns_server_search_category_form');
+=======
+  if(!isset($args['searchkey'])) $args['searchkey']='';
+  $form['search-box']=drupal_get_form('patterns_server_search_form',$args['searchkey']);
+>>>>>>> 5f5fc41da1971239d86614b2b06708ed6d39ee84
   $patterns_title = '<div id="all_patterns_div">';
   $form['patterns'] = array(
     '#prefix' => $patterns_title,
     '#suffix' => ' </div>',
     '#tree' => TRUE,
   );
+  
+  if($args['searchkey']==''){
+  		$title='Latest Patterns';
+  	}else{
+  		$title='Patterns serach result';
+  	}
 
   if (empty($patterns)) {
-    $form['patterns']['#markup'] =  t('No patterns available.');
+  	if($args['searchkey']==''){
+  		$form['patterns']['#markup'] =  t('No patterns available.');
+  		$title='Latest Patterns';
+  	}else{
+  		$form['patterns']['#markup'] =  t('No patterns search result.');
+  		$title='Patterns serach result';
+  	}
+    
   }
   else {
     foreach ($patterns as $pid => $pattern) {
@@ -90,7 +104,7 @@ function theme_patterns_server_pattern_list($args) {
     }
     $form['patterns'] += array(
       '#type' => 'fieldset',
-      '#title' => 'Latest Patterns',
+      '#title' => $title,
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#theme' => 'patterns_server_pattern_fieldset',
@@ -119,7 +133,6 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $row[] = '<strong>' . drupal_render($pattern['title']) . '</strong>';
     $row[] = drupal_render($pattern['author']);
     $row[] = drupal_render($pattern['upload time']);
-    //$row[] = drupal_render($pattern['description']);
     $row[] = drupal_render($pattern['download']);
     $row[] = drupal_render($pattern['downloadnum']);
     $rows[] = $row;
@@ -134,7 +147,6 @@ function _patterns_server_pattern_family_build_row($pid, $pattern, $options = ar
     '#markup' => $pattern->uuuid,
   );
   $form['title'] = array(
-    //'#markup' => l($pattern->title, 'patterns_server/info/' . $pid),
     '#markup' => $pattern->title,
   );
   $form['author'] = array(
@@ -180,7 +192,6 @@ function theme_patterns_server_one_pattern_info($args) {
           t('parent'),
           t('child'),
           t('Download'),
-          //t('Description'),
       ),
     );
 
@@ -198,7 +209,6 @@ function theme_patterns_server_pattern_family_fieldset($variables) {
     $row[] = drupal_render($pattern['author']);
     $row[] = drupal_render($pattern['parent']);
     $row[] = drupal_render($pattern['child']);
-    //$row[] = drupal_render($pattern['description']);
     $row[] = drupal_render($pattern['Download']);
     $rows[] = $row;
   }
