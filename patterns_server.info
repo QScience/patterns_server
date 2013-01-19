@@ -5,3 +5,4 @@ package = Patterns
 
 dependencies[] = pils
 dependencies[] = patterns
+dependencies[] = patterns_components
