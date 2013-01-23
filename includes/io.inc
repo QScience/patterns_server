@@ -102,3 +102,6 @@ function patterns_server_incoming_patterns($arguments = NULL) {
   }
   print $n_patterns . ' pattern(s) received and saved.';
 }
+
+
+
