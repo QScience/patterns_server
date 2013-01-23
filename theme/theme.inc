@@ -212,11 +212,101 @@ function theme_patterns_server_one_pattern_info($args) {
   return $page;
 }
 
+
+function _patterns_server_parser_yaml_file($arr, $ukey, $content) {
+  foreach($arr as $key => $value) {
+    if(!is_array($value)) {
+      $content .= '<li>'.$key . ' : ' . $value . '</li>';
+    }
+    else {
+      $content .= '<li>'. ' - ' . $ukey.' : '. '<ul>';
+      _patterns_server_parser_yaml_file($value, $key, $content);
+      $content .= '</ul></li>';
+    }
+  }
+  return $content;
+}
+
 function _patterns_server_one_pattern_content($pattern) {
-  $content = '<div class="one_pattern_one_word">5</div>';
-  $content .= '<div id="one_pattern_download">download</div>';
-  $content .= '<div class="one_pattern_one_word">uuuid</div>';
-  $content .= '<div class="one_pattern_one_word">parent</div>';
-  $content .= '<div id="one_pattern_file">content</div>';
+  unset($pattern->status);
+  unset($pattern->public);
+  unset($pattern->enabled);
+  $pattern_file = $pattern->pattern;
+  
+  //div for descript of pattern.
+  $content = '<div class="one_pattern_one_word"><ul>';
+  foreach ($pattern as $key => $value) {
+    if (!is_array($value)) {
+      $content .= '<li>'.$key . ':' . $value . '</li>';
+    }
+  }
+  //close div for descript of pattern.
+  $content .= '</ul></div>';
+
+
+  //div for pattern file content.
+  $content .= '<div class="one_pattern_file"><ul>';
+  $pattern_file_key = array_keys($pattern_file);
+  //print_r($pattern_file_key);
+
+  //the first level: 
+  foreach($pattern_file_key as $key => $value) {
+    $content .= '<li>'.$value.'<ul>';
+    //the second level:
+    foreach($pattern_file[$value] as $_key=>$_value) {
+      if($key == 0) {
+        $content .= '<li>'.$_key . ' : ' . $_value . '</li>';
+      }
+      elseif (!is_array($_value)) {
+          $content .= '<li>'. ' - ' . $_value. '</li>';
+      }
+      else {
+        //$__key could be "delete" or "creat" or ....
+        foreach($_value as $__key=>$__value) {
+          $content .= '<li>'. ' - ' . $__key.' : '. '<ul>';
+          $content_for_rekursion = null;
+          $content .= _patterns_server_parser_yaml_file($__value, $__key, $content_for_rekursion);
+          //print_r($__key);
+          //foreach($__value as $___key => $___value) {
+          //  if(!is_array($___value)) {
+          //    $content .= '<li>'.$___key . ' : ' . $___value . '</li>';
+          //  }
+          //  else {
+          //    $content .= '<li>'. ' - ' . $__key.' : '. '<ul>';
+          //    foreach($___value as $____key => $____value) {
+          //      $content .= '<li>'.$____key . ' : ' . $____value . '</li>';
+          //    }
+          //    $content .= '</ul></li>';
+          //  }
+          //}
+          $content .= '</ul></li>';
+        }
+      }
+    }
+    $content .= '</ul></li>';
+  }
+  //info
+  //$content .= '<li>info<ul>';
+  //foreach ($pattern_file['info'] as $key => $value) {
+  //  $content .= '<li>'.$key . ' : ' . $value . '</li>';
+  //}
+  //$content .= '</ul></li>';
+  //actions 
+  //$content .= '<li>actions<ul>';
+  //foreach ($pattern_file['actions'] as $key => $value) {
+  //  if (is_array($value)) {
+  //    foreach ($value as $_key => $_value) {
+  //      $content .= '<li>'. ' - ' . $_key. '<ul>';
+  //        foreach ($_value as $__key => $__value) {
+  //          $content .= '<li>'.$__key . ' : ' . $__value . '</li>';
+  //        }
+  //      $content .= '</ul></li>';
+  //    }
+  //  }
+  //}
+  //$content .= '</ul></li>';
+  //close div for pattern file content. 
+  $content .= '</ul></div>';
+
   return $content;
 }
