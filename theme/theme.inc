@@ -79,9 +79,6 @@ function theme_patterns_server_pattern_list($args) {
   $patterns = $args['patterns'];
 
   //search box.
-  if (!isset($args['searchkey'])) {
-    $args['searchkey']='';
-  }
   $form['search-box']=drupal_get_form('patterns_server_search_form',$args['searchkey']);
 
   //
@@ -92,20 +89,18 @@ function theme_patterns_server_pattern_list($args) {
     '#tree' => TRUE,
   );
   
-  if ($args['searchkey'] == '') {
-  		$title = 'Latest Patterns';
+  if (empty($args['searchkey'])) {
+    $title = 'Latest Patterns';
   }
   else {
-  		$title = 'Patterns serach result';
+  	$title = 'Patterns serach result';
   }
 
   if (empty($patterns)) {
-  	if ($args['searchkey'] == '') {
+    if (empty($args['searchkey'])) {
   		$form['patterns']['#markup'] =  t('No patterns available.');
-  		$title = 'Latest Patterns';
   	}else{
   		$form['patterns']['#markup'] =  t('No patterns search result.');
-  		$title = 'Patterns serach result';
   	}
   }
   else {
