@@ -195,11 +195,20 @@ function patterns_server_search_form_submit($form, &$form_state) {
  */
 function _patterns_server_page() {
   $page = null;
+
+  //first part: search box and patterns list.
   $result = patterns_server_get_pattern_from_db(10);
   $page .= theme('patterns_server_pattern_list',array(
                     'patterns' => $result,
   ));
-  $page .= '<div id="one_pattern_info">xxx </div>';
+
+  //second part: one pattern's information.
+  $result = patterns_server_get_pattern_pid_from_db(48);
+  //$result = patterns_server_get_pattern_from_db(48, false);
+  $page .= theme('patterns_server_one_pattern_info',array(
+                    'patterns' => $result,
+  ));
+  //$page .= '<div id="one_pattern_info">xxx </div>';
   return $page; 
 }
 
@@ -255,7 +264,8 @@ function patterns_server_download($id) {
 function patterns_server_pattern_info($id) {
   drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
   //@TODO the result can be a series of patterns with parents or children relation ship
-  $result = patterns_server_get_pattern_from_db($id, FALSE);
+  $result = patterns_server_get_pattern_pid_from_db($id);
+  //$result = patterns_server_get_pattern_from_db($id, FALSE);
   $page = theme('patterns_server_one_pattern_info',array(
                     'patterns' => $result,
   ));

@@ -148,81 +148,6 @@ function theme_patterns_server_pattern_fieldset($variables) {
   return theme('patterns_server_patterns_table', array('header' => $form['#header'], 'rows' => $rows));
 }
 
-// For one patterns page.
-function _patterns_server_pattern_family_build_row($pid, $pattern, $options = array()) {
-
-  $form['UUUID'] = array( 
-    '#markup' => $pattern->uuuid,
-  );
-  $form['title'] = array(
-    '#markup' => $pattern->title,
-  );
-  $form['author'] = array(
-    '#markup' =>  $pattern->author,
-  );
-  $form['parent'] = array(
-    '#markup' => '@TODO',
-  );
-  $form['child'] = array(
-    '#markup' => '@TODO',
-  );
-  $form['Download'] = array(
-    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid),
-  );
-
-  return $form;
-}
-
-function theme_patterns_server_one_pattern_info($args) {
-  drupal_add_js('misc/collapse.js');
-  drupal_add_js('misc/drupal.js');
-
-  $patterns = $args['patterns'];
-  $patterns_title = '<div id="one_pattern_family_div">';
-  $form['patterns'] = array(
-    '#prefix' => $patterns_title,
-    '#suffix' => ' </div>',
-    '#tree' => TRUE,
-  );
-  foreach ($patterns as $pid => $pattern) {
-    $form['patterns'][] = _patterns_server_pattern_family_build_row($pid, $pattern);
-  }
-  $form['patterns'] += array(
-      '#type' => 'fieldset',
-      '#title' => 'One pattern\'s history',
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-      '#theme' => 'patterns_server_pattern_family_fieldset',
-      '#header' => array(
-          t('UUUID'),
-          t('Title'),
-          t('Author'),
-          t('parent'),
-          t('child'),
-          t('Download'),
-      ),
-    );
-
-  return drupal_render($form);
-}
-
-function theme_patterns_server_pattern_family_fieldset($variables) {
-  $form = $variables['form'];
-  $rows = array();
-  foreach (element_children($form) as $key) {
-    $pattern = $form[$key];
-    $row = array();
-    $row[] =  drupal_render($pattern['UUUID']);
-    $row[] = '<strong>' . drupal_render($pattern['title']) . '</strong>';
-    $row[] = drupal_render($pattern['author']);
-    $row[] = drupal_render($pattern['parent']);
-    $row[] = drupal_render($pattern['child']);
-    $row[] = drupal_render($pattern['Download']);
-    $rows[] = $row;
-  }
-  return theme('table', array('header' => $form['#header'], 'rows' => $rows));
-}
-
 function theme_patterns_server_patterns_table($variables) {
   $header = $variables['header'];
   $rows = $variables['rows'];
@@ -273,4 +198,19 @@ function theme_patterns_server_patterns_table($variables) {
 
   $output .= "</table>\n";
   return $output;
+}
+
+function theme_patterns_server_one_pattern_info($args) {
+  drupal_add_css(drupal_get_path('module','patterns_server') . '/css/patterns_server_page.css');
+  $pattern = $args['patterns'][0];
+  $pattern->pattern = unserialize($pattern->pattern);
+  $content = null;
+  $content = "nihao";
+
+  $markup_begin = '<div id="one_pattern_div"><fieldset>';
+  $markup_end = '</fieldset></div>';
+  $markup_header = '<legend>' . $pattern->title . '</legend>';
+  $markup_content = '<div id="one_pattern_content">' . $content . '</div>';
+  $page = $markup_begin . $markup_header . $markup_content . $markup_end;
+  return $page;
 }
