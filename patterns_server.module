@@ -306,7 +306,7 @@ function patterns_server_pattern_download($file, $filename) {
   drupal_add_http_header("Content-type", " text/plain; charset=utf-8");
   drupal_add_http_header("Content-Disposition", "attachment;filename=" . $filename);
   print $file;
-  exit;
+  //exit;
 }
 
 function patterns_server_download_recode($id) {
@@ -338,6 +338,7 @@ function patterns_server_download($id) {
   $result[0]->pattern = unserialize($result[0]->pattern);
   patterns_server_download_recode($id);
   patterns_server_pattern_download(file_get_contents($result[0]->file), $result[0]->name);
+//  drupal_goto('patterns_server');
   exit;
 }
 

@@ -7,7 +7,8 @@
 function patterns_server_theme() {
   return array(
     'patterns_server_pattern_list' => array(
-      'variables' => array('patterns' => array()),
+      'variables' => array('patterns' => array(),
+                           'searchkey' => array()),
     ),
     'patterns_server_pattern_fieldset' => array(
       'render element' => 'form',
@@ -18,6 +19,10 @@ function patterns_server_theme() {
     ),
     'patterns_server_pattern_family_fieldset' => array(
       'render element' => 'form',
+    ),
+    'patterns_server_patterns_table' => array(
+      'variables' => array('header' => array(),
+                           'rows' => array()),
     ),
   );
 }
@@ -34,7 +39,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   $form['category'] = array( '#markup' => $pattern->info['category'],
   );
   $form['title'] = array(
-    '#markup' => l($pattern->title, 'patterns_server/info/' . $pid),
+    '#markup' => l($pattern->title, 'patterns_server/info/' . $pid, array('attributes' => array('class' => 'info-link'))),
   );
   $form['author'] = array(
     '#markup' =>  $pattern->author,
@@ -43,7 +48,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     '#markup' => date('j-m-Y H:i:s (P)', $pattern->updated),
   );
   $form['download'] = array(
-    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid),
+    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
   );
 
   $download_origin_times = db_select('patterns_server', 'ps')
@@ -55,7 +60,8 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     $download_origin_times['downloadnum'] = 0;
   }
   $form['downloadnum'] = array(
-    '#markup' => $download_origin_times['downloadnum'],
+    //'#markup' => $download_origin_times['downloadnum'],
+    '#markup' => '<strong class="download-times">'.$download_origin_times['downloadnum'].'</strong>',
   );
   return $form;
 }
@@ -63,12 +69,21 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
 
 
 function theme_patterns_server_pattern_list($args) {
-  drupal_add_js('misc/collapse.js');
-  drupal_add_js('misc/drupal.js');
+  //drupal_add_js('misc/collapse.js');
+  //drupal_add_js('misc/drupal.js');
+  //drupal_add_js('misc/jquery.js');
+  drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
 
+  //get the data needed to be theme.
   $patterns = $args['patterns'];
-  if(!isset($args['searchkey'])) $args['searchkey']='';
+
+  //search box.
+  if (!isset($args['searchkey'])) {
+    $args['searchkey']='';
+  }
   $form['search-box']=drupal_get_form('patterns_server_search_form',$args['searchkey']);
+
+  //
   $patterns_title = '<div id="all_patterns_div">';
   $form['patterns'] = array(
     '#prefix' => $patterns_title,
@@ -76,21 +91,21 @@ function theme_patterns_server_pattern_list($args) {
     '#tree' => TRUE,
   );
   
-  if($args['searchkey']==''){
-  		$title='Latest Patterns';
-  	}else{
-  		$title='Patterns serach result';
-  	}
+  if ($args['searchkey'] == '') {
+  		$title = 'Latest Patterns';
+  }
+  else {
+  		$title = 'Patterns serach result';
+  }
 
   if (empty($patterns)) {
-  	if($args['searchkey']==''){
+  	if ($args['searchkey'] == '') {
   		$form['patterns']['#markup'] =  t('No patterns available.');
-  		$title='Latest Patterns';
+  		$title = 'Latest Patterns';
   	}else{
   		$form['patterns']['#markup'] =  t('No patterns search result.');
-  		$title='Patterns serach result';
+  		$title = 'Patterns serach result';
   	}
-    
   }
   else {
     foreach ($patterns as $pid => $pattern) {
@@ -120,8 +135,10 @@ function theme_patterns_server_pattern_list($args) {
 function theme_patterns_server_pattern_fieldset($variables) {
   $form = $variables['form'];
   $rows = array();
+  
   foreach (element_children($form) as $key) {
     $pattern = $form[$key];
+    //$row is a row with six elements.
     $row = array();
     $row[] =  drupal_render($pattern['category']);
     $row[] = '<strong>' . drupal_render($pattern['title']) . '</strong>';
@@ -129,9 +146,10 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $row[] = drupal_render($pattern['upload time']);
     $row[] = drupal_render($pattern['download']);
     $row[] = drupal_render($pattern['downloadnum']);
+    //$rows is 10 rows which every row has six elements.
     $rows[] = $row;
   }
-  return theme('table', array('header' => $form['#header'], 'rows' => $rows));
+  return theme('patterns_server_patterns_table', array('header' => $form['#header'], 'rows' => $rows));
 }
 
 // For one patterns page.
@@ -207,4 +225,61 @@ function theme_patterns_server_pattern_family_fieldset($variables) {
     $rows[] = $row;
   }
   return theme('table', array('header' => $form['#header'], 'rows' => $rows));
+}
+
+function theme_patterns_server_patterns_table($variables) {
+  $header = $variables['header'];
+  $rows = $variables['rows'];
+
+  $attributes['class'][] = 'sticky-enabled';
+  $output = '<table' . drupal_attributes($attributes) . ">\n";
+
+  // Format the table header:
+  if (count($header)) {
+    $ts = tablesort_init($header);
+    // HTML requires that the thead tag has tr tags in it followed by tbody
+    // tags. Using ternary operator to check and see if we have any rows.
+    $output .= (count($rows) ? ' <thead><tr>' : ' <tr>');
+    foreach ($header as $cell) {
+      $cell = tablesort_header($cell, $header, $ts);
+      $output .= _theme_table_cell($cell, TRUE);
+    }
+    // Using ternary operator to close the tags based on whether or not there are rows
+    $output .= (count($rows) ? " </tr></thead>\n" : "</tr>\n");
+  }
+  else {
+    $ts = array();
+  }
+
+  // Format the table rows:
+  if (count($rows)) {
+    $output .= "<tbody>\n";
+    $flip = array('even' => 'odd', 'odd' => 'even');
+    $class = 'even';
+    foreach ($rows as $number => $row) {
+      $attributes = array();
+      $cells = $row;
+
+      if (count($cells)) {
+        // Add odd/even class
+        if (empty($row['no_striping'])) {
+          $class = $flip[$class];
+          $attributes['class'][] = $class;
+        }
+
+        // Build row
+        $output .= ' <tr' . drupal_attributes($attributes) . '>';
+        $i = 0;
+        foreach ($cells as $cell) {
+          $cell = tablesort_cell($cell, $header, $ts, $i++);
+          $output .= _theme_table_cell($cell);
+        }
+        $output .= " </tr>\n";
+      }
+    }
+    $output .= "</tbody>\n";
+  }
+
+  $output .= "</table>\n";
+  return $output;
 }
