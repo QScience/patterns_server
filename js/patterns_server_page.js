@@ -1,18 +1,15 @@
 jQuery(document).ready(function() {
-    var download_link = jQuery('a.download-link');
-    var download_times = jQuery('strong.download-times');
-    var info_link = jQuery('a.info-link');
-    //alert(info_link[0].firstChild.nodeValue);
-    //alert(table_a[1].firstChild.nodeValue);
-    //alert(table_td[5].firstChild.nodeValue);
-    //alert(download_times.length);
-    //
-    var d_l_all = document.getElementsByTagName("a");
-    //alert(d_l_all.length);
+    var pattern_row = jQuery('#pattern_row_1');
+    //alert(pattern_row.length);
+    //alert(pattern_row.length);
+    var s = "#pattern_row_1";
+    var download_link = jQuery("s .download-link");
+    var download_times = jQuery('#pattern_row_1 .download-times');
+    //alert(download_link.parents("#pattern_row_1").find(".download-times").text());
     download_link.click(function() {
-        //alert(this.parent("td").next().firstChild.nodeValue);
-        var numb = Number(download_times[0].firstChild.nodeValue) + 1; 
-        download_times[0].html(numb);
-        //return false;
+    //    alert(this.parents("#pattern_row_1").find(".download-times").text());
+        //var numb = Number(download_times.text()) + 1; 
+        //download_times.html(numb);
+       // return false;
     });
 });

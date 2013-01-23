@@ -231,7 +231,7 @@ function theme_patterns_server_patterns_table($variables) {
   $header = $variables['header'];
   $rows = $variables['rows'];
 
-  $attributes['class'][] = 'sticky-enabled';
+  $attributes['class'][] = 'patterns_result_table';
   $output = '<table' . drupal_attributes($attributes) . ">\n";
 
   // Format the table header:
@@ -256,26 +256,25 @@ function theme_patterns_server_patterns_table($variables) {
     $output .= "<tbody>\n";
     $flip = array('even' => 'odd', 'odd' => 'even');
     $class = 'even';
+    $row_number = 0;
     foreach ($rows as $number => $row) {
       $attributes = array();
-      $cells = $row;
 
-      if (count($cells)) {
-        // Add odd/even class
-        if (empty($row['no_striping'])) {
-          $class = $flip[$class];
-          $attributes['class'][] = $class;
-        }
+      $row_number++;
+      // Add odd/even class
+      $class = $flip[$class];
+      $attributes['id'][] = "pattern_row_" . $row_number;
+      //$attributes['class'][] = $class;
+      //$attributes['class'][] = "pattern_row";
 
-        // Build row
-        $output .= ' <tr' . drupal_attributes($attributes) . '>';
-        $i = 0;
-        foreach ($cells as $cell) {
-          $cell = tablesort_cell($cell, $header, $ts, $i++);
-          $output .= _theme_table_cell($cell);
-        }
-        $output .= " </tr>\n";
+      // Build row
+      $output .= ' <tr' . drupal_attributes($attributes) . '>';
+      $i = 0;
+      foreach ($row as $cell) {
+        $cell = tablesort_cell($cell, $header, $ts, $i++);
+        $output .= _theme_table_cell($cell);
       }
+      $output .= " </tr>\n";
     }
     $output .= "</tbody>\n";
   }
