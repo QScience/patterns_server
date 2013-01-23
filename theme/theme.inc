@@ -13,16 +13,13 @@ function patterns_server_theme() {
     'patterns_server_pattern_fieldset' => array(
       'render element' => 'form',
     ),
-
-    'patterns_server_one_pattern_info' => array(
-      'variables' => array('patterns' => array()),
-    ),
-    'patterns_server_pattern_family_fieldset' => array(
-      'render element' => 'form',
-    ),
     'patterns_server_patterns_table' => array(
       'variables' => array('header' => array(),
                            'rows' => array()),
+    ),
+
+    'patterns_server_one_pattern_info' => array(
+      'variables' => array('patterns' => array()),
     ),
   );
 }
@@ -69,9 +66,6 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
 
 
 function theme_patterns_server_pattern_list($args) {
-  //drupal_add_js('misc/collapse.js');
-  //drupal_add_js('misc/drupal.js');
-  //drupal_add_js('misc/jquery.js');
   drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
   drupal_add_js(drupal_get_path('module','patterns_server') . '/js/moment.min.js');
 
@@ -202,9 +196,12 @@ function theme_patterns_server_patterns_table($variables) {
 
 function theme_patterns_server_one_pattern_info($args) {
   drupal_add_css(drupal_get_path('module','patterns_server') . '/css/patterns_server_page.css');
-  $pattern = $args['patterns'][0];
-  $pattern->pattern = unserialize($pattern->pattern);
-  $content = null;
+   
+  $patterns = $args['patterns'];
+  $keys = array_keys($patterns);
+  $pattern = $patterns[$keys[0]];
+
+  $content = _patterns_server_one_pattern_content($pattern);
   $content = "nihao";
 
   $markup_begin = '<div id="one_pattern_div"><fieldset>';
@@ -213,4 +210,13 @@ function theme_patterns_server_one_pattern_info($args) {
   $markup_content = '<div id="one_pattern_content">' . $content . '</div>';
   $page = $markup_begin . $markup_header . $markup_content . $markup_end;
   return $page;
+}
+
+function _patterns_server_one_pattern_content($pattern) {
+  $content = '<div class="one_pattern_one_word">5</div>';
+  $content .= '<div id="one_pattern_download">download</div>';
+  $content .= '<div class="one_pattern_one_word">uuuid</div>';
+  $content .= '<div class="one_pattern_one_word">parent</div>';
+  $content .= '<div id="one_pattern_file">content</div>';
+  return $content;
 }
