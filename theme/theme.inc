@@ -260,12 +260,8 @@ function theme_patterns_server_patterns_table($variables) {
     foreach ($rows as $number => $row) {
       $attributes = array();
 
-      $row_number++;
-      // Add odd/even class
       $class = $flip[$class];
-      $attributes['id'][] = "pattern_row_" . $row_number;
-      //$attributes['class'][] = $class;
-      //$attributes['class'][] = "pattern_row";
+      $attributes['class'][] = "pattern_row";
 
       // Build row
       $output .= ' <tr' . drupal_attributes($attributes) . '>';
