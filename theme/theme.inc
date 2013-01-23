@@ -45,7 +45,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     '#markup' =>  $pattern->author,
   );
   $form['upload time'] = array(
-    '#markup' => date('j-m-Y H:i:s (P)', $pattern->updated),
+    '#markup' => '<i value="'.$pattern->updated . '" '. 'class="upload-time">' . date('j-m-Y H:i:s (P)', $pattern->updated) . '</i>',
   );
   $form['download'] = array(
     '#markup' => l(t('Download'), 'patterns_server/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
@@ -73,6 +73,7 @@ function theme_patterns_server_pattern_list($args) {
   //drupal_add_js('misc/drupal.js');
   //drupal_add_js('misc/jquery.js');
   drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
+  drupal_add_js(drupal_get_path('module','patterns_server') . '/js/moment.min.js');
 
   //get the data needed to be theme.
   $patterns = $args['patterns'];

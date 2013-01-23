@@ -8,5 +8,10 @@ jQuery(document).ready(function() {
         download_times.children().text(numb);
     });
 
+    //use moment.js to format upload time.
+    jQuery(".pattern_row .upload-time").text(function(){
+        return moment.unix(jQuery(this).attr("value")).fromNow();
+    });
+
     //
 });
