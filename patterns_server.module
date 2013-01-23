@@ -130,19 +130,6 @@ function patterns_server_get_category_list(){
 	// $category_list = array_unique($result);
 }*/
 
-
-
-
-function patterns_server_search_form_submit($form, &$form_state) {
-
-  if ($form_state['values']['search'] == '') {
-    form_set_error('keys', t('Please enter some keywords.'));
-  }
-
-  $form_id = $form['form_id']['#value'];
-    $form_state['redirect'] = 'patterns_server/search/' . trim($form_state['values']['search']);
-
-}
 function patterns_server_search_form($form, &$form_state,$args='') {
 
  /* $patterns_title = '<div id="patterns_search">';
@@ -172,6 +159,17 @@ function patterns_server_search_form($form, &$form_state,$args='') {
   return $form;   
 }
 
+function patterns_server_search_form_submit($form, &$form_state) {
+
+  if ($form_state['values']['search'] == '') {
+    form_set_error('keys', t('Please enter some keywords.'));
+  }
+
+  $form_id = $form['form_id']['#value'];
+    $form_state['redirect'] = 'patterns_server/search/' . trim($form_state['values']['search']);
+
+}
+
 /* used for catrgory list
 
    function patterns_server_search_category_form($form, &$form_state,$args='') {
@@ -192,10 +190,6 @@ function patterns_server_search_form($form, &$form_state,$args='') {
  
  */
 
-
-
-
-
 /**
  * hook_menu callback function.
  */
@@ -209,7 +203,9 @@ function _patterns_server_page() {
   return $page; 
 }
 
-
+/**
+ * hook_menu callback function.
+ */
 function _patterns_search_page($keys) {
   //drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
  $result = patterns_server_search_pattern_by_title($keys);
@@ -221,9 +217,6 @@ function _patterns_search_page($keys) {
   return $page_array; 
 }
 
-/**
- *
- */
 function patterns_server_pattern_download($file, $filename) {
   drupal_add_http_header("Content-type", " text/plain; charset=utf-8");
   drupal_add_http_header("Content-Disposition", "attachment;filename=" . $filename);
@@ -252,11 +245,7 @@ function patterns_server_download_recode($id) {
 }
 
 function patterns_server_download($id) {
-  $result = db_select('patterns', 'p')
-              ->fields('p')
-              ->condition('p.pid', $id)
-              ->execute()
-              ->fetchAll();
+  $result = patterns_server_get_pattern_pid_from_db($id);
   $result[0]->pattern = unserialize($result[0]->pattern);
   patterns_server_download_recode($id);
   patterns_server_pattern_download(file_get_contents($result[0]->file), $result[0]->name);
