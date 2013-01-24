@@ -250,7 +250,7 @@ function _patterns_server_one_pattern_content($pattern) {
   $pattern_file = $pattern->pattern;
   
   //div for descript of pattern.
-  $content = '<div class="one_pattern_one_word"><ul>';
+  $content = '<div class="one_pattern_one_word"><p>Pattern Description: </p><ul>';
   foreach ($pattern as $key => $value) {
     if (!is_array($value)) {
       $content .= '<li>'.$key . ' : ' . $value . '</li>';
@@ -261,10 +261,13 @@ function _patterns_server_one_pattern_content($pattern) {
 
 
   //div for pattern file content.
-  $content .= '<div class="one_pattern_file"><ul>';
+  $title = "Pattern file content: ";
+  $content .= '<div class="one_pattern_file"><p id="one_pattern_file_descript">' . $title . '</p>';
+  $file_content = '<div id="one_pattern_file_content"><ul>';
+  $content .= $file_content;
   $content .= _patterns_server_parser_yaml_file($pattern_file );
   //close div for pattern file content. 
-  $content .= '</ul></div>';
+  $content .= '</ul></div></div>';
 
   return $content;
 }

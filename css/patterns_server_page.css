@@ -3,8 +3,31 @@
 }
 
 .one_pattern_one_word {
-  border: 2px solid;
+  border: 1px solid #bab1b1;
   width: 100%;
-  background: #888;
-  margin: 5px;
+  background: #b1b1b1;
+  padding: 5px;
+}
+
+.one_pattern_one_word ul{
+}
+
+
+.one_pattern_file {
+    margin-top: 20px;
+    border: 1px solid #bab1b1;
+    background: #dfdfd6;
+    padding: 5px;
+    width: 100%;
+}
+
+.one_pattern_file li {
+    list-style-type: none;
+}
+
+#one_pattern_file_content {
+  border: 2px solid;
+  margin: 0 60px 30px; 
+  padding: 0 5px;
+  background: #fff;
 }
