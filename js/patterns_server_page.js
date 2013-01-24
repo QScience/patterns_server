@@ -13,5 +13,9 @@ jQuery(document).ready(function() {
         return moment.unix(jQuery(this).attr("value")).fromNow();
     });
 
-    //
+    //pattern file content.
+    //jQuery("#one_pattern_file_content").hide();
+    //jQuery("#one_pattern_file_descript").click(function() {
+    //    jQuery("#one_pattern_file_content").fadeToggle('slow');
+    //});
 });

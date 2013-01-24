@@ -36,7 +36,8 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   $form['category'] = array( '#markup' => $pattern->info['category'],
   );
   $form['title'] = array(
-    '#markup' => l($pattern->title, 'patterns_server/info/' . $pid, array('attributes' => array('class' => 'info-link'))),
+    '#markup' => l($pattern->title, 'patterns_server/info/' . $pid, array('attributes' => array('class' => "info-link"))),
+    //'#markup' => l($pattern->title, 'patterns_server/info/' . $pid, array('attributes' => array('class' => array('use-ajax')))),
   );
   $form['author'] = array(
     '#markup' =>  $pattern->author,
@@ -66,6 +67,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
 
 
 function theme_patterns_server_pattern_list($args) {
+  drupal_add_js('misc/ajax.js');
   drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
   drupal_add_js(drupal_get_path('module','patterns_server') . '/js/moment.min.js');
 

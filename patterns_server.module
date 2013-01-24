@@ -270,6 +270,12 @@ function patterns_server_pattern_info($id) {
   $page = theme('patterns_server_one_pattern_info',array(
                     'patterns' => $result,
   ));
+  //$page = "xxx";
+  //$commands = array();
+  //$commands[] = ajax_command_replace('#one_pattern_div', $page);
+  //$ajax_page = array('#type' => 'ajax_commands', '#ajax_commands' => $commands);
+  //ajax_deliver($ajax_page);
+  //return $ajax_page;
   return $page;
 }
 /*
