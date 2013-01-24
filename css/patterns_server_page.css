@@ -5,7 +5,7 @@
 .one_pattern_one_word {
   border: 1px solid #bab1b1;
   width: 100%;
-  background: #b1b1b1;
+  background: #eee;
   padding: 5px;
 }
 
@@ -16,7 +16,7 @@
 .one_pattern_file {
     margin-top: 20px;
     border: 1px solid #bab1b1;
-    background: #dfdfd6;
+    background: #eee;
     padding: 5px;
     width: 100%;
 }
