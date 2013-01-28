@@ -194,6 +194,7 @@ function patterns_server_search_form_submit($form, &$form_state) {
  * hook_menu callback function.
  */
 function _patterns_server_page() {
+  drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
   $page = null;
 
   //first part: search box and patterns list.
@@ -263,7 +264,7 @@ function patterns_server_download($id) {
 }
 
 function patterns_server_pattern_info($id) {
-  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
+  //drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
   //@TODO the result can be a series of patterns with parents or children relation ship
   //$result = patterns_server_get_pattern_from_db(1);
   $result = patterns_server_get_pattern_from_db($id, FALSE);
@@ -272,7 +273,7 @@ function patterns_server_pattern_info($id) {
   ));
   //$page = "xxx";
   //$commands = array();
-  //$commands[] = ajax_command_replace('#one_pattern_div', $page);
+  //$commands[] = ajax_command_append('#one_pattern_div', $page);
   //$ajax_page = array('#type' => 'ajax_commands', '#ajax_commands' => $commands);
   //ajax_deliver($ajax_page);
   //return $ajax_page;

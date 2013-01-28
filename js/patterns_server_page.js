@@ -13,9 +13,11 @@ jQuery(document).ready(function() {
         return moment.unix(jQuery(this).attr("value")).fromNow();
     });
 
-    //pattern file content.
-    //jQuery("#one_pattern_file_content").hide();
-    //jQuery("#one_pattern_file_descript").click(function() {
-    //    jQuery("#one_pattern_file_content").fadeToggle('slow');
-    //});
+    //ajax
+    jQuery(".info-link").click(function(){
+        var url_div = jQuery(this).attr("href");
+        url_div += " #one_pattern_div";
+        jQuery("#one_pattern_div").load(url_div); 
+        return false;
+    });
 });
