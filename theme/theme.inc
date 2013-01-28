@@ -69,8 +69,9 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
 
 function theme_patterns_server_pattern_list($args) {
   drupal_add_js('misc/ajax.js');
-  //drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
+  drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
   drupal_add_js(drupal_get_path('module','patterns_server') . '/js/moment.min.js');
+  drupal_add_css(drupal_get_path('module','patterns_server') . '/css/patterns_server_page.css');
 
   //get the data needed to be theme.
   $patterns = $args['patterns'];
