@@ -6,6 +6,7 @@
  * the module'name is patterns_server.
  */
 
+module_load_include('inc', 'patterns_server', 'includes/db');
 module_load_include('inc', 'patterns_server', 'includes/io');
 module_load_include('inc', 'patterns_server', 'theme/theme');
 
@@ -96,25 +97,6 @@ function patterns_server_menu() {
   return $items;
 }
 
-function patterns_server_get_pattern_timeDESC_from_db($num) {
-  $num = is_numeric($num)?$num:10;
-  $result = db_select('patterns', 'p')
-                  ->fields('p', array())
-                  ->orderBy('updated', 'DESC')
-                  ->range(0,$num)
-                  ->execute()
-                  ->fetchAll();
-  return $result;
-}
-
-function patterns_server_get_pattern_pid_from_db($pid) {
-  $result = db_select('patterns', 'p')
-                  ->fields('p', array())
-                  ->condition('p.pid', $pid)
-                  ->execute()
-                  ->fetchAll();
-  return $result;
-}
 /* this used for user search the categoried patterns
 function patterns_server_get_category_patterns_from_db($category_name){
           $result = db_select('patterns', 'p')
@@ -148,72 +130,6 @@ function patterns_server_get_category_list(){
 	// $category_list = array_unique($result);
 }*/
 
-
-
-
-/**
- * a function used in the form.
- *
- * Use Database API to retrieve the patterns from patterns table.
- */
-function patterns_server_get_pattern_from_db($numOrid, $sign = TRUE) {
-  if ($sign == TRUE) {
-    $result = patterns_server_get_pattern_timeDESC_from_db($numOrid);
-  }
-  else {
-    $result = patterns_server_get_pattern_pid_from_db($numOrid);
-  }
-  $patterns = array();
-
-  foreach ($result as $pattern) {
-    $patterns[$pattern->pid] = $pattern;
-    $data = unserialize($pattern->pattern);
-    $patterns[$pattern->pid]->pattern = $data;
-    $patterns[$pattern->pid]->info = $data['info'];
-  }
-
-  return $patterns;
-}
-/**
- *
- * Use Database API to retrieve the patterns from patterns table.
- */
-function patterns_server_search_pattern_by_title($key,$page=0) {
-  $result = db_select('patterns', 'p') 
-                  ->fields('p', array())
-                  ->condition('title', '%'.db_like($key).'%','LIKE')
-                  ->orderBy('updated', 'DESC')
-                  ->range(0,10)
-                  ->execute()    
-                  ->fetchAll();
- // $or = db_or(); 
- // $values=explode(' ', $key);
-//  foreach ( $values as $value) {
-   //     $result->condition('title', '%'.db_like($key).'%','LIKE');
-//   }
- //  $result->condition($or);             
-  $patterns = array();
-
-  foreach ($result as $pattern) {
-    $patterns[$pattern->pid] = $pattern;
-    $data = unserialize($pattern->pattern);
-    $patterns[$pattern->pid]->pattern = $data;
-    $patterns[$pattern->pid]->info = $data['info'];
-  }
-
-//  print_r($patterns);
-  return $patterns;
-}
-function patterns_server_search_form_submit($form, &$form_state) {
-
-  if ($form_state['values']['search'] == '') {
-    form_set_error('keys', t('Please enter some keywords.'));
-  }
-
-  $form_id = $form['form_id']['#value'];
-    $form_state['redirect'] = 'patterns_server/search/' . trim($form_state['values']['search']);
-
-}
 function patterns_server_search_form($form, &$form_state,$args='') {
 
  /* $patterns_title = '<div id="patterns_search">';
@@ -243,6 +159,17 @@ function patterns_server_search_form($form, &$form_state,$args='') {
   return $form;   
 }
 
+function patterns_server_search_form_submit($form, &$form_state) {
+
+  if ($form_state['values']['search'] == '') {
+    form_set_error('keys', t('Please enter some keywords.'));
+  }
+
+  $form_id = $form['form_id']['#value'];
+    $form_state['redirect'] = 'patterns_server/search/' . trim($form_state['values']['search']);
+
+}
+
 /* used for catrgory list
 
    function patterns_server_search_category_form($form, &$form_state,$args='') {
@@ -263,45 +190,41 @@ function patterns_server_search_form($form, &$form_state,$args='') {
  
  */
 
-
-
-
-
 /**
  * hook_menu callback function.
  */
 function _patterns_server_page() {
+  drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
   $page = null;
+
+  //first part: search box and patterns list.
   $result = patterns_server_get_pattern_from_db(10);
   $page .= theme('patterns_server_pattern_list',array(
+                    'patterns' => $result,
+  ));
+
+  //second part: one pattern's information.
+  $result = patterns_server_get_pattern_from_db(1);
+  $page .= theme('patterns_server_one_pattern_info',array(
                     'patterns' => $result,
   ));
   return $page; 
 }
 
-
+/**
+ * hook_menu callback function.
+ */
 function _patterns_search_page($keys) {
-  //drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
- $result = patterns_server_search_pattern_by_title($keys);
+  $result = patterns_server_search_pattern_by_title($keys);
   $page_array = theme('patterns_server_pattern_list',array(
                     'patterns' => $result,
                     'searchkey' => $keys,
   ));
 
-
-
-  //One pattern info part.
-  //$result = patterns_server_get_pattern_timeDESC_from_db(1);
-  //$page .= theme('patterns_server_one_pattern_info',array(
-  //                  'patterns' => $result,
-  //));
-  //$page .= patterns_server_pattern_info();
+  $page_array .= '<div id="one_pattern_div"></div>';
   return $page_array; 
 }
 
-/**
- *
- */
 function patterns_server_pattern_download($file, $filename) {
   drupal_add_http_header("Content-type", " text/plain; charset=utf-8");
   drupal_add_http_header("Content-Disposition", "attachment;filename=" . $filename);
@@ -330,11 +253,7 @@ function patterns_server_download_recode($id) {
 }
 
 function patterns_server_download($id) {
-  $result = db_select('patterns', 'p')
-              ->fields('p')
-              ->condition('p.pid', $id)
-              ->execute()
-              ->fetchAll();
+  $result = patterns_server_get_pattern_pid_from_db($id);
   $result[0]->pattern = unserialize($result[0]->pattern);
   patterns_server_download_recode($id);
   patterns_server_pattern_download(file_get_contents($result[0]->file), $result[0]->name);
@@ -342,8 +261,6 @@ function patterns_server_download($id) {
 }
 
 function patterns_server_pattern_info($id) {
-  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/patterns_server.css');
-  //@TODO the result can be a series of patterns with parents or children relation ship
   $result = patterns_server_get_pattern_from_db($id, FALSE);
   $page = theme('patterns_server_one_pattern_info',array(
                     'patterns' => $result,

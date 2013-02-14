@@ -100,7 +100,9 @@ function patterns_server_incoming_patterns($arguments = NULL) {
     }
   }
   print $n_patterns . ' pattern(s) received and saved.';
+
   
-   variable_set('STE', 'STE');
-  drupal_json_output('A');
+  //variable_set('STE', 'STE');
+  //drupal_json_output('A');
 }
+

@@ -7,17 +7,19 @@
 function patterns_server_theme() {
   return array(
     'patterns_server_pattern_list' => array(
-      'variables' => array('patterns' => array()),
+      'variables' => array('patterns' => array(),
+                           'searchkey' => array()),
     ),
     'patterns_server_pattern_fieldset' => array(
       'render element' => 'form',
     ),
+    'patterns_server_patterns_table' => array(
+      'variables' => array('header' => array(),
+                           'rows' => array()),
+    ),
 
     'patterns_server_one_pattern_info' => array(
       'variables' => array('patterns' => array()),
-    ),
-    'patterns_server_pattern_family_fieldset' => array(
-      'render element' => 'form',
     ),
   );
 }
@@ -34,16 +36,18 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   $form['category'] = array( '#markup' => $pattern->info['category'],
   );
   $form['title'] = array(
-    '#markup' => l($pattern->title, 'patterns_server/info/' . $pid),
+    '#markup' => l($pattern->title, 'patterns_server/info/' . $pid, array('attributes' => array('class' => "info-link"))),
+    //'#markup' => l($pattern->title, 'patterns_server/info/', array('attributes' => array('class' => array('use-ajax')))),
+    //'#markup' => l($pattern->title, 'patterns_server/info/' . $pid, array('attributes' => array('class' => array('use-ajax')))),
   );
   $form['author'] = array(
     '#markup' =>  $pattern->author,
   );
   $form['upload time'] = array(
-    '#markup' => date('j-m-Y H:i:s (P)', $pattern->updated),
+    '#markup' => '<i value="'.$pattern->updated . '" '. 'class="upload-time">' . date('j-m-Y H:i:s (P)', $pattern->updated) . '</i>',
   );
   $form['download'] = array(
-    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid),
+    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
   );
 
   $download_origin_times = db_select('patterns_server', 'ps')
@@ -55,7 +59,8 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     $download_origin_times['downloadnum'] = 0;
   }
   $form['downloadnum'] = array(
-    '#markup' => $download_origin_times['downloadnum'],
+    //'#markup' => $download_origin_times['downloadnum'],
+    '#markup' => '<strong class="download-times">'.$download_origin_times['downloadnum'].'</strong>',
   );
   return $form;
 }
@@ -63,12 +68,18 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
 
 
 function theme_patterns_server_pattern_list($args) {
-  drupal_add_js('misc/collapse.js');
-  drupal_add_js('misc/drupal.js');
+  drupal_add_js('misc/ajax.js');
+  drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
+  drupal_add_js(drupal_get_path('module','patterns_server') . '/js/moment.min.js');
+  drupal_add_css(drupal_get_path('module','patterns_server') . '/css/patterns_server_page.css');
 
+  //get the data needed to be theme.
   $patterns = $args['patterns'];
-  if(!isset($args['searchkey'])) $args['searchkey']='';
+
+  //search box.
   $form['search-box']=drupal_get_form('patterns_server_search_form',$args['searchkey']);
+
+  //
   $patterns_title = '<div id="all_patterns_div">';
   $form['patterns'] = array(
     '#prefix' => $patterns_title,
@@ -76,21 +87,19 @@ function theme_patterns_server_pattern_list($args) {
     '#tree' => TRUE,
   );
   
-  if($args['searchkey']==''){
-  		$title='Latest Patterns';
-  	}else{
-  		$title='Patterns serach result';
-  	}
+  if (empty($args['searchkey'])) {
+    $title = 'Latest Patterns';
+  }
+  else {
+  	$title = 'Patterns serach result';
+  }
 
   if (empty($patterns)) {
-  	if($args['searchkey']==''){
+    if (empty($args['searchkey'])) {
   		$form['patterns']['#markup'] =  t('No patterns available.');
-  		$title='Latest Patterns';
   	}else{
   		$form['patterns']['#markup'] =  t('No patterns search result.');
-  		$title='Patterns serach result';
   	}
-    
   }
   else {
     foreach ($patterns as $pid => $pattern) {
@@ -120,8 +129,10 @@ function theme_patterns_server_pattern_list($args) {
 function theme_patterns_server_pattern_fieldset($variables) {
   $form = $variables['form'];
   $rows = array();
+  
   foreach (element_children($form) as $key) {
     $pattern = $form[$key];
+    //$row is a row with six elements.
     $row = array();
     $row[] =  drupal_render($pattern['category']);
     $row[] = '<strong>' . drupal_render($pattern['title']) . '</strong>';
@@ -129,82 +140,138 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $row[] = drupal_render($pattern['upload time']);
     $row[] = drupal_render($pattern['download']);
     $row[] = drupal_render($pattern['downloadnum']);
+    //$rows is 10 rows which every row has six elements.
     $rows[] = $row;
   }
-  return theme('table', array('header' => $form['#header'], 'rows' => $rows));
+  return theme('patterns_server_patterns_table', array('header' => $form['#header'], 'rows' => $rows));
 }
 
-// For one patterns page.
-function _patterns_server_pattern_family_build_row($pid, $pattern, $options = array()) {
+function theme_patterns_server_patterns_table($variables) {
+  $header = $variables['header'];
+  $rows = $variables['rows'];
 
-  $form['UUUID'] = array( 
-    '#markup' => $pattern->uuuid,
-  );
-  $form['title'] = array(
-    '#markup' => $pattern->title,
-  );
-  $form['author'] = array(
-    '#markup' =>  $pattern->author,
-  );
-  $form['parent'] = array(
-    '#markup' => '@TODO',
-  );
-  $form['child'] = array(
-    '#markup' => '@TODO',
-  );
-  $form['Download'] = array(
-    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid),
-  );
+  $attributes['class'][] = 'patterns_result_table';
+  $output = '<table' . drupal_attributes($attributes) . ">\n";
 
-  return $form;
+  // Format the table header:
+  if (count($header)) {
+    $ts = tablesort_init($header);
+    // HTML requires that the thead tag has tr tags in it followed by tbody
+    // tags. Using ternary operator to check and see if we have any rows.
+    $output .= (count($rows) ? ' <thead><tr>' : ' <tr>');
+    foreach ($header as $cell) {
+      $cell = tablesort_header($cell, $header, $ts);
+      $output .= _theme_table_cell($cell, TRUE);
+    }
+    // Using ternary operator to close the tags based on whether or not there are rows
+    $output .= (count($rows) ? " </tr></thead>\n" : "</tr>\n");
+  }
+  else {
+    $ts = array();
+  }
+
+  // Format the table rows:
+  if (count($rows)) {
+    $output .= "<tbody>\n";
+    $flip = array('even' => 'odd', 'odd' => 'even');
+    $class = 'even';
+    $row_number = 0;
+    foreach ($rows as $number => $row) {
+      $attributes = array();
+
+      $class = $flip[$class];
+      $attributes['class'][] = "pattern_row";
+
+      // Build row
+      $output .= ' <tr' . drupal_attributes($attributes) . '>';
+      $i = 0;
+      foreach ($row as $cell) {
+        $cell = tablesort_cell($cell, $header, $ts, $i++);
+        $output .= _theme_table_cell($cell);
+      }
+      $output .= " </tr>\n";
+    }
+    $output .= "</tbody>\n";
+  }
+
+  $output .= "</table>\n";
+  return $output;
 }
 
 function theme_patterns_server_one_pattern_info($args) {
-  drupal_add_js('misc/collapse.js');
-  drupal_add_js('misc/drupal.js');
-
+  drupal_add_css(drupal_get_path('module','patterns_server') . '/css/patterns_server_page.css');
+   
   $patterns = $args['patterns'];
-  $patterns_title = '<div id="one_pattern_family_div">';
-  $form['patterns'] = array(
-    '#prefix' => $patterns_title,
-    '#suffix' => ' </div>',
-    '#tree' => TRUE,
-  );
-  foreach ($patterns as $pid => $pattern) {
-    $form['patterns'][] = _patterns_server_pattern_family_build_row($pid, $pattern);
-  }
-  $form['patterns'] += array(
-      '#type' => 'fieldset',
-      '#title' => 'One pattern\'s history',
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-      '#theme' => 'patterns_server_pattern_family_fieldset',
-      '#header' => array(
-          t('UUUID'),
-          t('Title'),
-          t('Author'),
-          t('parent'),
-          t('child'),
-          t('Download'),
-      ),
-    );
+  $keys = array_keys($patterns);
+  $pattern = $patterns[$keys[0]];
 
-  return drupal_render($form);
+  $content = _patterns_server_one_pattern_content($pattern);
+  //$content = "nihao";
+
+  $markup_begin = '<div id="one_pattern_div"><fieldset>';
+  $markup_end = '</fieldset></div>';
+  $markup_header = '<legend>' . $pattern->title . '</legend>';
+  $markup_content = '<div id="one_pattern_content">' . $content . '</div>';
+  $page = $markup_begin . $markup_header . $markup_content . $markup_end;
+  return $page;
 }
 
-function theme_patterns_server_pattern_family_fieldset($variables) {
-  $form = $variables['form'];
-  $rows = array();
-  foreach (element_children($form) as $key) {
-    $pattern = $form[$key];
-    $row = array();
-    $row[] =  drupal_render($pattern['UUUID']);
-    $row[] = '<strong>' . drupal_render($pattern['title']) . '</strong>';
-    $row[] = drupal_render($pattern['author']);
-    $row[] = drupal_render($pattern['parent']);
-    $row[] = drupal_render($pattern['child']);
-    $row[] = drupal_render($pattern['Download']);
-    $rows[] = $row;
+function _patterns_server_parser_yaml_file($pattern_file)  {
+  $content_this = null;
+  foreach($pattern_file as $key => $value) {
+    if (is_numeric($key) && is_array($value)) {
+
+              $value_keys = array_keys($value);
+              foreach ($value_keys as $_key => $_value) {
+                $content_this .= '<li>' . '- ' . $_value . ' :' . '</li><ul>';
+                $content_this .= _patterns_server_parser_yaml_file($value[$_value]);
+                $content_this .= '</ul>';
+              }
+
+    }
+    elseif (!is_numeric($key) && is_array($value)) {
+      $content_this .= '<li>' . $key . ' :' . '</li><ul>';
+      $content_this .= _patterns_server_parser_yaml_file($value);
+      $content_this .= '</ul>';
+    }
+    elseif (is_numeric($key) && !is_array($value)) {
+      $content_this .= '<li>' . '- ' . $value . '</li>';
+    }
+    else {
+      $content_this .= '<li>' . $key . ' : ' . $value . '</li>';
+    }
   }
-  return theme('table', array('header' => $form['#header'], 'rows' => $rows));
+  return $content_this;
+}
+
+
+function _patterns_server_one_pattern_content($pattern) {
+  unset($pattern->status);
+  unset($pattern->public);
+  unset($pattern->enabled);
+  unset($pattern->updated);
+  unset($pattern->file);
+  $pattern_file = $pattern->pattern;
+  
+  //div for descript of pattern.
+  $content = '<div class="one_pattern_one_word"><p>Pattern Description: </p><ul>';
+  foreach ($pattern as $key => $value) {
+    if (!is_array($value)) {
+      $content .= '<li>'.$key . ' : ' . $value . '</li>';
+    }
+  }
+  //close div for descript of pattern.
+  $content .= '</ul></div>';
+
+
+  //div for pattern file content.
+  $title = "Pattern file content: ";
+  $content .= '<div class="one_pattern_file"><p id="one_pattern_file_descript">' . $title . '</p>';
+  $file_content = '<div id="one_pattern_file_content"><ul>';
+  $content .= $file_content;
+  $content .= _patterns_server_parser_yaml_file($pattern_file );
+  //close div for pattern file content. 
+  $content .= '</ul></div></div>';
+
+  return $content;
 }

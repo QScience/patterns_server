@@ -1,0 +1,38 @@
+#one_pattern_content {
+  padding: 40px;
+}
+
+.one_pattern_one_word {
+  border: 1px solid #bab1b1;
+  width: 100%;
+  background: #eee;
+  padding: 5px;
+}
+
+.one_pattern_one_word ul{
+}
+
+
+.one_pattern_file {
+    margin-top: 20px;
+    border: 1px solid #bab1b1;
+    background: #eee;
+    padding: 5px;
+    width: 100%;
+}
+
+
+.one_pattern_file li {
+    list-style-type: none;
+}
+
+#one_pattern_file_content {
+  border: 2px solid;
+  margin: 0 60px 30px; 
+  padding: 20px 5px;
+  background: #fff;
+}
+
+#one_pattern_file_content ul {
+    margin: 0px;
+}
