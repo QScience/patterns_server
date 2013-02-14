@@ -23,10 +23,10 @@ function patterns_server_save_pattern($pattern_name, $pattern, $format) {
 }
 
 function patterns_server_incoming_patterns($arguments = NULL) {
-//  variable_set('AAAA', );
-//  drupal_set_message($arguments);
-//  drupal_json_output($_POST);
-//  return;
+	//variable_set('AMCA', 'AMCA2');
+  //drupal_set_message($arguments);
+  drupal_json_output($_POST);
+  return; 
   
 
   $arguments = $_POST;
@@ -35,9 +35,8 @@ function patterns_server_incoming_patterns($arguments = NULL) {
     drupal_json_output('empty');
     return;
   }
-  print_r($arguments);
-  exit(0);
-  drupal_json_output($arguments);
+
+  //drupal_json_output($arguments);
   
   $imploded_credentials = $arguments['credentials'];
   $exploded_credentials = pils_explode($imploded_credentials);
@@ -101,4 +100,7 @@ function patterns_server_incoming_patterns($arguments = NULL) {
     }
   }
   print $n_patterns . ' pattern(s) received and saved.';
+  
+   variable_set('STE', 'STE');
+  drupal_json_output('A');
 }
