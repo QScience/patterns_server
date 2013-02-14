@@ -9,6 +9,20 @@
 module_load_include('module', 'pils');
 module_load_include('inc', 'patterns_server', 'includes/auth');
 
+/**
+ * Implements hook_drupaltodrupal_secure_rpc().
+ */
+function patterns_server_drupaltodrupal_secure_rpc() {
+  $methods = array();
+  $methods['patterns_server_publish_patterns'] = array(
+    'arguments' => array('patterns' => 'is_string', 'credentials' => 'is_string'),
+    'callback' => 'patterns_server_incoming_patterns',
+    'description' => 'save incoming patterns to the database',
+  );
+  return $methods;
+}
+
+
 function patterns_server_save_pattern($pattern_name, $pattern, $format) {  
   
   $result = _patterns_server_save_pattern($pattern_name, $pattern, $format);
@@ -22,15 +36,8 @@ function patterns_server_save_pattern($pattern_name, $pattern, $format) {
   return TRUE;
 }
 
-function patterns_server_incoming_patterns($arguments = NULL) {
-	//variable_set('AMCA', 'AMCA2');
-  //drupal_set_message($arguments);
-  drupal_json_output($_POST);
-  return; 
-  
-
-  $arguments = $_POST;
-  
+function patterns_server_incoming_patterns($arguments, $rpc_info) {
+	  
   if (empty($arguments)) {
     drupal_json_output('empty');
     return;
