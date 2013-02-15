@@ -15,7 +15,7 @@ module_load_include('inc', 'patterns_server', 'includes/auth');
 function patterns_server_drupaltodrupal_secure_rpc() {
   $methods = array();
   $methods['patterns_server_publish_patterns'] = array(
-    'arguments' => array('patterns' => 'is_string', 'credentials' => 'is_string'),
+    'arguments' => array('credentials' => 'is_string', 'patterns' => 'is_string'),
     'callback' => 'patterns_server_incoming_patterns',
     'description' => 'save incoming patterns to the database',
   );
@@ -38,6 +38,8 @@ function patterns_server_save_pattern($pattern_name, $pattern, $format) {
 
 function patterns_server_incoming_patterns($arguments, $rpc_info) {
 	  
+	return 'OK';
+	
   if (empty($arguments)) {
     drupal_json_output('empty');
     return;
