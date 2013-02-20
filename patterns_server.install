@@ -23,7 +23,14 @@ function patterns_server_schema() {
         'unsigned' => TRUE,
         'default' => 0,
         'description' => 'Record the times which this pattern was downloaded',
-      )
+      ),
+      'rate' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'Record the times which this pattern was rated',
+      ),
     ),
     'primary key' => array('pid'),
   );

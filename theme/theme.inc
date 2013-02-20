@@ -51,7 +51,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   );
 
   $download_origin_times = db_select('patterns_server', 'ps')
-    ->fields('ps', array('downloadnum'))
+    ->fields('ps', array('downloadnum', 'rate'))
     ->condition('pid', $pattern->pid)
     ->execute()
     ->fetchAssoc();
@@ -61,6 +61,12 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   $form['downloadnum'] = array(
     //'#markup' => $download_origin_times['downloadnum'],
     '#markup' => '<strong class="download-times">'.$download_origin_times['downloadnum'].'</strong>',
+  );
+  if(empty($download_origin_times['rate'])) {
+    $download_origin_times['rate'] = 0;
+  }
+  $form['rate'] = array(
+    '#markup' => '<strong class="rate">'.$download_origin_times['rate'].'</strong>',
   );
   return $form;
 }
@@ -118,6 +124,7 @@ function theme_patterns_server_pattern_list($args) {
           t('upload time'),
           t('Download'),
           t('Download Times'),
+          t('Rate'),
           //t('Description'),
       ),
     );
@@ -151,6 +158,7 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $row[] = drupal_render($pattern['upload time']);
     $row[] = drupal_render($pattern['download']);
     $row[] = drupal_render($pattern['downloadnum']);
+    $row[] = drupal_render($pattern['rate']);
     //$rows is 10 rows which every row has six elements.
     $rows[] = $row;
   }
@@ -224,7 +232,7 @@ function theme_patterns_server_one_pattern_info($args) {
 
   $markup_begin = '<div id="one_pattern_div"><fieldset>';
   $markup_end = '</fieldset></div>';
-  $markup_header = '<legend>' . $pattern->title . '</legend>';
+  $markup_header = '<legend>' . $pattern->title . '<strong> <a href ="patterns_server/rate/' . "$pattern->pid" . '"> Rate </a> </strong>' . '</legend>';
   $markup_content = '<div id="one_pattern_content">' . $content . '</div>';
   $page = $markup_begin . $markup_header . $markup_content . $markup_end;
   return $page;

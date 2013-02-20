@@ -34,7 +34,7 @@ function patterns_server_get_pattern_pid_from_db($pid) {
 /**
  * Used by search page.
  */
-function patterns_server_search_pattern_by_title($key,$type) {
+function patterns_server_search_pattern($key,$type) {
   $or = db_or();
   switch ($type) {
     case 0:
