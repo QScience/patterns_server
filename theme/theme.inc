@@ -46,9 +46,6 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   $form['upload time'] = array(
     '#markup' => '<i value="'.$pattern->updated . '" '. 'class="upload-time">' . date('j-m-Y H:i:s (P)', $pattern->updated) . '</i>',
   );
-  $form['download'] = array(
-    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
-  );
 
   $download_origin_times = db_select('patterns_server', 'ps')
     ->fields('ps', array('downloadnum', 'rate'))
@@ -65,8 +62,14 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   if(empty($download_origin_times['rate'])) {
     $download_origin_times['rate'] = 0;
   }
+  $form['ratenum'] = array(
+    '#markup' => '<strong id="' . "$pattern->pid" . '_rate' . '">'.$download_origin_times['rate'].'</strong>',
+  );
+  $form['download'] = array(
+    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
+  );
   $form['rate'] = array(
-    '#markup' => '<strong class="rate">'.$download_origin_times['rate'].'</strong>',
+    '#markup' => l(t('Rate'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
   );
   return $form;
 }
@@ -122,8 +125,9 @@ function theme_patterns_server_pattern_list($args) {
           t('Title'),
           t('Author'),
           t('upload time'),
-          t('Download'),
           t('Download Times'),
+          t('Rate Times'),
+          t('Download'),
           t('Rate'),
           //t('Description'),
       ),
@@ -156,8 +160,9 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $row[] = '<strong>' . drupal_render($pattern['title']) . '</strong>';
     $row[] = drupal_render($pattern['author']);
     $row[] = drupal_render($pattern['upload time']);
-    $row[] = drupal_render($pattern['download']);
     $row[] = drupal_render($pattern['downloadnum']);
+    $row[] = drupal_render($pattern['ratenum']);
+    $row[] = drupal_render($pattern['download']);
     $row[] = drupal_render($pattern['rate']);
     //$rows is 10 rows which every row has six elements.
     $rows[] = $row;

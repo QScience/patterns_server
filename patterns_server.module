@@ -301,6 +301,7 @@ function patterns_server_rate($id) {
       ->fields(array('rate' => $rate_origin['rate']))
       ->execute();
   }
+  drupal_goto("patterns_server/info/$id");
 }
 
 function patterns_server_pattern_info($id) {

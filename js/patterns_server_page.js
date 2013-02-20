@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
     //when click on download link, download times grown by 1.
     var download_link = jQuery(".pattern_row .download-link");
     download_link.click(function() {
-        var download_times = jQuery(this).parent().next();
+        var download_times = jQuery(this).parent().prev().prev();
         var numb = Number(download_times.text()) + 1; 
         download_times.children().text(numb);
     });
@@ -22,7 +22,10 @@ jQuery(document).ready(function() {
     });
 
     //Rate
-    jQuery("#one_pattern_div legend a").click(function(){
-      //return false;
+    var rate_link = jQuery(".pattern_row .rate-link");
+    rate_link.click(function() {
+        var rate_times = jQuery(this).parent().prev().prev();
+        var numb = Number(rate_times.text()) + 1; 
+        rate_times.children().text(numb);
     });
 });
