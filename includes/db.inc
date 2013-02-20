@@ -34,18 +34,31 @@ function patterns_server_get_pattern_pid_from_db($pid) {
 /**
  * Used by search page.
  */
-function patterns_server_search_pattern_by_title($key,$page=0) {
+function patterns_server_search_pattern_by_title($key,$type) {
   $or = db_or();
-  $or->condition('title', '%'.db_like($key).'%','LIKE');
-  $or->condition('author', '%'.db_like($key).'%','LIKE');
-  $or->condition('description', '%'.db_like($key).'%','LIKE');
-  $or->condition('updated', '%'.db_like($key).'%','LIKE');
+  switch ($type) {
+    case 0:
+      $or->condition('title', '%'.db_like($key).'%','LIKE');
+      break;
+    case 1:
+      $or->condition('description', '%'.db_like($key).'%','LIKE');
+      break;
+    case 2:
+      $or->condition('author', '%'.db_like($key).'%','LIKE');
+      break;
+    case 3:
+      $or->condition('uuuid', '%'.db_like($key).'%','LIKE');
+      break;
+    case 4:
+      $or->condition('pid', '%'.db_like($key).'%','LIKE');
+      break;
+  }
   $result = db_select('patterns', 'p') 
                   ->fields('p', array())
                   #->condition('title', '%'.db_like($key).'%','LIKE')
                   ->condition($or)
                   ->orderBy('updated', 'DESC')
-                  ->range(0,20)
+                  #->range(0,20)
                   ->execute()    
                   ->fetchAll();
   $patterns = array();
