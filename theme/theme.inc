@@ -237,7 +237,8 @@ function theme_patterns_server_one_pattern_info($args) {
 
   $markup_begin = '<div id="one_pattern_div"><fieldset>';
   $markup_end = '</fieldset></div>';
-  $markup_header = '<legend>' . $pattern->title . '<strong> <a href ="patterns_server/rate/' . "$pattern->pid" . '"> Rate </a> </strong>' . '</legend>';
+  global $base_url;
+  $markup_header = '<legend>' . $pattern->title . '<strong> <a href ="'. "$base_url/". 'patterns_server"> Server</a> </strong>' . '</legend>';
   $markup_content = '<div id="one_pattern_content">' . $content . '</div>';
   $page = $markup_begin . $markup_header . $markup_content . $markup_end;
   return $page;
