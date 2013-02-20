@@ -35,11 +35,17 @@ function patterns_server_get_pattern_pid_from_db($pid) {
  * Used by search page.
  */
 function patterns_server_search_pattern_by_title($key,$page=0) {
+  $or = db_or();
+  $or->condition('title', '%'.db_like($key).'%','LIKE');
+  $or->condition('author', '%'.db_like($key).'%','LIKE');
+  $or->condition('description', '%'.db_like($key).'%','LIKE');
+  $or->condition('updated', '%'.db_like($key).'%','LIKE');
   $result = db_select('patterns', 'p') 
                   ->fields('p', array())
-                  ->condition('title', '%'.db_like($key).'%','LIKE')
+                  #->condition('title', '%'.db_like($key).'%','LIKE')
+                  ->condition($or)
                   ->orderBy('updated', 'DESC')
-                  ->range(0,10)
+                  ->range(0,20)
                   ->execute()    
                   ->fetchAll();
   $patterns = array();

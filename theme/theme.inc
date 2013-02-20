@@ -123,6 +123,17 @@ function theme_patterns_server_pattern_list($args) {
     );
   }
 
+  //$pager = array(
+  //  'tags' => array('1','2'),
+  //  'element' => 1,
+  //  'quantity' => 5,
+  //  'parameters' => array(),
+  //);
+  //$form['next_page'] = array(
+  //  '#markup' => theme_pager($pager),
+  //);
+  //pager_default_initialize(999,10);
+
   return drupal_render($form);
 }
 
@@ -202,6 +213,9 @@ function theme_patterns_server_one_pattern_info($args) {
   drupal_add_css(drupal_get_path('module','patterns_server') . '/css/patterns_server_page.css');
    
   $patterns = $args['patterns'];
+  if (count($patterns) == 0) {
+    return null;
+  }
   $keys = array_keys($patterns);
   $pattern = $patterns[$keys[0]];
 
