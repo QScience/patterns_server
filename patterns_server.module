@@ -133,7 +133,7 @@ function patterns_server_get_category_list(){
 function patterns_server_search_form($form, &$form_state,$args='') {
   $search_type = null;
   $search_content = null;
-  if (isset($args) and !empty($args)) {
+  if (!empty($args)) {
     $search_type = substr($args, 0, 1);
     $search_content = substr($args, 2);
   }

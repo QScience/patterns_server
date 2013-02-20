@@ -50,7 +50,7 @@ function patterns_server_search_pattern_by_title($key,$type) {
       $or->condition('uuuid', '%'.db_like($key).'%','LIKE');
       break;
     case 4:
-      $or->condition('pid', '%'.db_like($key).'%','LIKE');
+      $or->condition('pid', $key, '=');
       break;
   }
   $result = db_select('patterns', 'p') 
