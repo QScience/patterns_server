@@ -37,23 +37,16 @@ function patterns_server_save_pattern($pattern_name, $pattern, $format) {
 }
 
 function patterns_server_incoming_patterns($arguments, $rpc_info) {
-	  
-	return 'OK';
 	
   if (empty($arguments)) {
-    drupal_json_output('empty');
-    return;
+    return 'Error. Empty request received.';
   }
-
-  //drupal_json_output($arguments);
   
   $imploded_credentials = $arguments['credentials'];
   $exploded_credentials = pils_explode($imploded_credentials);
   
   if ($exploded_credentials === FALSE) {
-    
-    print 'NO1!';
-    exit();
+    return 'Error. Received upload pattern/s request with no credentials.';
   }
   
   $check = array(
@@ -62,7 +55,7 @@ function patterns_server_incoming_patterns($arguments, $rpc_info) {
   );
   
   if (!pils_check_array($exploded_credentials, $check)) {
-    print 'NO2!';
+    return 'Error. Could not extract the credentials from the encrypted message.';
   }
   
   $user = $exploded_credentials['user'];
@@ -71,20 +64,19 @@ function patterns_server_incoming_patterns($arguments, $rpc_info) {
   $result = _patterns_server_login_authenticate_validate($user, $pwd);
   
   if ($result['status'] !== PATTERNS_SUCCESS) {
-    print $result['msg'];
-    exit();   
+    return 'Error. Authentication failed. Please check your username and password on this server.';
   }
   
   $imploded_patterns = $arguments['patterns'];
   
   $exploded_patterns = pils_explode($imploded_patterns);
   if ($exploded_patterns === FALSE) {
-    print 'NO4!';
-    exit();
+    return 'Error. Could not extract the pattern files from the encrypted message.';
   }
   
   
   
+  $errors = array();
   $n_patterns = 0;
   foreach ($exploded_patterns as $imploded_pattern) {
     $exploded_pattern = pils_explode($imploded_pattern);
@@ -103,15 +95,17 @@ function patterns_server_incoming_patterns($arguments, $rpc_info) {
           $n_patterns++;
         }
         else {
-          // notify
+          $errors[] = $name;
         }
       }
     }
   }
-  print $n_patterns . ' pattern(s) received and saved.';
-
   
-  //variable_set('STE', 'STE');
-  //drupal_json_output('A');
+  $outcome = $n_patterns . ' pattern(s) received and saved.';
+  if (count($errors) > 0) {
+  	$outcome .= ' The following patterns could not be saved: ' . explode($errors, ',');
+  }
+   
+  return $outcome;
 }
 
