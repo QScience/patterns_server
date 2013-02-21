@@ -27,5 +27,10 @@ jQuery(document).ready(function() {
         var rate_times = jQuery(this).parent().prev().prev();
         var numb = Number(rate_times.text()) + 1; 
         rate_times.children().text(numb);
+
+        var url_div = jQuery(this).attr("href");
+        url_div += " #one_pattern_div";
+        jQuery("#one_pattern_div").load(url_div); 
+        return false;
     });
 });
