@@ -4,6 +4,24 @@
  * Install, uninstall functions for the Patterns Server module
  */
 function patterns_server_install() {
+	
+	// Create role
+	$role = new stdClass();
+	$role->name = 'patterns_server_user';
+	user_role_save($role);
+	
+	$role = user_role_load_by_name('patterns_server_user');
+	$role_rid = $role->rid;
+	// Define our 'editor' role permissions
+	$role_permissions = array(
+  	'access patterns_server' => TRUE,
+    'post patterns' => TRUE,
+    'update patterns' => TRUE,
+	);
+	
+	// Grant permissions to our 'editor' role
+	user_role_change_permissions($role_rid, $role_permissions);
+	
 }
 
 function patterns_server_schema() {

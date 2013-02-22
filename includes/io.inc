@@ -23,19 +23,56 @@ function patterns_server_drupaltodrupal_secure_rpc() {
   );
   
   $methods['patterns_server_register_client'] = array(
-    'arguments' => array('user' => 'is_string', 'pwd' => 'is_string'),
+    'arguments' => array('user' => 'is_string', 'pwd' => 'is_string', 'email' => 'is_string'),
     'callback' => 'patterns_server_register_client',
     'description' => 'creates programmatically a new user with patterns_server access privileges',
   );
-  
   
   return $methods;
 }
 
 
-function patterns_server_register_client($user, $pwd) {
+function patterns_server_register_client($user, $pwd, $email) {
 	
+	if (db_query("SELECT COUNT(*) FROM {users} WHERE name = :name", array(':name' => $user))->fetchField()) {
+  	return t('username %user already existing', array('%user' => $user));
+	}
+	
+	$account = _patterns_server_register_client($user, $pwd, $email);
+	
+	if (!$account) {
+		return t('Error. Registration did not succeed. Please try again later.');
+	}
+	else {
+		return $account->pass;
+	}
 }
+
+function _patterns_server_register_client($user, $pwd, $email) {
+	return 'OK';
+	$role = user_role_load_by_name('patterns_server_user');
+	$role_rid = $role->rid;
+
+	// Determine the roles of our new user
+	$new_user_roles = array(
+  	DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+  	$role_rid => TRUE,
+	);
+	
+	$new_user = array(
+		'name' => $user,
+		'pass' => $pwd,
+		'mail' => $email,
+		'status' => 1,
+		'access' => REQUEST_TIME,
+		'roles' => $new_user_roles,
+	);
+	
+	// $account returns user object
+	return user_save(null, $new_user);
+}
+
+
 
 function patterns_server_save_pattern($pattern_name, $pattern, $format, $user) {  
   
