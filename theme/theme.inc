@@ -233,10 +233,9 @@ function theme_patterns_server_one_pattern_info($args) {
   $pattern = $patterns[$keys[0]];
 
   $content = _patterns_server_one_pattern_content($pattern);
-  //$content = "nihao";
-
+  //$content = null;
   $content .= _patterns_server_one_pattern_comment_list($pattern);
-    $markup_begin = '<div id="one_pattern_div"><fieldset>';
+  $markup_begin = '<div id="one_pattern_div"><fieldset>';
   $markup_end = '</fieldset></div>';
   global $base_url;
   $server_link = l('Server', 'patterns_server');
