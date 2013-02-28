@@ -235,7 +235,8 @@ function theme_patterns_server_one_pattern_info($args) {
   $content = _patterns_server_one_pattern_content($pattern);
   //$content = "nihao";
 
-  $markup_begin = '<div id="one_pattern_div"><fieldset>';
+  $content .= _patterns_server_one_pattern_comment_list($pattern);
+    $markup_begin = '<div id="one_pattern_div"><fieldset>';
   $markup_end = '</fieldset></div>';
   global $base_url;
   $markup_header = '<legend>' . $pattern->title . '<strong> <a href ="'. "$base_url/". 'patterns_server"> Server</a> </strong>' . '</legend>';
@@ -301,5 +302,53 @@ function _patterns_server_one_pattern_content($pattern) {
   //close div for pattern file content. 
   $content .= '</ul></div></div>';
 
+    return $content;
+}
+
+function _patterns_server_one_pattern_comment_list($pattern) {
+
+  //div for comment of this pattern.
+  $title = "Pattern Comments: ";
+  $content = null;
+  $content .= '<div class="one_pattern_file_comment"><p>' . $title . '</p>';
+  $pid = $pattern->pid;
+  $comment_list = db_select('patterns_comments', 'pc')
+    ->fields('pc')
+    ->condition('pid', $pattern->pid)
+    ->execute()
+    ->fetchAllAssoc('cid');
+  if (empty($comment_list)) {
+    return;
+  }
+  foreach ($comment_list as $key => $value) {
+    $user_name = db_select('users', 'uc')
+      ->fields('uc', array('name'))
+      ->condition('uid', $value->uid)
+      ->execute()
+      ->fetchAssoc();
+    $created_time = date('jS F Y h:i:s A (T)', $value->created);
+    $content .= '<div class = "one_pattern_file_comment_item">';
+    $content .= '<strong>' . $user_name['name'] . '</strong>';
+    $content .= ' said at '."<em> $created_time </em>".': ';
+    $content .= $value->comment_content . '</br>';
+    $content .= "</div>";
+  }
+
+  global $user;
+  $args = array(
+    'uid' => $user,
+    'pid' => $pattern->pid,
+  );
+  $form['comment-box']=drupal_get_form('patterns_server_comment_form', $args);
+  //$form['comment-box']=drupal_get_form('patterns_server_comment_form');
+  $content .= drupal_render($form);
+  //close div for comment of this pattern. 
+  $content .= '</div>';
+
+  //print_r($comment_list);
   return $content;
 }
+
+//function getUserName($id) {
+//  return db_result(db_query("SELECT name FROM {users} WHERE uid = %d", $id));
+//}

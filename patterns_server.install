@@ -34,6 +34,46 @@ function patterns_server_schema() {
     ),
     'primary key' => array('pid'),
   );
+
+  $schema['patterns_comments'] = array(
+    'description' => 'comments for patterns.',
+    'fields' => array(
+      'cid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique Comment ID.',
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'User submit the comment',
+      ),
+      'pid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'Unique id for the pattern',
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'comment created time',
+      ),
+      'comment_content' => array(
+        'type' => 'text',
+        'size' => 'medium',
+        'default' => NULL,
+        'description' => 'comment content ',
+      ),
+    ),
+    'primary key' => array('cid'),
+  );
   return $schema;
 }
 

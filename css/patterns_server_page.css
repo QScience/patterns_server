@@ -41,3 +41,20 @@
   float: right;
   margin-right: 20px;
 }
+
+.one_pattern_file_comment {
+	background: none repeat scroll 0 0 #EEEEEE;
+	padding: 5px;
+	border: 1px solid #BAB1B1;
+	margin-top: 10px;
+	margin-left: 10px;
+	max-width: 550px;
+}
+
+.one_pattern_file_comment_item {
+   background: none repeat scroll 0 0 #FFFFFF;
+   margin-bottom: 15px;
+  padding: 3px;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
