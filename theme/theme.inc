@@ -316,20 +316,22 @@ function _patterns_server_one_pattern_comment_list($pattern) {
   $comment_list = db_select('patterns_comments', 'pc')
     ->fields('pc')
     ->condition('pid', $pattern->pid)
+    ->orderBy('created', 'ASC')
     ->execute()
     ->fetchAllAssoc('cid');
+  print_r($comment_list);
   if (!empty($comment_list)) {
     foreach ($comment_list as $key => $value) {
       $user_name = db_select('users', 'uc')
         ->fields('uc', array('name'))
-        ->condition('uid', $value->uid)
+        ->condition('uc.uid', $value->uid)
         ->execute()
         ->fetchAssoc();
       $created_time = date('jS F Y h:i:s A (T)', $value->created);
       $content .= '<div class = "one_pattern_file_comment_item">';
       $content .= '<strong>' . $user_name['name'] . '</strong>';
-      $content .= ' said at '."<em> $created_time </em>".': ';
-      $content .= $value->comment_content . '</br>';
+      $content .= ' said at '."<em> $created_time </em>".': <br/>';
+      $content .= '<pre>' . $value->comment_content . '</pre>' . '</br>';
       $content .= "</div>";
     }
   }
@@ -348,7 +350,3 @@ function _patterns_server_one_pattern_comment_list($pattern) {
   //print_r($comment_list);
   return $content;
 }
-
-//function getUserName($id) {
-//  return db_result(db_query("SELECT name FROM {users} WHERE uid = %d", $id));
-//}
