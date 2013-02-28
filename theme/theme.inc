@@ -319,7 +319,6 @@ function _patterns_server_one_pattern_comment_list($pattern) {
     ->orderBy('created', 'ASC')
     ->execute()
     ->fetchAllAssoc('cid');
-  print_r($comment_list);
   if (!empty($comment_list)) {
     foreach ($comment_list as $key => $value) {
       $user_name = db_select('users', 'uc')
