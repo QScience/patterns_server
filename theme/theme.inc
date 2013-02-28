@@ -41,7 +41,8 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     //'#markup' => l($pattern->title, 'patterns_server/info/' . $pid, array('attributes' => array('class' => array('use-ajax')))),
   );
   $form['author'] = array(
-    '#markup' =>  $pattern->author,
+    '#markup' =>  l($pattern->author, 'patterns_server/search/2_' . $pattern->author),
+    //'#markup' =>  $pattern->author,
   );
   $form['upload time'] = array(
     '#markup' => '<i value="'.$pattern->updated . '" '. 'class="upload-time">' . date('j-m-Y H:i:s (P)', $pattern->updated) . '</i>',
@@ -238,7 +239,7 @@ function theme_patterns_server_one_pattern_info($args) {
   $markup_begin = '<div id="one_pattern_div"><fieldset>';
   $markup_end = '</fieldset></div>';
   global $base_url;
-  $server_link = l('Server', 'patterns_server');
+  $server_link = l(t('Server'), 'patterns_server');
   $markup_header = '<legend>' . $pattern->title . "<strong>$server_link </strong>" . '</legend>';
   $markup_content = '<div id="one_pattern_content">' . $content . '</div>';
   $page = $markup_begin . $markup_header . $markup_content . $markup_end;
