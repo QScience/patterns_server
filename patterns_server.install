@@ -5,7 +5,19 @@
  */
 function patterns_server_install() {
 	
-	// Create role
+	// Check if role patterns_server_user exists
+	
+ 	$result = db_select('role', 'r')
+    ->fields('r', array('rid'))
+    ->condition('rid', $role_id, '=')
+    ->execute()
+    ->fetchAssoc();
+  
+  if (!empty($result['rid'])) {
+    return;
+  }
+	
+	// Otherwise creates the role
 	$role = new stdClass();
 	$role->name = 'patterns_server_user';
 	user_role_save($role);
@@ -51,4 +63,6 @@ function patterns_server_schema() {
 
 function patterns_server_uninstall() {
   drupal_uninstall_schema('patterns_server');
+  
+  user_role_delete('patterns_server_user');
 }
