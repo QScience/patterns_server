@@ -320,18 +320,46 @@ function patterns_server_download($id) {
 }
 
 function patterns_server_rate($id) {
-  $rate_origin = db_select('patterns_server', 'ps')
-    ->fields('ps', array('rate', 'pid'))
+  global $user;
+  $rate_origin = db_select('patterns_rate', 'pr')
+    ->fields('pr', array('rate', 'pid', 'uid'))
     ->condition('pid', $id)
+    ->condition('uid', $user->uid)
     ->execute()
     ->fetchAssoc();
   if(empty($rate_origin['pid'])) {
-    db_insert('patterns_server')
+    db_insert('patterns_rate')
+      ->fields(array( 'pid' => $id, 'uid' => $user->uid, 'rate' => 1,'created' => time(),))
+      ->execute();
+    $rate_origin = db_select('patterns_server', 'ps')
+      ->fields('ps', array('rate', 'pid'))
+      ->condition('pid', $id)
+      ->execute()
+      ->fetchAssoc();
+    if(empty($rate_origin['pid'])) {
+      db_insert('patterns_server')
       ->fields(array( 'pid' => $id, 'downloadnum' => 0, 'rate' => 1,))
       ->execute();
+    }
+    else {
+      $rate_origin['rate']  += 1;
+      db_update('patterns_server')
+      ->condition('pid', $id)
+      ->fields(array('rate' => $rate_origin['rate']))
+      ->execute();
+    }
   }
   else {
-    $rate_origin['rate']  += 1;
+    db_delete('patterns_rate')
+      ->condition('pid', $id)
+      ->condition('uid', $user->uid)
+      ->execute();
+    $rate_origin = db_select('patterns_server', 'ps')
+      ->fields('ps', array('rate', 'pid'))
+      ->condition('pid', $id)
+      ->execute()
+      ->fetchAssoc();
+    $rate_origin['rate']  -= 1;
     db_update('patterns_server')
       ->condition('pid', $id)
       ->fields(array('rate' => $rate_origin['rate']))

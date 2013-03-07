@@ -69,9 +69,25 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   $form['download'] = array(
     '#markup' => l(t('Download'), 'patterns_server/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
   );
-  $form['rate'] = array(
-    '#markup' => l(t('Rate'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
-  );
+
+  global $user;
+  $rate_origin = db_select('patterns_rate', 'pr')
+    ->fields('pr', array('pid', 'uid'))
+    ->condition('pid', $pattern->pid)
+    ->condition('uid', $user->uid)
+    ->execute()
+    ->fetchAssoc();
+  
+  if(empty($rate_origin['pid'])) {
+    $form['rate'] = array(
+      '#markup' => l(t('Rate'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
+    );
+  }
+  else {
+    $form['rate'] = array(
+      '#markup' => l(t('UnRate'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
+    );
+  }
   return $form;
 }
 

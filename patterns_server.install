@@ -74,6 +74,41 @@ function patterns_server_schema() {
     ),
     'primary key' => array('cid'),
   );
+
+  $schema['patterns_rate'] = array(
+    'description' => 'rates for patterns.',
+    'fields' => array(
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'User rate',
+      ),
+      'pid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'pattern rated',
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'rate time',
+      ),
+      'rate' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+        'description' => 'whether already rate',
+      ),
+    ),
+    'primary key' => array('uid', 'pid'),
+  );
   return $schema;
 }
 
