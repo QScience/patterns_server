@@ -24,14 +24,14 @@ jQuery(document).ready(function() {
     //Rate
     var rate_link = jQuery(".pattern_row .rate-link");
     rate_link.click(function() {
-		if (jQuery(this).text() == "Rate") {
-			jQuery(this).text("UnRate");
+		if (jQuery(this).text() == "Like") {
+			jQuery(this).text("Unlike");
 			var rate_times = jQuery(this).parent().prev().prev();
 			var numb = Number(rate_times.text()) + 1; 
 			rate_times.children().text(numb);
 		}
 		else {
-			jQuery(this).text("Rate");
+			jQuery(this).text("Like");
 			var rate_times = jQuery(this).parent().prev().prev();
 			var numb = Number(rate_times.text()) - 1; 
 			rate_times.children().text(numb);

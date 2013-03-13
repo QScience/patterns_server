@@ -80,12 +80,12 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   
   if(empty($rate_origin['pid'])) {
     $form['rate'] = array(
-      '#markup' => l(t('Rate'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
+      '#markup' => l(t('Like'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
     );
   }
   else {
     $form['rate'] = array(
-      '#markup' => l(t('UnRate'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
+      '#markup' => l(t('Unlike'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
     );
   }
   return $form;
@@ -117,14 +117,14 @@ function theme_patterns_server_pattern_list($args) {
     $title = 'Latest Patterns';
   }
   else {
-  	$title = 'Patterns serach result';
+  	$title = 'Serach';
   }
 
   if (empty($patterns)) {
     if (empty($args['searchkey'])) {
   		$form['patterns']['#markup'] =  t('No patterns available.');
   	}else{
-  		$form['patterns']['#markup'] =  t('No patterns search result.');
+  		$form['patterns']['#markup'] =  t('No search result.');
   	}
   }
   else {
@@ -141,11 +141,11 @@ function theme_patterns_server_pattern_list($args) {
           t('Category'),
           t('Title'),
           t('Author'),
-          t('upload time'),
-          t('Download Times'),
-          t('Rate Times'),
+          t('Uploaded'),
+          t('Downloads'),
+          t('Score'),
           t('Download'),
-          t('Rate'),
+          t('Like'),
           //t('Description'),
       ),
     );

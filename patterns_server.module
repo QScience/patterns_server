@@ -51,7 +51,7 @@ function patterns_server_menu() {
   );
 
   $items['patterns_server/search/%'] = array(
-    'title' => 'patterns_server search result',
+    'title' => 'Search',
     'page callback' => '_patterns_search_page',
     'page arguments' => array(2),
     'access arguments' => array('access patterns_server'),
