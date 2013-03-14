@@ -4,6 +4,8 @@
  * Theme related functions, hooks.
  */
 
+/**
+ */
 function patterns_server_theme() {
   return array(
     'patterns_server_pattern_list' => array(
@@ -77,7 +79,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     ->condition('uid', $user->uid)
     ->execute()
     ->fetchAssoc();
-  
+
   if (empty($rate_origin['pid'])) {
     $form['rate'] = array(
       '#markup' => l(t('Like'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
@@ -92,7 +94,8 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
 }
 
 
-
+/**
+ */
 function theme_patterns_server_pattern_list($args) {
   drupal_add_js('misc/ajax.js');
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/js/patterns_server_page.js');
@@ -112,7 +115,7 @@ function theme_patterns_server_pattern_list($args) {
     '#suffix' => ' </div>',
     '#tree' => TRUE,
   );
-  
+
   if (empty($args['searchkey'])) {
     $title = 'Latest Patterns';
   }
@@ -166,10 +169,12 @@ function theme_patterns_server_pattern_list($args) {
   return drupal_render($form);
 }
 
+/**
+ */
 function theme_patterns_server_pattern_fieldset($variables) {
   $form = $variables['form'];
   $rows = array();
-  
+
   foreach (element_children($form) as $key) {
     $pattern = $form[$key];
     //$row is a row with six elements.
@@ -188,6 +193,8 @@ function theme_patterns_server_pattern_fieldset($variables) {
   return theme('patterns_server_patterns_table', array('header' => $form['#header'], 'rows' => $rows));
 }
 
+/**
+ */
 function theme_patterns_server_patterns_table($variables) {
   $header = $variables['header'];
   $rows = $variables['rows'];
@@ -240,9 +247,11 @@ function theme_patterns_server_patterns_table($variables) {
   return $output;
 }
 
+/**
+ */
 function theme_patterns_server_one_pattern_info($args) {
   drupal_add_css(drupal_get_path('module', 'patterns_server') . '/css/patterns_server_page.css');
-   
+
   $patterns = $args['patterns'];
   if (count($patterns) == 0) {
     return NULL;
@@ -263,6 +272,8 @@ function theme_patterns_server_one_pattern_info($args) {
   return $page;
 }
 
+/**
+ */
 function _patterns_server_parser_yaml_file($pattern_file)  {
   $content_this = NULL;
   foreach ($pattern_file as $key => $value) {
@@ -291,7 +302,8 @@ function _patterns_server_parser_yaml_file($pattern_file)  {
   return $content_this;
 }
 
-
+/**
+ */
 function _patterns_server_one_pattern_content($pattern) {
   unset($pattern->status);
   unset($pattern->public);
@@ -299,7 +311,7 @@ function _patterns_server_one_pattern_content($pattern) {
   unset($pattern->updated);
   unset($pattern->file);
   $pattern_file = $pattern->pattern;
-  
+
   //div for descript of pattern.
   $content = '<div class="one_pattern_one_word"><p>Pattern Description: </p><ul>';
   foreach ($pattern as $key => $value) {
@@ -317,12 +329,14 @@ function _patterns_server_one_pattern_content($pattern) {
   $file_content = '<div id="one_pattern_file_content"><ul>';
   $content .= $file_content;
   $content .= _patterns_server_parser_yaml_file($pattern_file );
-  //close div for pattern file content. 
+  //close div for pattern file content.
   $content .= '</ul></div></div>';
 
     return $content;
 }
 
+/**
+ */
 function _patterns_server_one_pattern_comment_list($pattern) {
 
   //div for comment of this pattern.
@@ -360,7 +374,7 @@ function _patterns_server_one_pattern_comment_list($pattern) {
   $form['comment-box']=drupal_get_form('patterns_server_comment_form', $args);
   //$form['comment-box']=drupal_get_form('patterns_server_comment_form');
   $content .= drupal_render($form);
-  //close div for comment of this pattern. 
+  //close div for comment of this pattern.
   $content .= '</div>';
 
   //print_r($comment_list);

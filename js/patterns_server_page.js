@@ -1,3 +1,9 @@
+/**
+ * @file 
+ * Patterns_server main js.
+ *
+ * The patterns server's main page.
+ */
 jQuery(document).ready(function() {
     
     //when click on download link, download times grown by 1.

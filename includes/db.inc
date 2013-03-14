@@ -6,7 +6,7 @@
  */
 
 /**
- *latest patterns
+ * latest patterns
  */
 function patterns_server_get_pattern_timeDESC_from_db($num) {
   $num = is_numeric($num)?$num:10;
@@ -20,7 +20,7 @@ function patterns_server_get_pattern_timeDESC_from_db($num) {
 }
 
 /**
- *one pattern defined by pid.
+ * one pattern defined by pid.
  */
 function patterns_server_get_pattern_pid_from_db($pid) {
   $result = db_select('patterns', 'p')
@@ -53,13 +53,11 @@ function patterns_server_search_pattern($key, $type) {
       $or->condition('pid', $key, '=');
       break;
   }
-  $result = db_select('patterns', 'p') 
+  $result = db_select('patterns', 'p')
                   ->fields('p', array())
-                  #->condition('title', '%'.db_like($key).'%','LIKE')
                   ->condition($or)
                   ->orderBy('updated', 'DESC')
-                  #->range(0,20)
-                  ->execute()    
+                  ->execute()
                   ->fetchAll();
   $patterns = array();
   foreach ($result as $pattern) {

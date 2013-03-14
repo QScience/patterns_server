@@ -6,6 +6,8 @@
 function patterns_server_install() {
 }
 
+/**
+ */
 function patterns_server_schema() {
 
   $schema['patterns_server'] = array(
@@ -112,6 +114,8 @@ function patterns_server_schema() {
   return $schema;
 }
 
+/**
+ */
 function patterns_server_uninstall() {
   drupal_uninstall_schema('patterns_server');
 }
