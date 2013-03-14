@@ -45,7 +45,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     //'#markup' =>  $pattern->author,
   );
   $form['upload time'] = array(
-    '#markup' => '<i value="'.$pattern->updated . '" '. 'class="upload-time">' . date('j-m-Y H:i:s (P)', $pattern->updated) . '</i>',
+    '#markup' => '<i value="'	.	$pattern->updated . '" ' . 'class="upload-time">' . date('j-m-Y H:i:s (P)', $pattern->updated) . '</i>',
   );
 
   $download_origin_times = db_select('patterns_server', 'ps')
@@ -53,12 +53,12 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     ->condition('pid', $pattern->pid)
     ->execute()
     ->fetchAssoc();
-  if(empty($download_origin_times['downloadnum'])) {
+  if (empty($download_origin_times['downloadnum'])) {
     $download_origin_times['downloadnum'] = 0;
   }
   $form['downloadnum'] = array(
     //'#markup' => $download_origin_times['downloadnum'],
-    '#markup' => '<strong class="download-times">'.$download_origin_times['downloadnum'].'</strong>',
+    '#markup' => '<strong class="download-times">' . $download_origin_times['downloadnum'] . '</strong>',
   );
   if(empty($download_origin_times['rate'])) {
     $download_origin_times['rate'] = 0;
@@ -78,7 +78,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     ->execute()
     ->fetchAssoc();
   
-  if(empty($rate_origin['pid'])) {
+  if (empty($rate_origin['pid'])) {
     $form['rate'] = array(
       '#markup' => l(t('Like'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
     );
@@ -95,15 +95,15 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
 
 function theme_patterns_server_pattern_list($args) {
   drupal_add_js('misc/ajax.js');
-  drupal_add_js(drupal_get_path('module','patterns_server') . '/js/patterns_server_page.js');
-  drupal_add_js(drupal_get_path('module','patterns_server') . '/js/moment.min.js');
-  drupal_add_css(drupal_get_path('module','patterns_server') . '/css/patterns_server_page.css');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/js/patterns_server_page.js');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/js/moment.min.js');
+  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/css/patterns_server_page.css');
 
   //get the data needed to be theme.
   $patterns = $args['patterns'];
 
   //search box.
-  $form['search-box']=drupal_get_form('patterns_server_search_form',$args['searchkey']);
+  $form['search-box']=drupal_get_form('patterns_server_search_form', $args['searchkey']);
 
   //
   $patterns_title = '<div id="all_patterns_div">';
@@ -117,14 +117,15 @@ function theme_patterns_server_pattern_list($args) {
     $title = 'Latest Patterns';
   }
   else {
-  	$title = 'Serach';
+    $title = 'Serach';
   }
 
   if (empty($patterns)) {
     if (empty($args['searchkey'])) {
-  		$form['patterns']['#markup'] =  t('No patterns available.');
-  	}else{
-  		$form['patterns']['#markup'] =  t('No search result.');
+      $form['patterns']['#markup'] =  t('No patterns available.');
+  	}
+    else{
+      $form['patterns']['#markup'] =  t('No search result.');
   	}
   }
   else {
@@ -240,11 +241,11 @@ function theme_patterns_server_patterns_table($variables) {
 }
 
 function theme_patterns_server_one_pattern_info($args) {
-  drupal_add_css(drupal_get_path('module','patterns_server') . '/css/patterns_server_page.css');
+  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/css/patterns_server_page.css');
    
   $patterns = $args['patterns'];
   if (count($patterns) == 0) {
-    return null;
+    return NULL;
   }
   $keys = array_keys($patterns);
   $pattern = $patterns[$keys[0]];
@@ -263,8 +264,8 @@ function theme_patterns_server_one_pattern_info($args) {
 }
 
 function _patterns_server_parser_yaml_file($pattern_file)  {
-  $content_this = null;
-  foreach($pattern_file as $key => $value) {
+  $content_this = NULL;
+  foreach ($pattern_file as $key => $value) {
     if (is_numeric($key) && is_array($value)) {
 
               $value_keys = array_keys($value);
@@ -303,7 +304,7 @@ function _patterns_server_one_pattern_content($pattern) {
   $content = '<div class="one_pattern_one_word"><p>Pattern Description: </p><ul>';
   foreach ($pattern as $key => $value) {
     if (!is_array($value)) {
-      $content .= '<li>'.$key . ' : ' . $value . '</li>';
+      $content .= '<li>' . $key . ' : ' . $value . '</li>';
     }
   }
   //close div for descript of pattern.
@@ -326,7 +327,7 @@ function _patterns_server_one_pattern_comment_list($pattern) {
 
   //div for comment of this pattern.
   $title = "Comments for pattern $pattern->pid($pattern->title) : ";
-  $content = null;
+  $content = NULL;
   $content .= '<div class="one_pattern_file_comment"><p>' . $title . '</p>';
   $pid = $pattern->pid;
   $comment_list = db_select('patterns_comments', 'pc')
@@ -345,7 +346,7 @@ function _patterns_server_one_pattern_comment_list($pattern) {
       $created_time = date('jS F Y h:i:s A (T)', $value->created);
       $content .= '<div class = "one_pattern_file_comment_item">';
       $content .= '<strong>' . $user_name['name'] . '</strong>';
-      $content .= ' said at '."<em> $created_time </em>".': <br/>';
+      $content .= ' said at ' . "<em> $created_time </em>" . ': <br/>';
       $content .= '<pre>' . $value->comment_content . '</pre>' . '</br>';
       $content .= "</div>";
     }

@@ -13,7 +13,7 @@ function patterns_server_get_pattern_timeDESC_from_db($num) {
   $result = db_select('patterns', 'p')
                   ->fields('p', array())
                   ->orderBy('updated', 'DESC')
-                  ->range(0,$num)
+                  ->range(0, $num)
                   ->execute()
                   ->fetchAll();
   return $result;
@@ -34,20 +34,20 @@ function patterns_server_get_pattern_pid_from_db($pid) {
 /**
  * Used by search page.
  */
-function patterns_server_search_pattern($key,$type) {
+function patterns_server_search_pattern($key, $type) {
   $or = db_or();
   switch ($type) {
     case 0:
-      $or->condition('title', '%'.db_like($key).'%','LIKE');
+      $or->condition('title', '%' . db_like($key) . '%', 'LIKE');
       break;
     case 1:
-      $or->condition('description', '%'.db_like($key).'%','LIKE');
+      $or->condition('description', '%' . db_like($key) . '%', 'LIKE');
       break;
     case 2:
-      $or->condition('author', '%'.db_like($key).'%','LIKE');
+      $or->condition('author', '%' . db_like($key) . '%', 'LIKE');
       break;
     case 3:
-      $or->condition('uuuid', '%'.db_like($key).'%','LIKE');
+      $or->condition('uuuid', '%' . db_like($key) . '%', 'LIKE');
       break;
     case 4:
       $or->condition('pid', $key, '=');
@@ -74,12 +74,12 @@ function patterns_server_search_pattern($key,$type) {
 /**
  * Use by patterns server page.
  */
-function patterns_server_get_pattern_from_db($numOrid, $sign = TRUE) {
+function patterns_server_get_pattern_from_db($numorid, $sign = TRUE) {
   if ($sign == TRUE) {
-    $result = patterns_server_get_pattern_timeDESC_from_db($numOrid);
+    $result = patterns_server_get_pattern_timeDESC_from_db($numorid);
   }
   else {
-    $result = patterns_server_get_pattern_pid_from_db($numOrid);
+    $result = patterns_server_get_pattern_pid_from_db($numorid);
   }
   $patterns = array();
 

@@ -23,7 +23,7 @@ function patterns_server_save_pattern($pattern_name, $pattern, $format) {
 }
 
 function patterns_server_incoming_patterns($arguments = NULL) {
-	//variable_set('AMCA', 'AMCA2');
+  //variable_set('AMCA', 'AMCA2');
   //drupal_set_message($arguments);
   drupal_json_output($_POST);
   return; 
