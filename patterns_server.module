@@ -9,6 +9,7 @@
 module_load_include('inc', 'patterns_server', 'includes/db');
 module_load_include('inc', 'patterns_server', 'includes/io');
 module_load_include('inc', 'patterns_server', 'theme/theme');
+module_load_include('inc', 'patterns_server', 'includes/utils');
 
 /**
  * Implements hook_help().
@@ -43,63 +44,71 @@ function patterns_server_permission() {
  */
 function patterns_server_menu() {
   $items = array();
-  $items['patterns_server'] = array(
-    'title' => 'Patterns Server',
-    'page callback' => '_patterns_server_page',
-    'access arguments' => array('access patterns_server'),
-    'type' => MENU_NORMAL_ITEM,
-  );
+  if (patterns_utils_is_public_page_enabled()) {
+    $public_link = variable_get('patterns_public_url', '');
+    $items[$public_link] = array(
+      'title' => $public_link,
+      'page callback' => '_patterns_server_page',
+      'access arguments' => array('access patterns_server'),
+      'type' => MENU_NORMAL_ITEM,
+    );
 
-  $items['patterns_server/search/%'] = array(
-    'title' => 'Search',
-    'page callback' => '_patterns_search_page',
-    'page arguments' => array(2),
-    'access arguments' => array('access patterns_server'),
-    'access callback' => TRUE,
-    'type' =>  MENU_CALLBACK,
-  );
+    $search_link = $public_link . "/search/%";
+    $items[$search_link] = array(
+      'title' => 'Search',
+      'page callback' => '_patterns_search_page',
+      'page arguments' => array(2),
+      'access arguments' => array('access patterns_server'),
+      'access callback' => TRUE,
+      'type' =>  MENU_CALLBACK,
+    );
 
 
-  /* this used for user search the categoried patterns
+    /* this used for user search the categoried patterns
 
-       $items['patterns_server/category'] = array(
-            'title' => 'Patterns Server search category',
-	        'page callback' => 'patterns_server_pattern_category_page',
-	        'access arguments' => array('access patterns_server'),
-	        'type' => MENU_NORMAL_ITEM,
-	       );
-   */
+         $items['patterns_server/category'] = array(
+              'title' => 'Patterns Server search category',
+            'page callback' => 'patterns_server_pattern_category_page',
+            'access arguments' => array('access patterns_server'),
+            'type' => MENU_NORMAL_ITEM,
+           );
+     */
 
-  $items['patterns_server/post'] = array(
-    'title' => 'patterns_server',
-    'page callback' => 'patterns_server_incoming_patterns',
-    'access arguments' => array('post patterns'),
-    'type' => MENU_CALLBACK,
-  );
+    $post_link = $public_link . "/post";
+    $items[$post_link] = array(
+      'title' => 'patterns_server',
+      'page callback' => 'patterns_server_incoming_patterns',
+      'access arguments' => array('post patterns'),
+      'type' => MENU_CALLBACK,
+    );
 
-  $items['patterns_server/download'] = array(
-    'title' => 'Download Pattern Source',
-    'page callback' => 'patterns_server_download',
-    'access arguments' => array('get patterns'),
-    'access callback' => TRUE,
-    'type' => MENU_CALLBACK,
-  );
+    $download_link = $public_link . "/download";
+    $items[$download_link] = array(
+      'title' => 'Download Pattern Source',
+      'page callback' => 'patterns_server_download',
+      'access arguments' => array('get patterns'),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
 
-  $items['patterns_server/rate'] = array(
-    'title' => 'Rate certain Pattern',
-    'page callback' => 'patterns_server_rate',
-    'access arguments' => array('get patterns'),
-    'access callback' => TRUE,
-    'type' => MENU_CALLBACK,
-  );
+    $rate_link = $public_link . "/rate";
+    $items[$rate_link] = array(
+      'title' => 'Rate certain Pattern',
+      'page callback' => 'patterns_server_rate',
+      'access arguments' => array('get patterns'),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
 
-  $items['patterns_server/info'] = array(
-    'title' => 'Information of one pattern',
-    'page callback' => 'patterns_server_pattern_info',
-    'access arguments' => array('get patterns'),
-    'access callback' => TRUE,
-    'type' => MENU_CALLBACK,
-  );
+    $info_link = $public_link . "/info";
+    $items[$info_link] = array(
+      'title' => 'Information of one pattern',
+      'page callback' => 'patterns_server_pattern_info',
+      'access arguments' => array('get patterns'),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
+  }
   return $items;
 }
 
@@ -189,7 +198,7 @@ function patterns_server_search_form_submit($form, &$form_state) {
   }
 
   $form_id = $form['form_id']['#value'];
-  $form_state['redirect'] = 'patterns_server/search/' . trim($form_state['values']['selected']) . '_' . trim($form_state['values']['search']);
+  $form_state['redirect'] = variable_get('patterns_public_url', '') . '/search/' . trim($form_state['values']['selected']) . '_' . trim($form_state['values']['search']);
 
 }
 
@@ -214,7 +223,7 @@ function patterns_server_comment_form($form, &$form_state, $args='') {
   $form['patterns_comment']['pid'] = array('#type' => 'value', '#value' => $args['pid']);
   $form['patterns_comment']['actions'] = array('#type' => 'actions');
   $form['patterns_comment']['actions']['submit'] = array('#type' => 'submit', '#value' => t('Comment'));
-  $form['patterns_search']['#submit'][] = 'patterns_server_comment_form_submit';
+  $form['patterns_comment']['#submit'][] = 'patterns_server_comment_form_submit';
 
   return $form;
 }
@@ -267,6 +276,7 @@ function _patterns_server_page() {
   $page .= theme('patterns_server_one_pattern_info', array(
                     'patterns' => $result,
   ));
+  //print_r(variable_get('patterns_public_url', ''));
   return $page;
 }
 
@@ -375,7 +385,9 @@ function patterns_server_rate($id) {
       ->fields(array('rate' => $rate_origin['rate']))
       ->execute();
   }
-  drupal_goto("patterns_server/info/$id");
+  $public_link = variable_get('patterns_public_url', '');
+  $info_link_id = $public_link . "/info/" . $id;
+  drupal_goto($info_link_id);
 }
 
 /**

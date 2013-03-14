@@ -35,15 +35,17 @@ function patterns_server_theme() {
  */
 function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) {
 
+  $public_link = variable_get('patterns_public_url', '');
+
   $form['category'] = array( '#markup' => $pattern->info['category'],
   );
   $form['title'] = array(
-    '#markup' => l($pattern->title, 'patterns_server/info/' . $pid, array('attributes' => array('class' => "info-link"))),
+    '#markup' => l($pattern->title, $public_link . '/info/' . $pid, array('attributes' => array('class' => "info-link"))),
     //'#markup' => l($pattern->title, 'patterns_server/info/', array('attributes' => array('class' => array('use-ajax')))),
     //'#markup' => l($pattern->title, 'patterns_server/info/' . $pid, array('attributes' => array('class' => array('use-ajax')))),
   );
   $form['author'] = array(
-    '#markup' =>  l($pattern->author, 'patterns_server/search/2_' . $pattern->author),
+    '#markup' =>  l($pattern->author, $public_link . '/search/2_' . $pattern->author),
     //'#markup' =>  $pattern->author,
   );
   $form['upload time'] = array(
@@ -69,7 +71,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     '#markup' => '<strong id="' . "$pattern->pid" . '_rate' . '">' . $download_origin_times['rate'] . '</strong>',
   );
   $form['download'] = array(
-    '#markup' => l(t('Download'), 'patterns_server/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
+    '#markup' => l(t('Download'), $public_link . '/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
   );
 
   global $user;
@@ -82,12 +84,12 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
 
   if (empty($rate_origin['pid'])) {
     $form['rate'] = array(
-      '#markup' => l(t('Like'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
+      '#markup' => l(t('Like'), $public_link . 'rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
     );
   }
   else {
     $form['rate'] = array(
-      '#markup' => l(t('Unlike'), 'patterns_server/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
+      '#markup' => l(t('Unlike'), $public_link . '/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
     );
   }
   return $form;
