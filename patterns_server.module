@@ -85,7 +85,7 @@ function patterns_server_menu() {
     'access arguments' => array('get patterns'),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
-  );	 
+  );
 
   $items['patterns_server/rate'] = array(
     'title' => 'Rate certain Pattern',
@@ -93,7 +93,7 @@ function patterns_server_menu() {
     'access arguments' => array('get patterns'),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
-  );	
+  );
 
   $items['patterns_server/info'] = array(
     'title' => 'Information of one pattern',
@@ -329,7 +329,7 @@ function patterns_server_rate($id) {
     ->fetchAssoc();
   if (empty($rate_origin['pid'])) {
     db_insert('patterns_rate')
-      ->fields(array( 'pid' => $id, 'uid' => $user->uid, 'rate' => 1, 'created' => time(),))
+      ->fields(array( 'pid' => $id, 'uid' => $user->uid, 'rate' => 1, 'created' => time()))
       ->execute();
     $rate_origin = db_select('patterns_server', 'ps')
       ->fields('ps', array('rate', 'pid'))

@@ -45,7 +45,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     //'#markup' =>  $pattern->author,
   );
   $form['upload time'] = array(
-    '#markup' => '<i value="'	.	$pattern->updated . '" ' . 'class="upload-time">' . date('j-m-Y H:i:s (P)', $pattern->updated) . '</i>',
+    '#markup' => '<i value="' . $pattern->updated . '" ' . 'class="upload-time">' . date('j-m-Y H:i:s (P)', $pattern->updated) . '</i>',
   );
 
   $download_origin_times = db_select('patterns_server', 'ps')
@@ -60,11 +60,11 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     //'#markup' => $download_origin_times['downloadnum'],
     '#markup' => '<strong class="download-times">' . $download_origin_times['downloadnum'] . '</strong>',
   );
-  if(empty($download_origin_times['rate'])) {
+  if (empty($download_origin_times['rate'])) {
     $download_origin_times['rate'] = 0;
   }
   $form['ratenum'] = array(
-    '#markup' => '<strong id="' . "$pattern->pid" . '_rate' . '">'.$download_origin_times['rate'].'</strong>',
+    '#markup' => '<strong id="' . "$pattern->pid" . '_rate' . '">' . $download_origin_times['rate'] . '</strong>',
   );
   $form['download'] = array(
     '#markup' => l(t('Download'), 'patterns_server/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
@@ -123,10 +123,10 @@ function theme_patterns_server_pattern_list($args) {
   if (empty($patterns)) {
     if (empty($args['searchkey'])) {
       $form['patterns']['#markup'] =  t('No patterns available.');
-  	}
+    }
     else{
       $form['patterns']['#markup'] =  t('No search result.');
-  	}
+    }
   }
   else {
     foreach ($patterns as $pid => $pattern) {
