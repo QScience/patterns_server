@@ -244,6 +244,9 @@ function patterns_server_comment_form_submit($form, &$form_state) {
     db_insert('patterns_comments')
       ->fields(array( 'pid' => $form_state['values']['pid'], 'uid' => $user->uid, 'created' => time(), 'comment_content' => $form_state['values']['comment']))
       ->execute();
+  global $base_url;
+  $public_link = variable_get('patterns_public_url', '');
+  drupal_goto($base_url . '/' . $public_link . '/info/' . $form_state['values']['pid']);
 }
 
 /* used for catrgory list

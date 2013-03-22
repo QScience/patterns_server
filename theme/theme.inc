@@ -272,7 +272,8 @@ function theme_patterns_server_one_pattern_info($args) {
   $public_link = variable_get('patterns_public_url', '');
   //$server_link = l(t('Server'), $public_link);
   $server_link = l(t('Server'), $public_link, array('attributes' => array('class' => array('btn btn-success'))));
-  $markup_header = '<legend>' . $pattern->title . "<strong>$server_link </strong>" . '</legend>';
+  $header_link = l(t("$pattern->title"), $public_link . '/info/' . $pattern->pid, array('attributes' => array('class' => array('btn btn-success'))));
+  $markup_header = '<legend>' . $header_link . "<strong>$server_link </strong>" . '</legend>';
   $markup_content = '<div id="one_pattern_content">' . $content . '</div>';
   $page = $markup_begin . $markup_header . $markup_content . $markup_end;
   return $page;
@@ -328,9 +329,9 @@ function _patterns_server_one_pattern_content($pattern) {
   //close div for descript of pattern.
   $content .= '</dl></div>';
 
-
+ 
   //div for pattern file content.
-  $title = "Pattern file content: ";
+  $title = "Pattern file content";
   $content .= '<div class="one_pattern_file hero-unit"><p id="one_pattern_file_descript">' . $title . '</p>';
   $file_content = '<div id="one_pattern_file_content" class="hero-unit"><ul>';
   $content .= $file_content;
