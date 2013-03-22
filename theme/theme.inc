@@ -71,7 +71,8 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     '#markup' => '<strong id="' . "$pattern->pid" . '_rate' . '">' . $download_origin_times['rate'] . '</strong>',
   );
   $form['download'] = array(
-    '#markup' => l(t('Download'), $public_link . '/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
+    '#markup' => l('Download', $public_link . '/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
+    //'#markup' => l(t('Download'), $public_link . '/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
   );
 
   global $user;
@@ -150,7 +151,7 @@ function theme_patterns_server_pattern_list($args) {
           t('Uploaded'),
           t('Downloads'),
           t('Score'),
-          t('Download'),
+          t('File'),
           t('Like'),
           //t('Description'),
       ),

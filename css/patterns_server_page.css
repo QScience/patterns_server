@@ -1,5 +1,5 @@
 #one_pattern_content {
-  padding: 40px;
+  padding: 0 40px 40px 40px;
 }
 
 .one_pattern_one_word {
@@ -45,7 +45,6 @@
 	padding: 5px;
 	border: 1px solid #BAB1B1;
 	margin-top: 10px;
-	max-width: 592px;
 }
 
 .one_pattern_file_comment_item {
