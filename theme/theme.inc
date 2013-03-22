@@ -318,26 +318,26 @@ function _patterns_server_one_pattern_content($pattern) {
   $pattern_file = $pattern->pattern;
 
   //div for descript of pattern.
-  $content = '<div class="one_pattern_one_word"><p>Pattern Description: </p><ul>';
+  $content = '<div class="one_pattern_one_word hero-unit"><p>Pattern Description: </p><dl class="dl-horizontal">';
   foreach ($pattern as $key => $value) {
     if (!is_array($value)) {
-      $content .= '<li>' . $key . ' : ' . $value . '</li>';
+      $content .= '<dt>' . $key . '</dt><dd>' . $value . '</dd>';
     }
   }
   //close div for descript of pattern.
-  $content .= '</ul></div>';
+  $content .= '</dl></div>';
 
 
   //div for pattern file content.
   $title = "Pattern file content: ";
-  $content .= '<div class="one_pattern_file"><p id="one_pattern_file_descript">' . $title . '</p>';
-  $file_content = '<div id="one_pattern_file_content"><ul>';
+  $content .= '<div class="one_pattern_file hero-unit"><p id="one_pattern_file_descript">' . $title . '</p>';
+  $file_content = '<div id="one_pattern_file_content" class="hero-unit"><ul>';
   $content .= $file_content;
   $content .= _patterns_server_parser_yaml_file($pattern_file );
   //close div for pattern file content.
   $content .= '</ul></div></div>';
 
-    return $content;
+  return $content;
 }
 
 /**
@@ -347,7 +347,7 @@ function _patterns_server_one_pattern_comment_list($pattern) {
   //div for comment of this pattern.
   $title = "Comments for pattern $pattern->pid($pattern->title) : ";
   $content = NULL;
-  $content .= '<div class="one_pattern_file_comment"><p>' . $title . '</p>';
+  $content .= '<div class="one_pattern_file_comment hero-unit"><p>' . $title . '</p>';
   $pid = $pattern->pid;
   $comment_list = db_select('patterns_comments', 'pc')
     ->fields('pc')
