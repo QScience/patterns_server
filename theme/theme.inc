@@ -202,7 +202,8 @@ function theme_patterns_server_patterns_table($variables) {
   $header = $variables['header'];
   $rows = $variables['rows'];
 
-  $attributes['class'][] = 'patterns_result_table';
+  $attributes['class'][] = 'table table-hover';
+  //$attributes['class'][] = 'patterns_result_table';
   $output = '<table' . drupal_attributes($attributes) . ">\n";
 
   // Format the table header:

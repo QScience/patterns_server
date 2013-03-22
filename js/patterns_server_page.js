@@ -28,24 +28,24 @@ jQuery(document).ready(function() {
     });
 
     //Rate
-    var rate_link = jQuery(".pattern_row .rate-link");
-    rate_link.click(function() {
-		if (jQuery(this).text() == "Like") {
-			jQuery(this).text("Unlike");
-			var rate_times = jQuery(this).parent().prev().prev();
-			var numb = Number(rate_times.text()) + 1; 
-			rate_times.children().text(numb);
-		}
-		else {
-			jQuery(this).text("Like");
-			var rate_times = jQuery(this).parent().prev().prev();
-			var numb = Number(rate_times.text()) - 1; 
-			rate_times.children().text(numb);
-		}
+    //var rate_link = jQuery(".pattern_row .rate-link");
+    //rate_link.click(function() {
+	//	if (jQuery(this).text() == "Like") {
+	//		jQuery(this).text("Unlike");
+	//		var rate_times = jQuery(this).parent().prev().prev();
+	//		var numb = Number(rate_times.text()) + 1; 
+	//		rate_times.children().text(numb);
+	//	}
+	//	else {
+	//		jQuery(this).text("Like");
+	//		var rate_times = jQuery(this).parent().prev().prev();
+	//		var numb = Number(rate_times.text()) - 1; 
+	//		rate_times.children().text(numb);
+	//	}
 
-        var url_div = jQuery(this).attr("href");
-        url_div += " #one_pattern_div";
-        jQuery("#one_pattern_div").load(url_div); 
-        return false;
-    });
+    //    var url_div = jQuery(this).attr("href");
+    //    url_div += " #one_pattern_div";
+    //    jQuery("#one_pattern_div").load(url_div); 
+    //    return false;
+    //});
 });
