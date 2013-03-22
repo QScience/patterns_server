@@ -85,7 +85,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
 
   if (empty($rate_origin['pid'])) {
     $form['rate'] = array(
-      '#markup' => l(t('Like'), $public_link . 'rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
+      '#markup' => l(t('Like'), $public_link . '/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
     );
   }
   else {
