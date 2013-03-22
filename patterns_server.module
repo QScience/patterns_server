@@ -238,6 +238,7 @@ function patterns_server_comment_form_submit($form, &$form_state) {
   global $user;
   if ($form_state['values']['comment'] == '') {
     form_set_error('comments', t('Please enter some comment.'));
+    return;
   }
   $form_state['values']['comment'] = check_plain($form_state['values']['comment']);
     db_insert('patterns_comments')
