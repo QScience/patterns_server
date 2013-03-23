@@ -49,4 +49,7 @@ jQuery(document).ready(function() {
     //    return false;
     //});
 	
+	//search box
+	jQuery('.span9 input#edit-search').addClass('span7');
+	jQuery('.span12 input#edit-search').addClass('span10');
 });
