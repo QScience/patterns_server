@@ -32,7 +32,26 @@ function patterns_server_drupaltodrupal_secure_rpc() {
 }
 
 
-function patterns_server_register_client($user, $pwd, $email) {
+function patterns_server_register_client($arguments, $rpc_info) {
+	
+	if (empty($arguments)) {
+    return 'Error. Empty request received.';
+  }
+  
+  $check = array(
+    'user' => 'is_string',
+    'pwd' => 'is_string',
+  	'email' => 'is_string',
+  );
+  
+  if (!pils_check_array($arguments, $check)) {
+    return 'Error. Could not extract the credentials from the encrypted message.';
+  }
+  
+  $user = $arguments['user'];
+  $pwd = $arguments['pwd'];
+  $email = $arguments['email'];
+  
 	
 	if (db_query("SELECT COUNT(*) FROM {users} WHERE name = :name", array(':name' => $user))->fetchField()) {
   	return t('username %user already existing', array('%user' => $user));
@@ -41,18 +60,21 @@ function patterns_server_register_client($user, $pwd, $email) {
 	$account = _patterns_server_register_client($user, $pwd, $email);
 	
 	if (!$account) {
+		watchdog('pp', 'fail');
 		return t('Error. Registration did not succeed. Please try again later.');
 	}
 	else {
+		watchdog('pp', 'success');
 		return $account->pass;
 	}
 }
 
 function _patterns_server_register_client($user, $pwd, $email) {
-	return 'OK';
 	$role = user_role_load_by_name('patterns_server_user');
 	$role_rid = $role->rid;
 
+	watchdog('pp', 'role_got');
+	
 	// Determine the roles of our new user
 	$new_user_roles = array(
   	DRUPAL_AUTHENTICATED_RID => 'authenticated user',
