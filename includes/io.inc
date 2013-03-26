@@ -9,76 +9,127 @@
 module_load_include('module', 'pils');
 module_load_include('inc', 'patterns_server', 'includes/auth');
 
+module_load_include('inc', 'patterns', 'includes/io/io');
+
 /**
+ * Implements hook_drupaltodrupal_secure_rpc().
  */
-function patterns_server_save_pattern($pattern_name, $pattern, $format) {
-
-  $result = _patterns_server_save_pattern($pattern_name, $pattern, $format);
-
-  if (!$result['status'] == PATTERNS_SUCCESS) {
-    // TODO return error in d2d
-    return FALSE;
-  }
-
-  // TODO notify d2d of success
-  return TRUE;
+function patterns_server_drupaltodrupal_secure_rpc() {
+  $methods = array();
+  $methods['patterns_server_publish_patterns'] = array(
+    'arguments' => array('credentials' => 'is_string', 'patterns' => 'is_string'),
+    'callback' => 'patterns_server_incoming_patterns',
+    'description' => 'save incoming patterns to the database',
+  );
+  
+  $methods['patterns_server_register_client'] = array(
+    'arguments' => array('user' => 'is_string', 'pwd' => 'is_string', 'email' => 'is_string'),
+    'callback' => 'patterns_server_register_client',
+    'description' => 'creates programmatically a new user with patterns_server access privileges',
+  );
+  
+  return $methods;
 }
 
-/**
- */
-function patterns_server_incoming_patterns($arguments = NULL) {
-  //variable_set('AMCA', 'AMCA2');
-  //drupal_set_message($arguments);
-  drupal_json_output($_POST);
-  return;
+
+function patterns_server_register_client($user, $pwd, $email) {
+	
+	if (db_query("SELECT COUNT(*) FROM {users} WHERE name = :name", array(':name' => $user))->fetchField()) {
+  	return t('username %user already existing', array('%user' => $user));
+	}
+	
+	$account = _patterns_server_register_client($user, $pwd, $email);
+	
+	if (!$account) {
+		return t('Error. Registration did not succeed. Please try again later.');
+	}
+	else {
+		return $account->pass;
+	}
+}
+
+function _patterns_server_register_client($user, $pwd, $email) {
+	return 'OK';
+	$role = user_role_load_by_name('patterns_server_user');
+	$role_rid = $role->rid;
+
+	// Determine the roles of our new user
+	$new_user_roles = array(
+  	DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+  	$role_rid => TRUE,
+	);
+	
+	$new_user = array(
+		'name' => $user,
+		'pass' => $pwd,
+		'mail' => $email,
+		'status' => 1,
+		'access' => REQUEST_TIME,
+		'roles' => $new_user_roles,
+	);
+	
+	// $account returns user object
+	return user_save(null, $new_user);
+}
 
 
-  $arguments = $_POST;
 
-  if (empty($arguments)) {
-    drupal_json_output('empty');
-    return;
+function patterns_server_save_pattern($pattern_name, $pattern, $format, $user) {  
+  
+  $result = _patterns_io_save_pattern($pattern, $pattern_name, $format, NULL, NULL, $user);
+  
+  if (!empty($result['msg'])) {
+    $status = ($result['status'] == PATTERNS_SUCCESS) ? WATCHDOG_INFO : WATCHDOG_ERROR;
+    watchdog('patterns_server', $result['msg'], array(), $status);
   }
+  
+  return $result;
+}
 
-  //drupal_json_output($arguments);
-
+function patterns_server_incoming_patterns($arguments, $rpc_info) {
+	
+  if (empty($arguments)) {
+    return 'Error. Empty request received.';
+  }
+  
   $imploded_credentials = $arguments['credentials'];
   $exploded_credentials = pils_explode($imploded_credentials);
-
+  
   if ($exploded_credentials === FALSE) {
-
-    print 'NO1!';
-    exit();
+    return 'Error. Received upload pattern/s request with no credentials.';
   }
-
+  
   $check = array(
     'user' => 'is_string',
     'pwd' => 'is_string',
   );
-
+  
   if (!pils_check_array($exploded_credentials, $check)) {
-    print 'NO2!';
+    return 'Error. Could not extract the credentials from the encrypted message.';
   }
-
+    
   $user = $exploded_credentials['user'];
   $pwd = $exploded_credentials['pwd'];
-
-  $result = _patterns_server_login_authenticate_validate($user, $pwd);
-
-  if ($result['status'] !== PATTERNS_SUCCESS) {
-    print $result['msg'];
-    exit();
+  
+	$result = _patterns_server_login_authenticate($user, $pwd);
+  
+	if ($result['status'] != PATTERNS_SUCCESS) {
+		global $base_url;
+		patterns_server_log_failed_login($user, $pwd);
+    return 'Error. Authentication failed. Please check your username and password on server ' . $base_url;
   }
 
   $imploded_patterns = $arguments['patterns'];
-
+  
+  
   $exploded_patterns = pils_explode($imploded_patterns);
   if ($exploded_patterns === FALSE) {
-    print 'NO4!';
-    exit();
+    return 'Error. Could not extract the pattern files from the encrypted message.';
   }
 
-  $n_patterns = 0;
+  $errors = array();
+  $saved = array();
+  
   foreach ($exploded_patterns as $imploded_pattern) {
     $exploded_pattern = pils_explode($imploded_pattern);
     if ($exploded_pattern !== FALSE) {
@@ -90,21 +141,25 @@ function patterns_server_incoming_patterns($arguments = NULL) {
       if (pils_check_array($exploded_pattern, $check)) {
         $name = $exploded_pattern['name'];
         $pattern = $exploded_pattern['content'];
-        $format = $exploded_pattern['format'];
-
-        if (patterns_server_save_pattern($user, $pwd, $name, $pattern, $format)) {
-          $n_patterns++;
+        $format = $exploded_pattern['format'];        
+        $result = patterns_server_save_pattern($name, $pattern, $format, $user);
+        if ($result['status'] == PATTERNS_SUCCESS) {
+        	patterns_db_publish_pattern($name);
+  				$saved[] = $name;
         }
         else {
-          // notify
+          $errors[] = $name . ' -> ' . $result['msg'];
         }
       }
     }
   }
-  print $n_patterns . ' pattern(s) received and saved.';
-
-
-  //variable_set('STE', 'STE');
-  //drupal_json_output('A');
+  
+	
+  
+  $outcome = count($saved) . ' pattern(s) received and saved.';
+  if (count($errors) > 0) {
+  	$outcome .= ' The following patterns could not be saved: ' . implode(',', $errors);
+  }
+   
+  return $outcome;
 }
-
