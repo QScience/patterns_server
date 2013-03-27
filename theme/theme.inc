@@ -367,7 +367,7 @@ function _patterns_server_one_pattern_comment_list($pattern) {
       $created_time = date('jS F Y h:i:s A (T)', $value->created);
       $content .= '<div class = "one_pattern_file_comment_item">';
       $content .= '<strong>' . $user_name['name'] . '</strong>';
-      $content .= ' said at ' . "<em> $created_time </em>" . ': <br/>';
+      $content .= ' said on ' . "<em> $created_time </em>" . ': <br/>';
       $content .= '<pre>' . $value->comment_content . '</pre>' . '</br>';
       $content .= "</div>";
     }
