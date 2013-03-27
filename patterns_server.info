@@ -1,5 +1,5 @@
 name = Patterns Server beta
-description = patterns server for all patterns.
+description = Exposes a public api to push patterns and register users with special permissions. Overrides the default patterns public page
 core = 7.x
 package = Patterns
 
