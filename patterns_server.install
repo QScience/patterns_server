@@ -6,14 +6,13 @@
 function patterns_server_install() {
 	
 	// Check if role patterns_server_user exists
-	
  	$result = db_select('role', 'r')
-    ->fields('r', array('rid'))
-    ->condition('rid', $role_id, '=')
+    ->fields('r', array('name'))
+    ->condition('name', 'patterns_server_user', '=')
     ->execute()
     ->fetchAssoc();
   
-  if (!empty($result['rid'])) {
+  if (!empty($result['name'])) {
     return;
   }
 	
