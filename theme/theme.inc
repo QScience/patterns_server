@@ -71,7 +71,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     '#markup' => '<strong id="' . "$pattern->pid" . '_rate' . '">' . $download_origin_times['rate'] . '</strong>',
   );
   $form['download'] = array(
-    '#markup' => l('Download', $public_link . '/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
+    '#markup' => l(t('Download'), $public_link . '/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
     //'#markup' => l(t('Download'), $public_link . '/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
   );
 
