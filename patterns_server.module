@@ -33,7 +33,10 @@ function patterns_server_permission() {
     ),
     'post patterns' => array(
       'title' => t('Post patterns through REST api'),
-    )
+    ),
+    'update patterns' => array(
+      'title' => t('Update patterns through REST api'),
+    ),
   );
 }
 

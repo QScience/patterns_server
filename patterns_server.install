@@ -4,6 +4,36 @@
  * Install, uninstall functions for the Patterns Server module
  */
 function patterns_server_install() {
+	
+	// Check if role patterns_server_user exists
+	
+ 	$result = db_select('role', 'r')
+    ->fields('r', array('rid'))
+    ->condition('rid', $role_id, '=')
+    ->execute()
+    ->fetchAssoc();
+  
+  if (!empty($result['rid'])) {
+    return;
+  }
+	
+	// Otherwise creates the role
+	$role = new stdClass();
+	$role->name = 'patterns_server_user';
+	user_role_save($role);
+	
+	$role = user_role_load_by_name('patterns_server_user');
+	$role_rid = $role->rid;
+	// Define our 'editor' role permissions
+	$role_permissions = array(
+  	'access patterns_server' => TRUE,
+    'post patterns' => TRUE,
+    'update patterns' => TRUE,
+	);
+	
+	// Grant permissions to our 'editor' role
+	user_role_change_permissions($role_rid, $role_permissions);
+	
 }
 
 /**
@@ -36,6 +66,7 @@ function patterns_server_schema() {
     ),
     'primary key' => array('pid'),
   );
+
 
   $schema['patterns_comments'] = array(
     'description' => 'comments for patterns.',
@@ -111,6 +142,7 @@ function patterns_server_schema() {
     ),
     'primary key' => array('uid', 'pid'),
   );
+
   return $schema;
 }
 
@@ -118,4 +150,6 @@ function patterns_server_schema() {
  */
 function patterns_server_uninstall() {
   drupal_uninstall_schema('patterns_server');
+  
+  user_role_delete('patterns_server_user');
 }
