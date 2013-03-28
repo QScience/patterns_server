@@ -6,6 +6,7 @@
   border: 1px solid #bab1b1;
   background: #eee;
   padding: 5px;
+  margin-top: 40px;
 }
 
 .one_pattern_one_word ul{
@@ -55,4 +56,48 @@
   font-size: inherit;
   padding: 0px;
   margin: 0px;
+}
+
+dl {
+	margin-bottom: 20px;
+}
+dl:before, dl:after {
+	content: "";
+	display: table;
+	line-height: 0;
+}
+dl:before, dl:after {
+	content: "";
+	display: table;
+	line-height: 0;
+}
+dl:after {
+	clear: both;
+}
+
+dt, dd {
+	line-height: 20px;
+}
+dt {
+	font-weight: bold;
+}
+dl dt {
+	clear: left;
+	float: left;
+	overflow: hidden;
+	text-align: right;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 160px;
+}
+
+
+dt, dd {
+	line-height: 20px;
+}
+dd {
+	margin-left: 10px;
+}
+dl dd {
+	margin-left: 180px;
 }
