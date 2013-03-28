@@ -304,7 +304,7 @@ function _patterns_server_parser_yaml_file($pattern_file)  {
       $content_this .= '</ul>';
     }
     elseif (is_numeric($key) && !is_array($value)) {
-      $content_this .= '<li>' . '- <span class="yaml_aa5500">' . $value . '</span></li>';
+      $content_this .= '<li>' . '- <span class="yaml_116644">' . $value . '</span></li>';
     }
     else {
       $content_this .= '<li><span class="yaml_aa5500">' . $key . '</span> : <span class="yaml_221199">' . $value . '</span></li>';
