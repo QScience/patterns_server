@@ -52,4 +52,10 @@ jQuery(document).ready(function() {
 	//search box
 	jQuery('.span9 input#edit-search').addClass('span7');
 	jQuery('.span12 input#edit-search').addClass('span10');
+
+	//button for back or detail
+	//alert(jQuery('#all_patterns_div').siblings('#one_pattern_div').find('.server_detail').attr('class'));
+	//var server_detail = jQuery('#all_patterns_div').siblings('#one_pattern_div').find('.server_detail');
+	//server_detail.text('Detail');
+	//server_detail.attr('href', server_detail.attr('name'));
 });

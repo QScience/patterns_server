@@ -90,7 +90,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   }
   else {
     $form['liked'] = array(
-      '#markup' => l(t('Unlike'), $public_link . '/like/' . $pid, array('attributes' => array('class' => 'like-link'))),
+      '#markup' => l(t('Unlike'), $public_link . '/like/' . $pid, array('attributes' => array('class' => 'liked-link'))),
     );
   }
   return $form;
@@ -271,8 +271,11 @@ function theme_patterns_server_one_pattern_info($args) {
   global $base_url;
   $public_link = variable_get('patterns_public_url', '');
   //$server_link = l(t('Server'), $public_link);
-  $server_link = l(t('Server'), $public_link, array('attributes' => array('class' => array('btn btn-success'))));
-  $header_link = l(t("$pattern->title"), $public_link . '/info/' . $pattern->pid, array('attributes' => array('class' => array('btn btn-success'))));
+  $info_link = $public_link . '/info/' . $pattern->pid;
+  $absolute_link = $base_url . '/' . $public_link;
+  $server_link = l(t('Detail'), $info_link, array('attributes' => array('class' => array('btn btn-success server_detail'), 'name' => array("$absolute_link"))));
+  //$header_link = l(t("$pattern->title"), $public_link . '/info/' . $pattern->pid, array('attributes' => array('class' => array('btn btn-success'))));
+  $header_link = t("$pattern->title");
   $markup_header = '<legend>' . $header_link . "<strong>$server_link </strong>" . '</legend>';
   $markup_content = '<div id="one_pattern_content">' . $content . '</div>';
   $page = $markup_begin . $markup_header . $markup_content . $markup_end;
