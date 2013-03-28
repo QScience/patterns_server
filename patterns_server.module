@@ -97,10 +97,10 @@ function patterns_server_menu() {
       'type' => MENU_CALLBACK,
     );
 
-    $rate_link = $public_link . "/rate";
-    $items[$rate_link] = array(
+    $liked_link = $public_link . "/like";
+    $items[$liked_link] = array(
       'title' => 'Rate certain Pattern',
-      'page callback' => 'patterns_server_rate',
+      'page callback' => 'patterns_server_like',
       'access arguments' => array('get patterns'),
       'access callback' => TRUE,
       'type' => MENU_CALLBACK,
@@ -325,7 +325,7 @@ function patterns_server_download_recode($id) {
     ->fetchAssoc();
   if (empty($download_origin_times['pid'])) {
     db_insert('patterns_server')
-      ->fields(array( 'pid' => $id, 'downloadnum' => 1, 'rate' => 0))
+      ->fields(array( 'pid' => $id, 'downloadnum' => 1, 'liked' => 0))
       ->execute();
   }
   else {
@@ -349,50 +349,50 @@ function patterns_server_download($id) {
 
 /**
  */
-function patterns_server_rate($id) {
+function patterns_server_like($id) {
   global $user;
-  $rate_origin = db_select('patterns_rate', 'pr')
-    ->fields('pr', array('rate', 'pid', 'uid'))
+  $liked_origin = db_select('patterns_liked', 'pr')
+    ->fields('pr', array('liked', 'pid', 'uid'))
     ->condition('pid', $id)
     ->condition('uid', $user->uid)
     ->execute()
     ->fetchAssoc();
-  if (empty($rate_origin['pid'])) {
-    db_insert('patterns_rate')
-      ->fields(array( 'pid' => $id, 'uid' => $user->uid, 'rate' => 1, 'created' => time()))
+  if (empty($liked_origin['pid'])) {
+    db_insert('patterns_liked')
+      ->fields(array( 'pid' => $id, 'uid' => $user->uid, 'liked' => 1, 'created' => time()))
       ->execute();
-    $rate_origin = db_select('patterns_server', 'ps')
-      ->fields('ps', array('rate', 'pid'))
+    $liked_origin = db_select('patterns_server', 'ps')
+      ->fields('ps', array('liked', 'pid'))
       ->condition('pid', $id)
       ->execute()
       ->fetchAssoc();
-    if (empty($rate_origin['pid'])) {
+    if (empty($liked_origin['pid'])) {
       db_insert('patterns_server')
-      ->fields(array( 'pid' => $id, 'downloadnum' => 0, 'rate' => 1, ))
+      ->fields(array( 'pid' => $id, 'downloadnum' => 0, 'liked' => 1, ))
       ->execute();
     }
     else {
-      $rate_origin['rate']  += 1;
+      $liked_origin['liked']  += 1;
       db_update('patterns_server')
       ->condition('pid', $id)
-      ->fields(array('rate' => $rate_origin['rate']))
+      ->fields(array('liked' => $liked_origin['liked']))
       ->execute();
     }
   }
   else {
-    db_delete('patterns_rate')
+    db_delete('patterns_liked')
       ->condition('pid', $id)
       ->condition('uid', $user->uid)
       ->execute();
-    $rate_origin = db_select('patterns_server', 'ps')
-      ->fields('ps', array('rate', 'pid'))
+    $liked_origin = db_select('patterns_server', 'ps')
+      ->fields('ps', array('liked', 'pid'))
       ->condition('pid', $id)
       ->execute()
       ->fetchAssoc();
-    $rate_origin['rate']  -= 1;
+    $liked_origin['liked']  -= 1;
     db_update('patterns_server')
       ->condition('pid', $id)
-      ->fields(array('rate' => $rate_origin['rate']))
+      ->fields(array('liked' => $liked_origin['liked']))
       ->execute();
   }
   $public_link = variable_get('patterns_public_url', '');

@@ -53,7 +53,7 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   );
 
   $download_origin_times = db_select('patterns_server', 'ps')
-    ->fields('ps', array('downloadnum', 'rate'))
+    ->fields('ps', array('downloadnum', 'liked'))
     ->condition('pid', $pattern->pid)
     ->execute()
     ->fetchAssoc();
@@ -64,11 +64,11 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
     //'#markup' => $download_origin_times['downloadnum'],
     '#markup' => '<strong class="download-times">' . $download_origin_times['downloadnum'] . '</strong>',
   );
-  if (empty($download_origin_times['rate'])) {
-    $download_origin_times['rate'] = 0;
+  if (empty($download_origin_times['liked'])) {
+    $download_origin_times['liked'] = 0;
   }
-  $form['ratenum'] = array(
-    '#markup' => '<strong id="' . "$pattern->pid" . '_rate' . '">' . $download_origin_times['rate'] . '</strong>',
+  $form['likednum'] = array(
+    '#markup' => '<strong id="' . "$pattern->pid" . '_liked' . '">' . $download_origin_times['liked'] . '</strong>',
   );
   $form['download'] = array(
     '#markup' => l(t('Download'), $public_link . '/download/' . $pid, array('attributes' => array('class' => 'download-link'))),
@@ -76,21 +76,21 @@ function _patterns_server_pattern_build_row($pid, $pattern, $options = array()) 
   );
 
   global $user;
-  $rate_origin = db_select('patterns_rate', 'pr')
+  $liked_origin = db_select('patterns_liked', 'pr')
     ->fields('pr', array('pid', 'uid'))
     ->condition('pid', $pattern->pid)
     ->condition('uid', $user->uid)
     ->execute()
     ->fetchAssoc();
 
-  if (empty($rate_origin['pid'])) {
-    $form['rate'] = array(
-      '#markup' => l(t('Like'), $public_link . '/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
+  if (empty($liked_origin['pid'])) {
+    $form['liked'] = array(
+      '#markup' => l(t('Like'), $public_link . '/like/' . $pid, array('attributes' => array('class' => 'liked-link'))),
     );
   }
   else {
-    $form['rate'] = array(
-      '#markup' => l(t('Unlike'), $public_link . '/rate/' . $pid, array('attributes' => array('class' => 'rate-link'))),
+    $form['liked'] = array(
+      '#markup' => l(t('Unlike'), $public_link . '/like/' . $pid, array('attributes' => array('class' => 'like-link'))),
     );
   }
   return $form;
@@ -187,9 +187,9 @@ function theme_patterns_server_pattern_fieldset($variables) {
     $row[] = drupal_render($pattern['author']);
     $row[] = drupal_render($pattern['upload time']);
     $row[] = drupal_render($pattern['downloadnum']);
-    $row[] = drupal_render($pattern['ratenum']);
+    $row[] = drupal_render($pattern['likednum']);
     $row[] = drupal_render($pattern['download']);
-    $row[] = drupal_render($pattern['rate']);
+    $row[] = drupal_render($pattern['liked']);
     //$rows is 10 rows which every row has six elements.
     $rows[] = $row;
   }

@@ -56,12 +56,12 @@ function patterns_server_schema() {
         'default' => 0,
         'description' => 'Record the times which this pattern was downloaded',
       ),
-      'rate' => array(
+      'liked' => array(
         'type' => 'int',
         'not null' => TRUE,
         'unsigned' => TRUE,
         'default' => 0,
-        'description' => 'Record the times which this pattern was rated',
+        'description' => 'Record the times which this pattern was liked',
       ),
     ),
     'primary key' => array('pid'),
@@ -108,36 +108,36 @@ function patterns_server_schema() {
     'primary key' => array('cid'),
   );
 
-  $schema['patterns_rate'] = array(
-    'description' => 'rates for patterns.',
+  $schema['patterns_liked'] = array(
+    'description' => 'like for patterns.',
     'fields' => array(
       'uid' => array(
         'type' => 'int',
         'not null' => TRUE,
         'unsigned' => TRUE,
         'default' => 0,
-        'description' => 'User rate',
+        'description' => 'User like',
       ),
       'pid' => array(
         'type' => 'int',
         'not null' => TRUE,
         'unsigned' => TRUE,
         'default' => 0,
-        'description' => 'pattern rated',
+        'description' => 'pattern liked',
       ),
       'created' => array(
         'type' => 'int',
         'not null' => TRUE,
         'unsigned' => TRUE,
         'default' => 0,
-        'description' => 'rate time',
+        'description' => 'like time',
       ),
-      'rate' => array(
+      'liked' => array(
         'type' => 'int',
         'not null' => TRUE,
         'unsigned' => TRUE,
         'default' => 0,
-        'description' => 'whether already rate',
+        'description' => 'whether already liked',
       ),
     ),
     'primary key' => array('uid', 'pid'),
