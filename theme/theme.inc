@@ -292,22 +292,22 @@ function _patterns_server_parser_yaml_file($pattern_file)  {
 
               $value_keys = array_keys($value);
               foreach ($value_keys as $_key => $_value) {
-                $content_this .= '<li>' . '- ' . $_value . ' :' . '</li><ul>';
+                $content_this .= '<li >' . '- <span class="yaml_aa5500">' . $_value . '</span> :' . '</li><ul>';
                 $content_this .= _patterns_server_parser_yaml_file($value[$_value]);
                 $content_this .= '</ul>';
               }
 
     }
     elseif (!is_numeric($key) && is_array($value)) {
-      $content_this .= '<li>' . $key . ' :' . '</li><ul>';
+      $content_this .= '<li><span class="yaml_aa5500">' . $key . '</span> :' . '</li><ul>';
       $content_this .= _patterns_server_parser_yaml_file($value);
       $content_this .= '</ul>';
     }
     elseif (is_numeric($key) && !is_array($value)) {
-      $content_this .= '<li>' . '- ' . $value . '</li>';
+      $content_this .= '<li>' . '- <span class="yaml_aa5500">' . $value . '</span></li>';
     }
     else {
-      $content_this .= '<li>' . $key . ' : ' . $value . '</li>';
+      $content_this .= '<li><span class="yaml_aa5500">' . $key . '</span> : <span class="yaml_221199">' . $value . '</span></li>';
     }
   }
   return $content_this;
