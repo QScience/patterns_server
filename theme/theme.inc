@@ -255,6 +255,7 @@ function theme_patterns_server_patterns_table($variables) {
  */
 function theme_patterns_server_one_pattern_info($args) {
   drupal_add_css(drupal_get_path('module', 'patterns_server') . '/css/patterns_server_page.css');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/js/patterns_server_page.js');
 
   $patterns = $args['patterns'];
   if (count($patterns) == 0) {
