@@ -12,9 +12,9 @@ module_load_include('inc', 'patterns_server', 'includes/auth');
 module_load_include('inc', 'patterns', 'includes/io/io');
 
 /**
- * Implements hook_drupaltodrupal_secure_rpc().
+ * Implements hook_d2d_secure_rpc().
  */
-function patterns_server_drupaltodrupal_secure_rpc() {
+function patterns_server_d2d_secure_rpc() {
   $methods = array();
   $methods['patterns_server_publish_patterns'] = array(
     'arguments' => array('credentials' => 'is_string', 'patterns' => 'is_string'),
