@@ -6,7 +6,6 @@
  */
 
 module_load_include('inc', 'patterns_server', 'includes/auth');
-
 module_load_include('inc', 'patterns', 'includes/io/io');
 
 /**
@@ -26,14 +25,25 @@ function patterns_server_d2d_secure_rpc() {
     'description' => 'creates programmatically a new user with patterns_server access privileges',
   );
   
+  $methods['patterns_server_link_client'] = array(
+    'arguments' => array('user' => 'is_string', 'pwd' => 'is_string'),
+    'callback' => 'patterns_server_link_client',
+    'description' => 'confirms that a client is the authorized owner of an existing account',
+  );
+  
   return $methods;
 }
 
-
+/**
+ * On error, returns a string starting with 'Registration-Error.'
+ * On success, returns the hashed password
+ * 
+ */
 function patterns_server_register_client($arguments, $rpc_info) {
-	
+	$errStr = 'Registration-Error. '; 
+  
 	if (empty($arguments)) {
-    return 'Error. Empty request received.';
+    return $errStr . 'Empty request received.';
   }
   
   $check = array(
@@ -41,9 +51,9 @@ function patterns_server_register_client($arguments, $rpc_info) {
     'pwd' => 'is_string',
   	'email' => 'is_string',
   );
-  
+ 
   if (!d2d_check_array($arguments, $check)) {
-    return 'Error. Could not extract the credentials from the encrypted message.';
+    return $errStr . 'Could not extract the credentials from the encrypted message.';
   }
   
   $user = $arguments['user'];
@@ -52,26 +62,65 @@ function patterns_server_register_client($arguments, $rpc_info) {
   
 	
 	if (db_query("SELECT COUNT(*) FROM {users} WHERE name = :name", array(':name' => $user))->fetchField()) {
-  	return t('username %user already existing', array('%user' => $user));
+  	return $errStr . 'Username already existing.';
 	}
 	
 	$account = _patterns_server_register_client($user, $pwd, $email);
 	
 	if (!$account) {
-		watchdog('pp', 'fail');
-		return t('Error. Registration did not succeed. Please try again later.');
+		return $errStr . ' Registration did not succeed. Please try again later.';
 	}
 	else {
-		watchdog('pp', 'success');
 		return $account->pass;
 	}
 }
+
+/**
+ * On error, returns a string starting with 'LinkingUser-Error.'
+ * On success, returns an imploded array containing the email, and the token
+ * 
+ */
+function patterns_server_link_client($arguments, $rpc_info) {
+	$errStr = 'LinkingUser-Error. ';
+	
+	if (empty($arguments)) {
+    return $errStr . 'Empty request received.';
+  }
+  
+  $check = array(
+    'user' => 'is_string',
+    'pwd' => 'is_string',
+  );
+  
+  if (!d2d_check_array($arguments, $check)) {
+    return $errStr . 'Could not extract the credentials from the encrypted message.';
+  }
+  
+  $user = $arguments['user'];
+  $pwd = $arguments['pwd'];
+	
+	$result = db_query("SELECT email, pass FROM {users} WHERE name = :name AND pass = :pass", array(':name' => $user))->fetchAssoc();
+
+	if (empty($result)) {
+	   return $errStr . 'Username or password incorrect.';
+	}
+	
+  $result = d2d_implode($result);
+	
+  if ($result === FALSE) {
+    return $errStr . 'Server error while compacting the results.';
+  }
+	else {
+		return $result;
+	}
+}
+
 
 function _patterns_server_register_client($user, $pwd, $email) {
 	$role = user_role_load_by_name('patterns_server_user');
 	$role_rid = $role->rid;
 
-	watchdog('pp', 'role_got');
+	//watchdog('pp', 'role_got');
 	
 	// Determine the roles of our new user
 	$new_user_roles = array(
