@@ -5,8 +5,6 @@
  * Code related to send pattern to server / receive pattern as server.
  */
 
-
-module_load_include('module', 'pils');
 module_load_include('inc', 'patterns_server', 'includes/auth');
 
 module_load_include('inc', 'patterns', 'includes/io/io');
@@ -44,7 +42,7 @@ function patterns_server_register_client($arguments, $rpc_info) {
   	'email' => 'is_string',
   );
   
-  if (!pils_check_array($arguments, $check)) {
+  if (!d2d_check_array($arguments, $check)) {
     return 'Error. Could not extract the credentials from the encrypted message.';
   }
   
@@ -115,7 +113,7 @@ function patterns_server_incoming_patterns($arguments, $rpc_info) {
   }
   
   $imploded_credentials = $arguments['credentials'];
-  $exploded_credentials = pils_explode($imploded_credentials);
+  $exploded_credentials = d2d_explode($imploded_credentials);
   
   if ($exploded_credentials === FALSE) {
     return 'Error. Received upload pattern/s request with no credentials.';
@@ -126,7 +124,7 @@ function patterns_server_incoming_patterns($arguments, $rpc_info) {
     'pwd' => 'is_string',
   );
   
-  if (!pils_check_array($exploded_credentials, $check)) {
+  if (!d2d_check_array($exploded_credentials, $check)) {
     return 'Error. Could not extract the credentials from the encrypted message.';
   }
     
@@ -144,7 +142,7 @@ function patterns_server_incoming_patterns($arguments, $rpc_info) {
   $imploded_patterns = $arguments['patterns'];
   
   
-  $exploded_patterns = pils_explode($imploded_patterns);
+  $exploded_patterns = d2d_explode($imploded_patterns);
   if ($exploded_patterns === FALSE) {
     return 'Error. Could not extract the pattern files from the encrypted message.';
   }
@@ -153,14 +151,14 @@ function patterns_server_incoming_patterns($arguments, $rpc_info) {
   $saved = array();
   
   foreach ($exploded_patterns as $imploded_pattern) {
-    $exploded_pattern = pils_explode($imploded_pattern);
+    $exploded_pattern = d2d_explode($imploded_pattern);
     if ($exploded_pattern !== FALSE) {
       $check = array(
         'name' => 'is_string',
         'format' => 'is_string',
         'content' => 'is_string',
       );
-      if (pils_check_array($exploded_pattern, $check)) {
+      if (d2d_check_array($exploded_pattern, $check)) {
         $name = $exploded_pattern['name'];
         $pattern = $exploded_pattern['content'];
         $format = $exploded_pattern['format'];        
