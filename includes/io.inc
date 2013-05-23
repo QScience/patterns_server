@@ -7,6 +7,7 @@
 
 module_load_include('inc', 'patterns_server', 'includes/auth');
 module_load_include('inc', 'patterns', 'includes/io/io');
+module_load_include('inc', 'patterns_server', 'includes/api');
 
 /**
  * Implements hook_d2d_secure_rpc().
@@ -29,6 +30,12 @@ function patterns_server_d2d_secure_rpc() {
     'arguments' => array('user' => 'is_string', 'pwd' => 'is_string'),
     'callback' => 'patterns_server_link_client',
     'description' => 'confirms that a client is the authorized owner of an existing account',
+  );
+  
+  $methods['patterns_server_get_patterns_list'] = array(
+      'arguments' => array('limit' => 'is_string'),
+      'callback' => '_patterns_server_get_patterns_list',
+      'description' => 'Returns a list of the patterns currently hosted in this server',
   );
   
   return $methods;
