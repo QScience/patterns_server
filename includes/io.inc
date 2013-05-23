@@ -41,7 +41,7 @@ function patterns_server_d2d_secure_rpc() {
   return $methods;
 }
 
-function patterns_server_get_patterns_list($limit) {
+function patterns_server_get_patterns_list($arguments, $rpc_info) {
   //return xmlrpc_error(10002, t('Result is below the lower limit defined by the server (@min).', array('@min' => $min)));
 
   //@TO-DO: Perform the real query
