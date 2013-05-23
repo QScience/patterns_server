@@ -25,10 +25,10 @@
  *
  * @see xmlrpc_error()
  */
-function _patterns_server_get_patterns_list($limit) {
+/*function _patterns_server_get_patterns_list($limit) {
   //return xmlrpc_error(10002, t('Result is below the lower limit defined by the server (@min).', array('@min' => $min)));
 
   //@TO-DO: Perform the real query
   $patterns_list = array('uuid'=> '12346', 'desc' => 'blah blah blah', 'url' => '/patatin/patatan');
   return $patterns_list;
-}
+}*/

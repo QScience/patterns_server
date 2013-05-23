@@ -7,7 +7,7 @@
 
 module_load_include('inc', 'patterns_server', 'includes/auth');
 module_load_include('inc', 'patterns', 'includes/io/io');
-module_load_include('inc', 'patterns_server', 'includes/api');
+//module_load_include('inc', 'patterns_server', 'includes/api');
 
 /**
  * Implements hook_d2d_secure_rpc().
@@ -33,12 +33,20 @@ function patterns_server_d2d_secure_rpc() {
   );
   
   $methods['patterns_server_get_patterns_list'] = array(
-      'arguments' => array('limit' => 'is_string'),
-      'callback' => '_patterns_server_get_patterns_list',
-      'description' => 'Returns a list of the patterns currently hosted in this server',
+    'arguments' => array('limit' => 'is_string'),
+    'callback' => 'patterns_server_get_patterns_list',
+    'description' => 'Returns a list of the patterns currently hosted in this server',
   );
   
   return $methods;
+}
+
+function patterns_server_get_patterns_list($limit) {
+  //return xmlrpc_error(10002, t('Result is below the lower limit defined by the server (@min).', array('@min' => $min)));
+
+  //@TO-DO: Perform the real query
+  $patterns_list = array('uuid'=> '12346', 'desc' => 'blah blah blah', 'url' => '/patatin/patatan');
+  return 'ok';
 }
 
 /**
