@@ -38,15 +38,36 @@ function patterns_server_d2d_secure_rpc() {
     'description' => 'Returns a list of the patterns currently hosted in this server',
   );
   
+  watchdog('patterns_server_debug', 'patters_server_d2d_secure_rpc() has been called');
+  
   return $methods;
 }
 
 function patterns_server_get_patterns_list($arguments, $rpc_info) {
-  //return xmlrpc_error(10002, t('Result is below the lower limit defined by the server (@min).', array('@min' => $min)));
-
-  //@TO-DO: Perform the real query
-  $patterns_list = array('uuid'=> '12346', 'desc' => 'blah blah blah', 'url' => '/patatin/patatan');
-  return 'ok';
+  //watchdog('patterns_server_debug', 'patterns_server_get_patterns_list() has been called');
+  
+  //Arguments checking
+  $errStr = 'Connection-Error. ';
+  if (empty($arguments)) {
+    return $errStr . 'Empty request received.';
+  }elseif (!d2d_check_convert_int($arguments['limit'])){
+    return $errStr . 'Expected an integer value as limit';
+  }elseif ($arguments['limit']<=0) {
+    return $errStr . 'Limit should be a positive number';
+  }
+  
+  //Perform the casting manually, applying already d2d_implode
+  $patterns_list = array();
+  $pattern_data = array();
+  foreach (patterns_server_get_pattern_timeDESC_from_db($arguments['limit']) as $pattern) {
+    $pattern_data['uuuid'] = $pattern->uuuid;
+    $pattern_data['title'] = $pattern->uuuid;
+    $pattern_data['description'] = $pattern->description;
+    $pattern_data['url'] = $pattern->file;
+    $patterns_list[] = d2d_implode($pattern_data);
+  }
+  //watchdog('patterns_server_debug', 'patterns_server_get_pattern_timeDESC_from_db has been called');
+  return d2d_implode($patterns_list);
 }
 
 /**
