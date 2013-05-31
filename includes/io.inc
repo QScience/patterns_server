@@ -45,16 +45,16 @@ function patterns_server_d2d_secure_rpc() {
 
 function patterns_server_get_patterns_list($arguments, $rpc_info) {
   
-  //Errors checking. We might need to move this to another function
   $error_string = null;
   $patterns_list = array();
 
+  // We will perform the error checking first and implode the error string as well if any
   if(!d2d_check_convert_int($arguments['limit'])){
     $error_string = 'Expected an integer value as limit';
   }elseif ($arguments['limit']<=0) {
     $error_string = 'Limit should be a positive number';
   }else{
-    //Perform the casting manually, applying already d2d_implode
+    // Perform the casting manually, applying already d2d_implode
     $pattern_data = array();
     foreach (patterns_server_get_pattern_timeDESC_from_db($arguments['limit']) as $pattern) {
       $pattern_data['pid'] = $pattern->pid;
@@ -65,7 +65,7 @@ function patterns_server_get_patterns_list($arguments, $rpc_info) {
       $pattern_data['download_url'] = $GLOBALS['base_url'] . '/' . variable_get('patterns_public_url', '') . '/download/' . $pattern->pid;
       $patterns_list[] = d2d_implode($pattern_data);
     }
-    //Implode the resulting array
+    // Implode the resulting array
     $patterns_list = d2d_implode($patterns_list); 
   }
   
