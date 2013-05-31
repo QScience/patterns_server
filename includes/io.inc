@@ -57,7 +57,6 @@ function patterns_server_get_patterns_list($arguments, $rpc_info) {
     // Perform the casting manually, applying already d2d_implode
     $pattern_data = array();
     foreach (patterns_server_get_pattern_timeDESC_from_db($arguments['limit']) as $pattern) {
-      $pattern_data['pid'] = $pattern->pid;
       $pattern_data['uuuid'] = $pattern->uuuid;
       $pattern_data['title'] = $pattern->title;
       $pattern_data['description'] = $pattern->description;
