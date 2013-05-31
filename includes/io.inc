@@ -44,14 +44,11 @@ function patterns_server_d2d_secure_rpc() {
 }
 
 function patterns_server_get_patterns_list($arguments, $rpc_info) {
-  //watchdog('patterns_server_debug', 'patterns_server_get_patterns_list() has been called');
   
-  //Arguments checking
+  //Errors checking. We might need to move this to another function
   $error_string = null;
   $patterns_list = array();
-  /*if (empty($arguments)) {
-    return $errStr . 'Empty request received.';
-  }else*/
+
   if(!d2d_check_convert_int($arguments['limit'])){
     $error_string = 'Expected an integer value as limit';
   }elseif ($arguments['limit']<=0) {
@@ -60,18 +57,18 @@ function patterns_server_get_patterns_list($arguments, $rpc_info) {
     //Perform the casting manually, applying already d2d_implode
     $pattern_data = array();
     foreach (patterns_server_get_pattern_timeDESC_from_db($arguments['limit']) as $pattern) {
+      $pattern_data['pid'] = $pattern->pid;
       $pattern_data['uuuid'] = $pattern->uuuid;
-      $pattern_data['title'] = $pattern->uuuid;
+      $pattern_data['title'] = $pattern->title;
       $pattern_data['description'] = $pattern->description;
-      $pattern_data['url'] = $pattern->file;
+      //We will provide the full download url ready to be downloaded
+      $pattern_data['download_url'] = $GLOBALS['base_url'] . '/' . variable_get('patterns_public_url', '') . '/download/' . $pattern->pid;
       $patterns_list[] = d2d_implode($pattern_data);
     }
     //Implode the resulting array
     $patterns_list = d2d_implode($patterns_list); 
   }
   
-  //watchdog('patterns_server_debug', 'patterns_server_get_pattern_timeDESC_from_db has been called');
-  //return d2d_implode($patterns_list);
   return d2d_implode(array('return' => $patterns_list, 'error' => $error_string));
 }
 
