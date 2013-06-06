@@ -290,14 +290,11 @@ function patterns_server_get_patterns_list($arguments, $rpc_info) {
 
 /**
  *
- * Provides the list of patterns currently stored in this server.
- * It makes use of patterns_server_get_pattern_timeDESC_from_db()
- * to perform the operation
- *
+ * Retrieves a pattern file and implode it using D2D functions.
+ * 
  * @param array $arguments Set of arguments as defined by D2D
  * @param array $rpc_info  Metadata about the RPC call as defined by D2D
- * @return string Imploded string with the error and another array containing
- * the list of patterns.
+ * @return string Imploded string with the error and the pattern.
  */
 function patterns_server_fetch_pattern($arguments, $rpc_info) {
   $error_string = null;
@@ -315,6 +312,7 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
       // Obtain the pattern file to be imploded as a string
       $pattern = file_get_contents($query[0]->file);
       // If everyting is correct, increase the counter
+      patterns_server_download_recode($arguments['pid']);
     }else{
       $error_string = 'Invalid PID';
     }
