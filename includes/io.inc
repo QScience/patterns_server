@@ -311,9 +311,13 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
   }else{
     // Perform the casting manually, applying already d2d_implode
     $query = patterns_server_get_pattern_pid_from_db($arguments['pid']);
-    $pattern = $query[0]->file;
-    watchdog('patterns_server', "pattern: " . $pattern);
-    watchdog('patterns_server', "pattern: " . $query['name']);
+    if (sizeof($query) == 1) {
+      // Obtain the pattern file to be imploded as a string
+      $pattern = file_get_contents($query[0]->file);
+      // If everyting is correct, increase the counter
+    }else{
+      $error_string = 'Invalid PID';
+    }
   }
 
   return d2d_implode(array('return' => $pattern, 'error' => $error_string));
