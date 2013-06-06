@@ -316,7 +316,8 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
       // Prepare the response
       $return['file'] = $pattern;
       $return['format'] = $query[0]->format;
-      //watchdog('debug', 'pattern: ' . json_encode($query));
+      $return['uuuid'] = $query[0]->uuuid;
+      watchdog('debug', 'pattern: ' . json_encode($query));
     }else{
       $error_string = 'Invalid PID';
     }
