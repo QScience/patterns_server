@@ -301,7 +301,7 @@ function patterns_server_get_patterns_list($arguments, $rpc_info) {
  */
 function patterns_server_fetch_pattern($arguments, $rpc_info) {
   $error_string = null;
-  $patterns_list = array();
+  $pattern = null;
 
   // We will perform the error checking first and implode the error string as well if any
   if(!d2d_check_convert_int($arguments['pid'])){
@@ -310,21 +310,11 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
     $error_string = 'PID should be a positive number';
   }else{
     // Perform the casting manually, applying already d2d_implode
-    $pattern_data = array();
-    /*foreach (patterns_server_get_pattern_timeDESC_from_db($arguments['limit']) as $pattern) {
-      $pattern_data['uuuid'] = $pattern->uuuid;
-      $pattern_data['format'] = $pattern->format;
-      $pattern_data['title'] = $pattern->title;
-      $pattern_data['description'] = $pattern->description;
-      $pattern_data['author'] = $pattern->author;
-      //We will provide the full download url ready to be downloaded
-      $pattern_data['download_url'] = $GLOBALS['base_url'] . '/' . variable_get('patterns_public_url', '') . '/download/' . $pattern->pid;
-      $patterns_list[] = d2d_implode($pattern_data);
-    }
-    // Implode the resulting array
-    $patterns_list = d2d_implode($patterns_list);*/
-    $error_string = 'Oki doki';
+    $query = patterns_server_get_pattern_pid_from_db($arguments['pid']);
+    $pattern = $query[0]->file;
+    watchdog('patterns_server', "pattern: " . $pattern);
+    watchdog('patterns_server', "pattern: " . $query['name']);
   }
 
-  return d2d_implode(array('return' => $patterns_list, 'error' => $error_string));
+  return d2d_implode(array('return' => $pattern, 'error' => $error_string));
 }
