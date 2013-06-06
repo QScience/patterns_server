@@ -298,7 +298,7 @@ function patterns_server_get_patterns_list($arguments, $rpc_info) {
  */
 function patterns_server_fetch_pattern($arguments, $rpc_info) {
   $error_string = null;
-  $pattern = null;
+  $return = array();
 
   // We will perform the error checking first and implode the error string as well if any
   if(!d2d_check_convert_int($arguments['pid'])){
@@ -313,10 +313,14 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
       $pattern = file_get_contents($query[0]->file);
       // If everyting is correct, increase the counter
       patterns_server_download_recode($arguments['pid']);
+      // Prepare the response
+      $return['file'] = $pattern;
+      $return['format'] = $query[0]->format;
+      //watchdog('debug', 'pattern: ' . json_encode($query));
     }else{
       $error_string = 'Invalid PID';
     }
   }
 
-  return d2d_implode(array('return' => $pattern, 'error' => $error_string));
+  return d2d_implode(array('return' => d2d_implode($return), 'error' => $error_string));
 }
