@@ -277,8 +277,12 @@ function patterns_server_get_patterns_list($arguments, $rpc_info) {
       $pattern_data['title'] = $pattern->title;
       $pattern_data['description'] = $pattern->description;
       $pattern_data['author'] = $pattern->author;
-      //We will provide the full download url ready to be downloaded
-      $pattern_data['view_url'] = $GLOBALS['base_url'] . '/' . variable_get('patterns_public_url', '') . '/info/' . $pattern->pid;
+      //We will provide the full download url ready to be downloaded. Check if clean urls are enabled
+      if ($GLOBALS['conf']['clean_url']) {
+       $pattern_data['view_url'] = $GLOBALS['base_url'] . '/' . variable_get('patterns_public_url', '') . '/info/' . $pattern->pid;
+      }else{
+        $pattern_data['view_url'] = $GLOBALS['base_url'] . '/?q=' . variable_get('patterns_public_url', '') . '/info/' . $pattern->pid;
+      }
       $patterns_list[] = d2d_implode($pattern_data);
     }
     // Implode the resulting array
