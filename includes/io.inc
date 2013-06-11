@@ -344,7 +344,7 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
  */
 function patterns_server_search($arguments, $rpc_info) {
   $error_string = null;
-  $return = array();
+  $patterns_list = array();
 
   // We will perform the error checking first and implode the error string as well if any
   if(!d2d_check_convert_int($arguments['type'])){
@@ -356,11 +356,32 @@ function patterns_server_search($arguments, $rpc_info) {
     $query = patterns_server_get_pattern_pid_from_db($arguments['pid']);
     $query = patterns_server_search_pattern($arguments['token'], $arguments['type']);
     if (sizeof($query) > 0) {
-      $return['number_results'] = sizeof($query);
+      //@TO-DO: Remove watchdog for debugging
+      watchdog('debug', json_encode($query));
+      //$return['number_results'] = sizeof($query);
+      // Perform the casting manually, applying already d2d_implode
+      $pattern_data = array();
+      foreach ($query as $pattern) {
+        $pattern_data['pid'] = $pattern->pid;
+        $pattern_data['uuuid'] = $pattern->uuuid;
+        $pattern_data['format'] = $pattern->format;
+        $pattern_data['title'] = $pattern->title;
+        $pattern_data['description'] = $pattern->description;
+        $pattern_data['author'] = $pattern->author;
+        //We will provide the full download url ready to be downloaded. Check if clean urls are enabled
+        if ($GLOBALS['conf']['clean_url']) {
+          $pattern_data['view_url'] = $GLOBALS['base_url'] . '/' . variable_get('patterns_public_url', '') . '/info/' . $pattern->pid;
+        }else{
+          $pattern_data['view_url'] = $GLOBALS['base_url'] . '/?q=' . variable_get('patterns_public_url', '') . '/info/' . $pattern->pid;
+        }
+        $patterns_list[] = d2d_implode($pattern_data);
+      }
+      // Implode the resulting array
+      $patterns_list = d2d_implode($patterns_list);
     }else{
       $error_string = 'No results matched the given criteria';
     }
   }
   
-  return d2d_implode(array('return' => d2d_implode($return), 'error' => $error_string));
+  return d2d_implode(array('return' => $patterns_list, 'error' => $error_string));
 }
