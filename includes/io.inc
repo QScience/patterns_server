@@ -342,7 +342,7 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
  * @param array $rpc_info  Metadata about the RPC call as defined by D2D
  * @return string Imploded string with the error and the pattern.
  */
-function patterns_server_fetch_pattern($arguments, $rpc_info) {
+function patterns_server_search($arguments, $rpc_info) {
   $error_string = null;
   $return = array();
 
@@ -356,7 +356,7 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
     $query = patterns_server_get_pattern_pid_from_db($arguments['pid']);
     $query = patterns_server_search_pattern($arguments['token'], $arguments['type']);
     if (sizeof($query) > 0) {
-      $retun['number_results'] = sizeof($query);
+      $return['number_results'] = sizeof($query);
     }else{
       $error_string = 'No results matched the given criteria';
     }
