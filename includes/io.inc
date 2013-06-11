@@ -43,7 +43,11 @@ function patterns_server_d2d_secure_rpc() {
       'description' => 'Returns a imploded version of the whole pattern',
   );
   
-  watchdog('patterns_server_debug', 'patters_server_d2d_secure_rpc() has been called');
+  $methods['patterns_server_search'] = array(
+      'arguments' => array('token' => 'is_string', 'type' => 'is_string',),
+      'callback' => 'patterns_server_search',
+      'description' => 'Returns a list of patterns according to the given criteria',
+  );
   
   return $methods;
 }
@@ -310,7 +314,7 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
   }elseif ($arguments['pid']<=0) {
     $error_string = 'PID should be a positive number';
   }else{
-    // Perform the casting manually, applying already d2d_implode
+    // Retrieve the pattern using the function developed for the server itself
     $query = patterns_server_get_pattern_pid_from_db($arguments['pid']);
     if (sizeof($query) == 1) {
       // Obtain the pattern file to be imploded as a string
@@ -326,5 +330,37 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
     }
   }
 
+  return d2d_implode(array('return' => d2d_implode($return), 'error' => $error_string));
+}
+
+/**
+ * @TO-DO: Document properly the function
+ *
+ * Retrieves a pattern file and implode it using D2D functions.
+ *
+ * @param array $arguments Set of arguments as defined by D2D
+ * @param array $rpc_info  Metadata about the RPC call as defined by D2D
+ * @return string Imploded string with the error and the pattern.
+ */
+function patterns_server_fetch_pattern($arguments, $rpc_info) {
+  $error_string = null;
+  $return = array();
+
+  // We will perform the error checking first and implode the error string as well if any
+  if(!d2d_check_convert_int($arguments['type'])){
+    $error_string = 'Expected an integer value as type';
+  }elseif ($arguments['type']<0 || $arguments['type']>4) {
+    $error_string = 'Type should be an integer value in the range 0-4';
+  }else{
+    // Retrieve the patterns using the function developed for the server itself
+    $query = patterns_server_get_pattern_pid_from_db($arguments['pid']);
+    $query = patterns_server_search_pattern($arguments['token'], $arguments['type']);
+    if (sizeof($query) > 0) {
+      $retun['number_results'] = sizeof($query);
+    }else{
+      $error_string = 'No results matched the given criteria';
+    }
+  }
+  
   return d2d_implode(array('return' => d2d_implode($return), 'error' => $error_string));
 }
