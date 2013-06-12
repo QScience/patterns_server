@@ -352,14 +352,11 @@ function patterns_server_search($arguments, $rpc_info) {
   }elseif ($arguments['type']<0 || $arguments['type']>4) {
     $error_string = 'Type should be an integer value in the range 0-4';
   }else{
-    // Retrieve the patterns using the function developed for the server itself
+    // Retrieve the patterns using the function developed for the server itself.    
     $query = patterns_server_get_pattern_pid_from_db($arguments['pid']);
     $query = patterns_server_search_pattern($arguments['token'], $arguments['type']);
-    if (sizeof($query) > 0) {
-      //@TO-DO: Remove watchdog for debugging
-      watchdog('debug', json_encode($query));
-      //$return['number_results'] = sizeof($query);
-      // Perform the casting manually, applying already d2d_implode
+    if (sizeof($query) >= 0) {
+      // Perform the casting manually. No results will return an empty array
       $pattern_data = array();
       foreach ($query as $pattern) {
         $pattern_data['pid'] = $pattern->pid;
@@ -378,8 +375,6 @@ function patterns_server_search($arguments, $rpc_info) {
       }
       // Implode the resulting array
       $patterns_list = d2d_implode($patterns_list);
-    }else{
-      $error_string = 'No results matched the given criteria';
     }
   }
   
