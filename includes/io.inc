@@ -334,13 +334,12 @@ function patterns_server_fetch_pattern($arguments, $rpc_info) {
 }
 
 /**
- * @TO-DO: Document properly the function
- *
- * Retrieves a pattern file and implode it using D2D functions.
+ * Retrieves a set of patterns that matches the given criteria. It makes
+ * use of the DB function patterns_server_search_pattern().
  *
  * @param array $arguments Set of arguments as defined by D2D
  * @param array $rpc_info  Metadata about the RPC call as defined by D2D
- * @return string Imploded string with the error and the pattern.
+ * @return string Imploded string with the error and the list of Patterns.
  */
 function patterns_server_search($arguments, $rpc_info) {
   $error_string = null;
@@ -352,8 +351,7 @@ function patterns_server_search($arguments, $rpc_info) {
   }elseif ($arguments['type']<0 || $arguments['type']>4) {
     $error_string = 'Type should be an integer value in the range 0-4';
   }else{
-    // Retrieve the patterns using the function developed for the server itself.    
-    $query = patterns_server_get_pattern_pid_from_db($arguments['pid']);
+    // Retrieve the patterns using the function developed for the server itself.
     $query = patterns_server_search_pattern($arguments['token'], $arguments['type']);
     if (sizeof($query) >= 0) {
       // Perform the casting manually. No results will return an empty array
