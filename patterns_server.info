@@ -3,6 +3,5 @@ description = Exposes a public api to push patterns and register users with spec
 core = 7.x
 package = Patterns
 
-dependencies[] = pils
 dependencies[] = patterns
 dependencies[] = patterns_components
