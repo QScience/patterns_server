@@ -44,14 +44,14 @@ dl dd {
 }
 
 /* pattern field part */
-#patternentity-page-pattern-field {
+#patterns-server-page-pattern-field {
 	border: 1px solid #BAB1B1;
 	margin: 10px;
 	width: 80%;
 	padding-top: 20px;
 }
 
-#patternentity-page-pattern-field ul{
+#patterns-server-page-pattern-field ul{
 	list-style: none;
 	margin: 0;
 }
@@ -112,10 +112,6 @@ dl dd {
   width: 27px;
   margin-right: 5px;
 }
-
-/*#patternentity-upload-form-js {
-	text-align: center;
-}*/
 
 .backtoserver-button-link {
   float: right;

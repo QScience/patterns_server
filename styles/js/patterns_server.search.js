@@ -64,7 +64,7 @@ $(document).ready(function() {
 
   //search functionality ajax implementation
   $('#patternentity-search #edit-submit').bind('click', function() {
-    var table_wrap = $('#pattern-entity-all-table-wrap');
+    var table_wrap = $('#patterns-server-all-table-wrap');
     var page_title = $('#page-title');
 
     var text_select = $("select#edit-selected option:selected").text();
@@ -84,7 +84,7 @@ $(document).ready(function() {
         url: path,
         success: function(data) {
           //console.log(data);
-          var table = $('#pattern-entity-all-table-wrap', data).html();
+          var table = $('#patterns-server-all-table-wrap', data).html();
           var page_title_new = $('#page-title', data).html();
 
           $(page_title).html(page_title_new);
@@ -94,10 +94,10 @@ $(document).ready(function() {
           $(".pattern-entity-list-table .upload-time").text(function(){
             return moment.unix($(this).attr("value")).fromNow();
           });
-          $('.pattern-entity-list-table-wrap').first().prepend('<div id="patternentity-upload-form-js" class="hero-unit"></div>');
-          var upload_form_div = $('#patternentity-upload-form-js');
+          $('.patterns-server-list-table-wrap').first().prepend('<div id="patterns-server-upload-form-js" class="hero-unit"></div>');
+          var upload_form_div = $('#patterns-server-upload-form-js');
           $(upload_form_div).hide();
-          $('.pattern-entity-list-table-wrap .upload-button-link').not(':first').hide();
+          $('.patterns-server-list-table-wrap .upload-button-link').not(':first').hide();
         }
       });
     }

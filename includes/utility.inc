@@ -2,7 +2,7 @@
 /**
  * upload button link in the list page.
  */
-function _pattern_entity_upload_button() {
+function _patterns_server_upload_button() {
   $url = 'admin/structure/patternentity/add';
   $upload_link = l(t('New Pattern'), $url, array('attributes' => array('class' => array('upload-button-link'))));
   return "<strong>$upload_link</strong>";
@@ -11,15 +11,15 @@ function _pattern_entity_upload_button() {
 /**
  * backtoserver button link and like lint in the view page.
  */
-function _pattern_entity_back_like_button($pid) {
-  $url = 'all_pattern_entity_list';
+function _patterns_server_back_like_button($pid) {
+  $url = 'patterns_server_homepage';
   $backtoserver_link = l(t('Back To Server'), $url, array('attributes' => array('class' => array('backtoserver-button-link'))));
   $backtoserver_link = "<strong>$backtoserver_link</strong>";
   
   
   $file_d = l(t('download'), 'pattern/' . $pid . '/download', array('attributes' => array('class' => 'download-link')));
 
-  $voted = _pattern_entity_check_whether_voted($pid);
+  $voted = _patterns_server_check_whether_voted($pid);
   if($voted) {
     $vote_s = '<strong class="voted-sign" id="pattern-entity-view-page-vote">voted</strong>';
   }
@@ -95,7 +95,7 @@ function _pattern_entity_list_orderby_voting($query) {
   $vscore = array();
   if (isset($query->ordered_results) && count($query->ordered_results)) {
     foreach ($query->ordered_results as $key => $value) {
-      $vscore[$key] = _pattern_entity_get_voting_score($value->entity_id);
+      $vscore[$key] = _patterns_server_get_voting_score($value->entity_id);
     }
     arsort($vscore);
     //dsm($vscore);
@@ -107,9 +107,9 @@ function _pattern_entity_list_orderby_voting($query) {
     //dsm($query);
 
     $fieldset_title = 'Most Liked Patterns:';
-    $upload_button = _pattern_entity_upload_button();
-    $list = "<div class='pattern-entity-list-table-wrap'><fieldset><legend>$fieldset_title$upload_button</legend><div class='fieldset-wrapper'>";
-    $list .= _pattern_entity_list_page($query);
+    $upload_button = _patterns_server_upload_button();
+    $list = "<div class='patterns-server-list-table-wrap'><fieldset><legend>$fieldset_title$upload_button</legend><div class='fieldset-wrapper'>";
+    $list .= _patterns_server_list_page($query);
     $list .= '</div></fieldset></div>';
     return $list;
   }

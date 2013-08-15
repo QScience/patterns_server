@@ -1,22 +1,22 @@
 <?php
 
 /**
- * build several blocks for patternentity.
+ * build several blocks for patterns_server.
  */
 
 /**
  * most prolific author 
- * used by patternentity_block_view.
+ * used by patterns_server_block_view.
  */
-function _pattern_entity_block_most_prolific_author() {
-  drupal_add_css(drupal_get_path('module', 'patternentity') . '/styles/css/patternentity.block.css');
+function _patterns_server_block_most_prolific_author() {
+  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/styles/css/patterns_server.block.css');
   $result = array();
   $result['type'] = "ul";
-  $result['attributes'] = array('class' => 'patternentity-most-prolific-authors');
+  $result['attributes'] = array('class' => 'patterns-server-most-prolific-authors');
 
 
   $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'patternentity')
+  $query->entityCondition('entity_type', 'patterns_server')
     ->execute();
 
   $authors_score = array();
@@ -24,7 +24,7 @@ function _pattern_entity_block_most_prolific_author() {
     foreach($query->ordered_results as $value) {
       $ids[] = $value->entity_id;
     }
-    $entities = entity_load('patternentity', $ids);
+    $entities = entity_load('patterns_server', $ids);
     foreach($entities as $pe) {
       $pe->author = strtolower($pe->author);
       if (isset($authors_score[$pe->author])) {
@@ -56,19 +56,19 @@ function _pattern_entity_block_most_prolific_author() {
 
 /**
  * hottest tags
- * used by patternentity_block_view.
+ * used by patterns_server_block_view.
  */
-function _pattern_entity_block_hottest_tags() {
-  drupal_add_css(drupal_get_path('module', 'patternentity') . '/styles/css/patternentity.block.css');
+function _patterns_server_block_hottest_tags() {
+  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/styles/css/patterns_server.block.css');
   $result = array();
   $result['type'] = "ul";
-  $result['attributes'] = array('class' => 'patternentity-most-popular-tags');
+  $result['attributes'] = array('class' => 'patterns-server-most-popular-tags');
 
-  //get all tags field for patternentity.
+  //get all tags field for patterns_server.
   $tags_table_db = array();
-  $fields_info = field_info_instances('patternentity');
-  if (isset($fields_info['patternentity']) && count($fields_info['patternentity'])) {
-    $fields_info = $fields_info['patternentity'];
+  $fields_info = field_info_instances('patterns_server');
+  if (isset($fields_info['patterns_server']) && count($fields_info['patterns_server'])) {
+    $fields_info = $fields_info['patterns_server'];
     foreach ($fields_info as $field_name => $_value) {
       $field_info = field_info_field($field_name);
       if ($field_info['type'] == 'taxonomy_term_reference') {
@@ -109,7 +109,7 @@ function _pattern_entity_block_hottest_tags() {
 
   $items = array();
   foreach ($tags_score as $tid => $score_tb) {
-    $tagname = _pattern_entity_tagname_by_tagid($tid);
+    $tagname = _patterns_server_tagname_by_tagid($tid);
     $items[] = array(
       'data' => l($tagname['name'], 'pattern/alltags/' . $tid) . ' × ' . $score_tb['score'],
     );
@@ -123,7 +123,7 @@ function _pattern_entity_block_hottest_tags() {
 /**
  * find vocabulary by tags id.
  */
-function _pattern_entity_tagname_by_tagid($tagid) {
+function _patterns_server_tagname_by_tagid($tagid) {
   $name = db_select('taxonomy_term_data', 'ttd')
     ->fields('ttd', array('name'))
     ->condition('tid', $tagid)
@@ -136,9 +136,9 @@ function _pattern_entity_tagname_by_tagid($tagid) {
 /**
  * get an entity's all taxonomy fields' name.
  */
-function _pattern_entity_get_all_taxonomyfields_name($entity_type) {
+function _patterns_server_get_all_taxonomyfields_name($entity_type) {
  
-  //get all tags field for patternentity.
+  //get all tags field for patterns_server.
   $tags_table_db = array();
   $fields_info = field_info_instances($entity_type);
   if (isset($fields_info[$entity_type]) && count($fields_info[$entity_type])) {

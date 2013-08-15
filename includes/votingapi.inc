@@ -6,9 +6,9 @@
 /**
  * used in theme/theme.inc to return a score of current pid.
  */
-function _pattern_entity_get_voting_score($pid) {
+function _patterns_server_get_voting_score($pid) {
   $criteria = array(
-    'entity_type' => 'patternentity',
+    'entity_type' => 'patterns_server',
     'entity_id' => $pid,
     'value_type' => 'points',
     'function' => 'sum',
@@ -26,15 +26,15 @@ function _pattern_entity_get_voting_score($pid) {
 /**
  * callback hook_menu() for /pattern/pid/voting
  */
-function _pattern_entity_voting_pattern($pid) {
+function _patterns_server_voting_pattern($pid) {
   $votes = array(
-    'entity_type' => 'patternentity',
+    'entity_type' => 'patterns_server',
     'entity_id' => $pid,
     'value_type' => 'points',
     'value' => '1',
   );
   votingapi_set_votes($votes);
-  //$vote_score_now = _pattern_entity_get_voting_score($pid);
+  //$vote_score_now = _patterns_server_get_voting_score($pid);
   //return $vote_score_now;
   
   drupal_goto("pattern/$pid");
@@ -43,10 +43,10 @@ function _pattern_entity_voting_pattern($pid) {
 /**
  * check whether certain user can vote or not.
  */
-function _pattern_entity_check_whether_voted($pid) {
+function _patterns_server_check_whether_voted($pid) {
   global $user;
   $criteria = array(
-    'entity_type' => 'patternentity',
+    'entity_type' => 'patterns_server',
     'entity_id' => $pid,
     'value_type' => 'points',
     'uid' => $user->uid,

@@ -1,14 +1,14 @@
 <?php
 /**
- * Implement search function form for patternentity.
+ * Implement search function form for patterns_server.
  */
-function patternentity_search($form, &$form_state, $search_type='', $search_value='') {
-  $form['patternentity_search']= array(
+function patterns_server_search($form, &$form_state, $search_type='', $search_value='') {
+  $form['patterns_server_search']= array(
     '#type' => 'container',
     '#attributes' => array('class' => array('container-inline')),
 
   );
-  $form['patternentity_search']['search'] = array(
+  $form['patterns_server_search']['search'] = array(
     '#type' => 'textfield',
     '#title' => t('Search'),
     '#title_display' => 'invisible',
@@ -17,7 +17,7 @@ function patternentity_search($form, &$form_state, $search_type='', $search_valu
     '#attributes' => array('title' => t('Enter the terms you wish to search for.'), 'class' => array('container-inline')),
 
   );
-  $form['patternentity_search']['selected'] = array(
+  $form['patterns_server_search']['selected'] = array(
     '#type' => 'select',
     '#title' => t('Selected'),
     '#title_display' => 'invisible',
@@ -32,9 +32,9 @@ function patternentity_search($form, &$form_state, $search_type='', $search_valu
     '#default_value' => ($search_type == '')?0:$search_type,
   );
   $button_url = url('pattern/search/');
-  $form['patternentity_search']['actions'] = array('#type' => 'actions');
-  $form['patternentity_search']['actions']['submit'] = array('#type' => 'submit', '#value' => t('Search'), '#attributes' => array('name' => $button_url));
-  $form['patternentity_search']['#submit'][] = 'patternentity_search_submit';
+  $form['patterns_server_search']['actions'] = array('#type' => 'actions');
+  $form['patterns_server_search']['actions']['submit'] = array('#type' => 'submit', '#value' => t('Search'), '#attributes' => array('name' => $button_url));
+  $form['patterns_server_search']['#submit'][] = 'patterns_server_search_submit';
 
   return $form;
 }
@@ -42,7 +42,7 @@ function patternentity_search($form, &$form_state, $search_type='', $search_valu
 /**
  * search form's submit function.
  */
-function patternentity_search_submit($form, &$form_state) {
+function patterns_server_search_submit($form, &$form_state) {
 
   if ($form_state['values']['search'] == '') {
     form_set_error('keys', t('Please enter some keywords.'));

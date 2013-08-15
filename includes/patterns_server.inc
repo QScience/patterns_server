@@ -3,7 +3,7 @@
 /**
  * Implements entity class.
  */
-class PatternEntity extends Entity {
+class Patterns_Server_Entity extends Entity {
 
   /**
    * Override this in order to implement a custom default URI and specify

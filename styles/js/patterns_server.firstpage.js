@@ -2,14 +2,14 @@
 $(document).ready(function() {
 
   //upload functionality ajax implementation
-  var upload_form_div = $('#patternentity-upload-form-js');
+  var upload_form_div = $('#patterns-server-upload-form-js');
   $(upload_form_div).css('border', '2px solid #d8d8d8');
   $(upload_form_div).css('padding-left', '13px');
   $(upload_form_div).css('padding-top', '9px');
 
   $(upload_form_div).hide();
   $('body').delegate('a.upload-button-link', 'click', function (){
-    var upload_form_div = $('#patternentity-upload-form-js');
+    var upload_form_div = $('#patterns-server-upload-form-js');
     var url = $('.upload-button-link').attr('href');
     $.ajax({
       url: url,

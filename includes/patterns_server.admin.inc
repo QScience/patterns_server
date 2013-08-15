@@ -129,6 +129,6 @@ function patternentity_form_submit(&$form, &$form_state) {
     $form_state['redirect'] = 'admin/structure/patternentity';
   }
   else {
-    $form_state['redirect'] = 'all_pattern_entity_list';
+    $form_state['redirect'] = 'patterns_server_homepage';
   }
 }

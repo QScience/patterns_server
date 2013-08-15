@@ -52,11 +52,11 @@ $(document).ready(function() {
   });
 
   //upload functionality ajax implementation
-  $('.pattern-entity-list-table-wrap').first().prepend('<div id="patternentity-upload-form-js" class="hero-unit"></div>');
-  var upload_form_div = $('#patternentity-upload-form-js');
+  $('.patterns-server-list-table-wrap').first().prepend('<div id="patterns-server-upload-form-js" class="hero-unit"></div>');
+  var upload_form_div = $('#patterns-server-upload-form-js');
   $(upload_form_div).hide();
   $('body').delegate('a.upload-button-link', 'click', function (){
-    var upload_form_div = $('#patternentity-upload-form-js');
+    var upload_form_div = $('#patterns-server-upload-form-js');
     var url = $('.upload-button-link').attr('href');
     $.ajax({
       url: url,
@@ -83,17 +83,17 @@ $(document).ready(function() {
   });
 
   //only show upload link at the first table
-  $('.pattern-entity-list-table-wrap .upload-button-link').not(':first').hide();
+  $('.patterns-server-list-table-wrap .upload-button-link').not(':first').hide();
 
   //pager ajax functionality.
-  $('body').delegate( '.pattern-entity-list-table-wrap ul li a', 'click', function(e) {
+  $('body').delegate( '.patterns-server-list-table-wrap ul li a', 'click', function(e) {
     var url = $(this).attr('href');
-    var current_table = $(this).closest('.pattern-entity-list-table-wrap');
-    var index = $(current_table).index('.pattern-entity-list-table-wrap');
+    var current_table = $(this).closest('.patterns-server-list-table-wrap');
+    var index = $(current_table).index('.patterns-server-list-table-wrap');
     $.ajax({
       url: url,
       success: function(data) {
-        var current_table_new = $('.pattern-entity-list-table-wrap', data).eq(index);
+        var current_table_new = $('.patterns-server-list-table-wrap', data).eq(index);
         var current_table_new_fieldset_wrap = $(current_table_new).find('.fieldset-wrapper');
         var current_table_fieldset_wrap = $(current_table).find('.fieldset-wrapper');
         $(current_table_fieldset_wrap).hide();
@@ -102,10 +102,10 @@ $(document).ready(function() {
         $(".pattern-entity-list-table .upload-time").text(function(){
           return moment.unix($(this).attr("value")).fromNow();
         });
-        $('.pattern-entity-list-table-wrap').first().prepend('<div id="patternentity-upload-form-js" class="hero-unit"></div>');
-        var upload_form_div = $('#patternentity-upload-form-js');
+        $('.patterns-server-list-table-wrap').first().prepend('<div id="patterns-server-upload-form-js" class="hero-unit"></div>');
+        var upload_form_div = $('#patterns-server-upload-form-js');
         $(upload_form_div).hide();
-        $('.pattern-entity-list-table-wrap .upload-button-link').not(':first').hide();
+        $('.patterns-server-list-table-wrap .upload-button-link').not(':first').hide();
 
       }
     });

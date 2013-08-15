@@ -3,7 +3,7 @@
 /**
  * customise entity controller class.
  */
-class PatternEntityController extends EntityAPIController {
+class Patterns_Server_EntityController extends EntityAPIController {
 
   /**
    * Implements EntityAPIControllerInterface.

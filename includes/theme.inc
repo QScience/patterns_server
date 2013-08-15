@@ -4,7 +4,7 @@ module_load_include('inc', 'patternentity', 'includes/patternentity.votingapi');
 /**
  * theme the 'pattern' field in 'patternentity' table.
  */
-function _pattern_entity_parser_field_pattern($pattern)  {
+function _patterns_server_parser_field_pattern($pattern)  {
   $content_this = NULL;
   foreach ($pattern as $key => $value) {
     if (is_numeric($key) && is_array($value)) {
@@ -14,7 +14,7 @@ function _pattern_entity_parser_field_pattern($pattern)  {
                 $content_this .= '<li >' . '- <span class="yaml_aa5500">' . $_value . '</span> :' ;
                 if (is_array($value[$_value])) {
                   $content_this .= '</li><ul>';
-                  $content_this .= _pattern_entity_parser_field_pattern($value[$_value]);
+                  $content_this .= _patterns_server_parser_field_pattern($value[$_value]);
                 }
                 else {
                   $content_this .= '<span class="yaml_116644">' . $value[$_value] . '</spn>';
@@ -42,7 +42,7 @@ function _pattern_entity_parser_field_pattern($pattern)  {
 /**
  * theme pattern description part
  */
-function _pattern_entity_view_pattern_description($pe) {
+function _patterns_server_view_pattern_description($pe) {
   $content = '<div id="patternentity-page-pattern-description"><dl class="dl-horizontal">';
 
   $content .= '<dt>title</dt><dd>' . $pe->title . '</dd>';
@@ -61,10 +61,10 @@ function _pattern_entity_view_pattern_description($pe) {
 
   $content .= '<dt>file name</dt><dd>' . $pe->file_name. '</dd>';
 
-  $score = _pattern_entity_get_voting_score($pe->pid);
+  $score = _patterns_server_get_voting_score($pe->pid);
   $content .= '<dt>score</dt><dd id="pattern-entity-view-page-score">' . $score . '</dd>';
 
-  //$voted = _pattern_entity_check_whether_voted($pe->pid);
+  //$voted = _patterns_server_check_whether_voted($pe->pid);
   //if($voted) {
   //  $vote_s = '<strong class="voted-sign">voted</strong>';
   //}
@@ -78,7 +78,6 @@ function _pattern_entity_view_pattern_description($pe) {
 
   $content .= '<dt>content</dt><dd>' . '<a href="" id="pattern_file_popup">show</a>' . '</dd>';
 
-  //$all_patteren_list = url('all_pattern_entity_list');
   //$content .= '<dt>backto</dt><dd>' . "<a href=$all_patteren_list>server</a>" . '</dd>';
 
   $content .= '</dl></div>';
@@ -124,8 +123,8 @@ function _pattern_entity_list_page($query, $fieldset_title) {
   //dsm($patternentity_static_pager_element);
   $html .= theme('pager', array('tags' => array(), 'element' => $patternentity_static_pager_element++));
 
-  $upload_button = _pattern_entity_upload_button();
-  $div_b = "<div class='pattern-entity-list-table-wrap'><fieldset><legend>$fieldset_title$upload_button</legend><div class='fieldset-wrapper'>";
+  $upload_button = _patterns_server_upload_button();
+  $div_b = "<div class='patterns-server-list-table-wrap'><fieldset><legend>$fieldset_title$upload_button</legend><div class='fieldset-wrapper'>";
   $div_e = '</div></fieldset></div>';
 
   return $div_b . $html . $div_e;
@@ -145,10 +144,10 @@ function _pattern_entity_list_table_row($ety_obj) {
   //$row[] = l($usr_obj->name , 'pattern/uploader/' . $ety_obj->uploader);
   $row[] = '<i value="' . $ety_obj->created. '" ' . 'class="upload-time">' . date('j-m-Y H:i:s (P)', $ety_obj->created) . '</i>';
   $row[] = $ety_obj->file_downloads;
-  $row[] = _pattern_entity_get_voting_score($ety_obj->pid);
+  $row[] = _patterns_server_get_voting_score($ety_obj->pid);
   $row[] = l(t('download'), 'pattern/' . $ety_obj->pid . '/download', array('attributes' => array('class' => 'download-link')));
 
-  $voted = _pattern_entity_check_whether_voted($ety_obj->pid);
+  $voted = _patterns_server_check_whether_voted($ety_obj->pid);
   if($voted) {
     $row['voting_link'] = '<strong class="voted-sign">voted</strong>';
   }

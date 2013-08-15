@@ -1,41 +1,41 @@
 <?php
 
-module_load_include('inc', 'patternentity', 'includes/patternentity.utility');
-module_load_include('inc', 'patternentity', 'includes/patternentity.search');
-module_load_include('inc', 'patternentity', 'includes/patternentity.theme');
-module_load_include('inc', 'patternentity', 'includes/patternentity.blocks');
-module_load_include('inc', 'patternentity', 'includes/patternentity.core');
-module_load_include('inc', 'patternentity', 'includes/patternentity.io');
+module_load_include('inc', 'patterns_server', 'includes/utility');
+module_load_include('inc', 'patterns_server', 'includes/search');
+module_load_include('inc', 'patterns_server', 'includes/theme');
+module_load_include('inc', 'patterns_server', 'includes/blocks');
+module_load_include('inc', 'patterns_server', 'includes/core');
+module_load_include('inc', 'patterns_server', 'includes/io');
 module_load_include('module', 'votingapi', 'votingapi');
 
 /**
  * Implements hook_entity_info().
  */
-function patternentity_entity_info() {
-  $return['patternentity'] = array(
-    'label' => t('Pattern Entity'),
-    'base table' => 'patternentity',
+function patterns_server_entity_info() {
+  $return['patterns_server'] = array(
+    'label' => t('Patterns Server '),
+    'base table' => 'patterns_server',
     'entity keys' => array(
       'id' => 'pid',
       'label' => 'title',
     ),
-    'entity class' => 'PatternEntity',
+    'entity class' => 'Patterns_Server_Entity',
     'uri callback' => 'entity_class_uri',
-    'controller class' => 'PatternEntityController',
+    'controller class' => 'Patterns_Server_EntityController',
     'admin ui' => array(
-      'path' => 'admin/structure/patternentity',
-      'controller class' => 'PatternEntityUIController',
-      'file' => 'includes/patternentity.admin.inc',
+      'path' => 'admin/patterns_server',
+      'controller class' => 'Patterns_Server_EntityUIController',
+      'file' => 'includes/patterns_server.admin.inc',
     ),
-    'module' => 'patternentity',
-    'access callback' => 'patternentity_admin_access',
+    'module' => 'patterns_server',
+    'access callback' => 'patterns_server_admin_access',
     'fieldable' => TRUE,
     'bundles' => array(
-      'patternentity' => array(
-        'label' => t('pattern entity bundle'),
+      'patterns_server' => array(
+        'label' => t('patterns server bundle'),
         'admin' => array(
-          'path' => 'admin/structure/patternentity',
-          'access arguments' => array('administer patternentity'),
+          'path' => 'admin/patterns_server',
+          'access arguments' => array('administer patterns server'),
         ),
       ),
     ),
@@ -58,11 +58,11 @@ function patternentity_entity_info() {
 /**
  * accesss callback function for hook_entity_info().
  */
-function patternentity_admin_access($op, $profile = NULL, $account = NULL) {
-  if (user_access('administer patternentity', $account)) {
+function patterns_server_admin_access($op, $profile = NULL, $account = NULL) {
+  if (user_access('administer patterns server', $account)) {
     return true;
   }
-  else if ($op == 'create' && user_access('upload patternentity', $account)) {
+  else if ($op == 'create' && user_access('upload patterns server', $account)) {
     return true;
   }
   return false;
@@ -71,16 +71,16 @@ function patternentity_admin_access($op, $profile = NULL, $account = NULL) {
 /**
  * Implements hook_permission().
  */
-function patternentity_permission() {
+function patterns_server_permission() {
   return array(
-    'administer patternentity' => array(
-      'title' => t('Administer patternentity'),
+    'administer patterns server' => array(
+      'title' => t('Administer Patterns Server'),
     ),
-    'view patternentity' => array(
-      'title' => t('View patternentity list and page'),
+    'view patterns server' => array(
+      'title' => t('View Patterns Server list and page'),
     ),
-    'upload patternentity' => array(
-      'title' => t('Upload pattern file to patternentity'),
+    'upload patterns server' => array(
+      'title' => t('Upload pattern file to Patterns Server'),
     ),
   );
 }
@@ -88,13 +88,13 @@ function patternentity_permission() {
 /** 
  * Implements hook_block_info().
  */
-function patternentity_block_info() {
+function patterns_server_block_info() {
   $blocks = array();
-  $blocks['patternentity_prolific_author'] = array(
-    'info' => t('Most Prolific authors in patternentity'),
+  $blocks['patterns_server_prolific_author'] = array(
+    'info' => t('Most Prolific authors in Patterns Server'),
   );
-  $blocks['patternentity_hottest_tags'] = array(
-    'info' => t('Hottest tags in patternentity'),
+  $blocks['patterns_server_hottest_tags'] = array(
+    'info' => t('Hottest tags in Patterns Server'),
   );
   return $blocks;
 }
@@ -102,16 +102,16 @@ function patternentity_block_info() {
 /**
  * Implements hook_block_view().
  */
-function patternentity_block_view($delta='') {
+function patterns_server_block_view($delta='') {
   $block = array();
   switch ($delta) {
-    case 'patternentity_prolific_author':
+    case 'patterns_server_prolific_author':
       $block['subject'] = t('Most Prolific Authors:');
-      $block['content'] = _pattern_entity_block_most_prolific_author();
+      $block['content'] = _patterns_server_block_most_prolific_author();
       break;
-    case 'patternentity_hottest_tags':
+    case 'patterns_server_hottest_tags':
       $block['subject'] = t('Most Popular Tags:');
-      $block['content'] = _pattern_entity_block_hottest_tags();
+      $block['content'] = _patterns_server_block_hottest_tags();
       break;
   }
   return $block;
@@ -120,17 +120,17 @@ function patternentity_block_view($delta='') {
 /**
  * Implements hook_menu().
  */
-function patternentity_menu() {
+function patterns_server_menu() {
   $items = array();
 
   //main page.
-  //use the $property pid of _pattern_entity_list().
-  $items['all_pattern_entity_list'] = array(
-    'title' => 'all patternentity list ',
-    'description' => 'all patternentity list',
-    'page callback' => '_pattern_entity_all_list_page',
+  //use the $property pid of _patterns_server_list().
+  $items['patterns_server_homepage'] = array(
+    'title' => 'List of all patterns',
+    'description' => 'the list of all patterns',
+    'page callback' => '_patterns_server_all_list_page',
     'page arguments' => array(),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
 
   //pattern's view page. "pattern/$pid"
@@ -139,9 +139,9 @@ function patternentity_menu() {
   $items['pattern/%'] = array(
     'title' => 'pattern view',
     'description' => 'pattern view page',
-    'page callback' => '_pattern_entity_view_page',
+    'page callback' => '_patterns_server_view_page',
     'page arguments' => array(1),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
 
   //these two are pattern's download&voting function.
@@ -152,90 +152,90 @@ function patternentity_menu() {
   $items['pattern/%/download'] = array(
     'title' => 'pattern download link',
     'description' => 'pattern download menu link',
-    'page callback' => '_pattern_entity_download_pattern',
+    'page callback' => '_patterns_server_download_pattern',
     'page arguments' => array(1),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
   $items['pattern/%/voting'] = array(
     'title' => 'pattern voting link',
     'description' => 'pattern voting link', 
-    'page callback' => '_pattern_entity_voting_pattern',
+    'page callback' => '_patterns_server_voting_pattern',
     'page arguments' => array(1),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
 
-  //four basic list table page. they all use the core function: _pattern_entity_list();
+  //four basic list table page. they all use the core function: _patterns_server_list();
   //these four:
   //  if success, return page which contains two parts: search form & a pattern table.
   //  if not, go to the main page and give an error message.
   $items['pattern/uploader/%'] = array(
     'title' => 'uploader \'s all pattern',
     'description' => 'all pattern files uploaded by user %',
-    'page callback' => '_pattern_entity_list_basicpage',
+    'page callback' => '_patterns_server_list_basicpage',
     'page arguments' => array(1, 2),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
   $items['pattern/category/%'] = array(
     'title' => 'all pattern in % category',
     'description' => 'all pattern files in % category',
-    'page callback' => '_pattern_entity_list_basicpage',
+    'page callback' => '_patterns_server_list_basicpage',
     'page arguments' => array(1, 2),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
   $items['pattern/author/%'] = array(
     'title' => 'all pattern belong to author %',
     'description' => 'all pattern belong to author %',
-    'page callback' => '_pattern_entity_list_basicpage',
+    'page callback' => '_patterns_server_list_basicpage',
     'page arguments' => array(1, 2),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
   $items['pattern/tags/%/%'] = array(
     'title' => 'all pattern with the tag %',
     'description' => 'all pattern with the tag %',
-    'page callback' => '_pattern_entity_list_basicpage',
+    'page callback' => '_patterns_server_list_basicpage',
     'page arguments' => array(2, 3),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
 
   //this is search function. search text & search type.
   //actually its result is composed by the above four basic kinds of table. 
   $items['pattern/search/%/%'] = array(
-    'title' => 'search patternentity',
-    'description' => 'search patternentity with value/category, and so on',
-    'page callback' => '_pattern_entity_search',
+    'title' => 'search pattern',
+    'description' => 'search pattern with value/category, and so on',
+    'page callback' => '_patterns_server_search',
     'page arguments' => array(2,3),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
 
   //not quite sure. 
   $items['pattern/alltags/%'] = array(
     'title' => 'all pattern with the tag % in all fields',
     'description' => 'all pattern with the tag % in all fields',
-    'page callback' => '_pattern_entity_list_tags_all',
+    'page callback' => '_patterns_server_list_tags_all',
     'page arguments' => array(2),
-    'access arguments' => array('view patternentity'),
+    'access arguments' => array('view patterns server'),
   );
 
   return $items;
 }
 
 /**
- * callback hook_menu() all_pattern_entity_list 
- * this is the main page, so I custom it. without using the _pattern_entity_list().
+ * callback hook_menu() patterns_server_homepage
+ * this is the main page, so I custom it. without using the _patterns_server_list().
  * this is considered with the efficient.
  * the page contain three part: search, most recent, most liked.
  */
-function _pattern_entity_all_list_page() {
-  drupal_add_js(drupal_get_path('module', 'patternentity') . '/styles/js/patternentity.search.js');
-  $searchform = drupal_get_form('patternentity_search');
+function _patterns_server_all_list_page() {
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
+  $searchform = drupal_get_form('patterns_server_search');
   $list = drupal_render($searchform);
 
   $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'patternentity')
+  $query->entityCondition('entity_type', 'patterns_server')
     ->propertyOrderBy('created', 'DESC')
     ->execute();
 
-  $list .= "<div id='pattern-entity-all-table-wrap'>";
+  $list .= "<div id='patterns-server-all-table-wrap'>";
   $vscore = array();
   if (isset($query->ordered_results) && count($query->ordered_results)) {
 
@@ -244,11 +244,11 @@ function _pattern_entity_all_list_page() {
     //Most Recent Patterns. 
     $query->ordered_results = array_slice($ordered_results_backup, 0, 10, true);
     $fieldset_title = 'Most Recent Patterns:';
-    $list .= _pattern_entity_list_page($query, $fieldset_title);
+    $list .= _patterns_server_list_page($query, $fieldset_title);
 
     //Most Liked Patterns.
     foreach ($ordered_results_backup as $key => $value) {
-      $vscore[$key] = _pattern_entity_get_voting_score($value->entity_id);
+      $vscore[$key] = _patterns_server_get_voting_score($value->entity_id);
     }
     arsort($vscore);
     $new_ordered_results = array();
@@ -257,15 +257,15 @@ function _pattern_entity_all_list_page() {
     }
     $query->ordered_results = array_slice($new_ordered_results, 0, 10, true);
     $fieldset_title = 'Most Liked Patterns:';
-    $list .= _pattern_entity_list_page($query, $fieldset_title);
+    $list .= _patterns_server_list_page($query, $fieldset_title);
   }
   else {
-    drupal_add_js(drupal_get_path('module', 'patternentity') . '/styles/js/patternentity.firstpage.js');
-    $list .= "<div class='pattern-entity-list-table-wrap'>";
+    drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.firstpage.js');
+    $list .= "<div class='patterns-server-list-table-wrap'>";
     $list .= "There is no pattern file in database.</br>Do you want to upload ";
-    $list .= _pattern_entity_upload_button();
+    $list .= _patterns_server_upload_button();
     $list .= " ?";
-    $list .= '<div id="patternentity-upload-form-js" class="hero-unit"></div>';
+    $list .= '<div id="patterns-server-upload-form-js" class="hero-unit"></div>';
     $list .= '</div>';
   }
 
@@ -276,31 +276,31 @@ function _pattern_entity_all_list_page() {
 /**
  * callback hook_menu() for /pattern/pid
  */
-function _pattern_entity_view_page($pid) {
-  $pe = entity_object_load($pid, 'patternentity');
+function _patterns_server_view_page($pid) {
+  $pe = entity_object_load($pid, 'patterns_server');
   if (!$pe) {
     drupal_set_message("The pattern file doesn't exist.", "error");
     //global $base_url;
     //drupal_goto($base_url);
-    drupal_goto('all_pattern_entity_list');
+    drupal_goto('patterns_server_homepage');
   }
   drupal_set_title($pe->title);
   $fieldset_title = $pe->title;
 
-  drupal_add_css(drupal_get_path('module', 'patternentity') . '/styles/css/patternentity.viewpage.css');
-  drupal_add_js(drupal_get_path('module', 'patternentity') . '/styles/js/patternentity.viewpage.js');
+  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/styles/css/patterns_server.viewpage.css');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.viewpage.js');
 
-  $backtoserver_voting_link = _pattern_entity_back_like_button($pid);
+  $backtoserver_voting_link = _patterns_server_back_like_button($pid);
   $content = "<div id='one_pattern_div'><fieldset><legend>$fieldset_title$backtoserver_voting_link</legend><div class='fieldset-wrapper'>";
 
-  $content .= _pattern_entity_view_pattern_description($pe);
+  $content .= _patterns_server_view_pattern_description($pe);
 
-  $content .= '<div id="patternentity-page-pattern-field"><ul>';
-  $content .= _pattern_entity_parser_field_pattern($pe->pattern);
+  $content .= '<div id="patterns-server-page-pattern-field"><ul>';
+  $content .= _patterns_server_parser_field_pattern($pe->pattern);
   $content .= '</ul></div>';
 
   $content .= '</div></fieldset></div>';
-  $field_view = entity_view('patternentity', array($pid => $pe));
+  $field_view = entity_view('patterns_server', array($pid => $pe));
   $content .= drupal_render($field_view);
 
   return $content;
@@ -309,11 +309,11 @@ function _pattern_entity_view_page($pid) {
 /**
  * callback hook_menu() pattern/pid/download
  */
-function _pattern_entity_download_pattern($pid) {
-  $ety_obj = entity_object_load($pid, 'patternentity');
+function _patterns_server_download_pattern($pid) {
+  $ety_obj = entity_object_load($pid, 'patterns_server');
   if(!$ety_obj) {
     drupal_set_message("The pattern file doesn't exist.", "error");
-    drupal_goto('all_pattern_entity_list');
+    drupal_goto('patterns_server_homepage');
   }
   $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
   
@@ -325,7 +325,7 @@ function _pattern_entity_download_pattern($pid) {
     return;
   }
   $downloads = $ety_obj->file_downloads + 1;
-  db_update('patternentity')
+  db_update('patterns_server')
     ->condition('pid', $ety_obj->pid)
     ->fields(array('file_downloads' => $downloads))
     ->execute();
@@ -337,20 +337,20 @@ function _pattern_entity_download_pattern($pid) {
 /**
  * callback hook_menu() four basic page.
  */
-function _pattern_entity_list_basicpage($property, $arg) {
+function _patterns_server_list_basicpage($property, $arg) {
   drupal_set_title($property . ': ' . $arg);
 
-  drupal_add_js(drupal_get_path('module', 'patternentity') . '/styles/js/patternentity.search.js');
-  $searchform = drupal_get_form('patternentity_search');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
+  $searchform = drupal_get_form('patterns_server_search');
   $searchform = drupal_render($searchform);
   
-  $list = _pattern_entity_list($property, $arg);
+  $list = _patterns_server_list($property, $arg);
   if ($list === false) {
     drupal_set_message("The pattern list doesn't exist.", "error");
-    drupal_goto('all_pattern_entity_list');
+    drupal_goto('patterns_server_homepage');
   }
   else {
-    return $searchform . "<div id='pattern-entity-all-table-wrap'>" . $list . "</div>";
+    return $searchform . "<div id='patterns-server-all-table-wrap'>" . $list . "</div>";
   }
 
 }
@@ -358,25 +358,25 @@ function _pattern_entity_list_basicpage($property, $arg) {
 /**
  * callback hook_menu() alltags list
  */
-function _pattern_entity_list_tags_all($tid) {
-  $tag_name = _pattern_entity_tagname_by_tagid($tid);
+function _patterns_server_list_tags_all($tid) {
+  $tag_name = _patterns_server_tagname_by_tagid($tid);
   drupal_set_title("Patterns with tags: " . $tag_name['name']);
 
-  drupal_add_js(drupal_get_path('module', 'patternentity') . '/styles/js/patternentity.search.js');
-  $searchform = drupal_get_form('patternentity_search');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
+  $searchform = drupal_get_form('patterns_server_search');
   $list = drupal_render($searchform);
 
-  $tags_fields_name = _pattern_entity_get_all_taxonomyfields_name('patternentity');
+  $tags_fields_name = _patterns_server_get_all_taxonomyfields_name('patterns_server');
   //dsm($tags_fields_name); 
 
   if ($tags_fields_name === false) {
     drupal_set_message("The pattern list doesn't exist.", "error");
-    drupal_goto('all_pattern_entity_list');
+    drupal_goto('patterns_server_homepage');
   }
   
-  $list .= "<div id='pattern-entity-all-table-wrap'>"; 
+  $list .= "<div id='patterns-server-all-table-wrap'>"; 
   foreach ($tags_fields_name as $field_name) {
-    $list .= _pattern_entity_list($field_name, $tid);
+    $list .= _patterns_server_list($field_name, $tid);
   }
   $list .= "</div>";
 

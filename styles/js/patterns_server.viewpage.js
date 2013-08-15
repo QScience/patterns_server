@@ -6,7 +6,7 @@
 (function($){
 $(document).ready(function() {
 
-  $('#patternentity-page-pattern-field').hide();
+  $('#patterns-server-page-pattern-field').hide();
 
   //popup in view page.
   $('#pattern_file_popup').click(function() {
@@ -16,14 +16,14 @@ $(document).ready(function() {
 	  else {
 		  $(this).text('show');
 	  }
-    $('#patternentity-page-pattern-field').slideToggle('slow');
+    $('#patterns-server-page-pattern-field').slideToggle('slow');
     return false;
   });
 
 
 	//upload functionality ajax implementation
-	$('#patternentity-page-pattern-field').before('<div id="patternentity-upload-form-js" class="hero-unit"></div>');
-	var upload_form_div = $('#patternentity-upload-form-js');
+	$('#patterns-server-page-pattern-field').before('<div id="patterns-server-upload-form-js" class="hero-unit"></div>');
+	var upload_form_div = $('#patterns-server-upload-form-js');
 	$(upload_form_div).hide();
 	$('.upload-button-link').bind('click', function (){
 		var url = $('.upload-button-link').attr('href');
@@ -50,7 +50,7 @@ $(document).ready(function() {
 	});
 
 	//tags before content
-	var content = $('#patternentity-page-pattern-field');
+	var content = $('#patterns-server-page-pattern-field');
 	var tags = $('.field-type-taxonomy-term-reference');
 	$(content).before($(tags));
 
