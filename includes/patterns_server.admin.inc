@@ -2,11 +2,11 @@
 
 /**
  * Implements ENTITY_TYPE_form for admin UI.
- * all field in table: patternentity.
+ * all field in table: patterns_server.
  * no need care: pid, uuuid, created, updated, file_downloads, 
  * need: title, description, category, pattern, author, file_name, file_format, file_path,
  */
-function patternentity_form($form, &$form_state, $patternentity) {
+function patterns_server_form($form, &$form_state, $patterns_server) {
   $form['pattern_file'] = array(
     '#type' => 'file',
     '#title' => t('Choose a pattern file'),
@@ -14,7 +14,7 @@ function patternentity_form($form, &$form_state, $patternentity) {
   ); 
 
 
-  field_attach_form('patternentity', $patternentity, $form, $form_state);
+  field_attach_form('patterns_server', $patterns_server, $form, $form_state);
 
   $form['submit'] = array(
     '#type' => 'submit',
@@ -28,7 +28,7 @@ function patternentity_form($form, &$form_state, $patternentity) {
 /**
  * validate function for ENTITY_TYPE_form
  */
-function patternentity_form_validate(&$form, &$form_state) {
+function patterns_server_form_validate(&$form, &$form_state) {
   $validators = array('file_validate_extensions' => array('yaml xml'));
   //if (empty($form_state['value']['pattern_file'])) {
   //  form_set_error('pattern_file', t('please choose a pattern file.'));
@@ -36,7 +36,7 @@ function patternentity_form_validate(&$form, &$form_state) {
   //else {
     $file = file_save_upload('pattern_file', $validators);
 
-    $file_exist = db_select('patternentity', 'pe')
+    $file_exist = db_select('patterns_server', 'pe')
       ->fields('pe', array('file_name'))
       ->condition('file_name', $file->filename, '=')
       ->execute()
@@ -100,9 +100,9 @@ function patternentity_form_validate(&$form, &$form_state) {
     $form_state['values']['file_format'] = $file_extension;
     //$form_state['values']['file_path'] = $file->uri;
 
-    $dir = 'public://patternentity/';
+    $dir = 'public://patterns_server/';
     if (!file_prepare_directory($dir)) {
-      form_set_error('pattern_file', t('public://patternentity doesn\'t exist, or isn\'t writable.'));
+      form_set_error('pattern_file', t('public://patterns_server doesn\'t exist, or isn\'t writable.'));
     }
     else {
       if ($file = file_move($file, $dir)) {
@@ -121,12 +121,12 @@ function patternentity_form_validate(&$form, &$form_state) {
 /**
  * submit function for ENTITY_TYPE_form.
  */
-function patternentity_form_submit(&$form, &$form_state) {
-  $patternentity = entity_ui_form_submit_build_entity($form, $form_state);
-  $patternentity->save();
+function patterns_server_form_submit(&$form, &$form_state) {
+  $patterns_server = entity_ui_form_submit_build_entity($form, $form_state);
+  $patterns_server->save();
   
-  if (user_access('administer patternentity')) {
-    $form_state['redirect'] = 'admin/structure/patternentity';
+  if (user_access('administer patterns server')) {
+    $form_state['redirect'] = 'admin/patterns_server';
   }
   else {
     $form_state['redirect'] = 'patterns_server_homepage';
