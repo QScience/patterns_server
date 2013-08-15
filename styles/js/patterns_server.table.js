@@ -7,7 +7,7 @@
 $(document).ready(function() {
 
   //when click on download link, download times grown by 1.
-  var download_link = $(".pattern-entity-list-table .download-link");
+  var download_link = $(".patterns-server-list-table .download-link");
   download_link.click(function() {
     var download_times = $(this).parent().prev().prev();
     var numb = Number(download_times.text()) + 1; 
@@ -15,7 +15,7 @@ $(document).ready(function() {
   });
 
   //voting link ajax.
-  $('body').delegate('.pattern-entity-list-table a[class*="voting-link-"]', 'click', function () {
+  $('body').delegate('.patterns-server-list-table a[class*="voting-link-"]', 'click', function () {
     var class_pid = $(this).attr('title');
     var link = $('.' + class_pid);
     $(link).each(function() {
@@ -27,7 +27,7 @@ $(document).ready(function() {
     $.ajax({
       url: url,
       success: function(data) {
-        var $score = $('#patternentity-page-pattern-description #pattern-entity-view-page-score', data);
+        var $score = $('#patterns-server-page-pattern-description #patterns-server-view-page-score', data);
         var $vote = $('#pattern-entity-view-page-vote', data);
 
         console.log($vote.text());
@@ -47,7 +47,7 @@ $(document).ready(function() {
   });
 
   //use moment.js to format upload time.
-  $(".pattern-entity-list-table .upload-time").text(function(){
+  $(".patterns-server-list-table .upload-time").text(function(){
     return moment.unix($(this).attr("value")).fromNow();
   });
 
@@ -99,7 +99,7 @@ $(document).ready(function() {
         $(current_table_fieldset_wrap).hide();
         $(current_table_fieldset_wrap).html($(current_table_new_fieldset_wrap).html()).show('slow');
 
-        $(".pattern-entity-list-table .upload-time").text(function(){
+        $(".patterns-server-list-table .upload-time").text(function(){
           return moment.unix($(this).attr("value")).fromNow();
         });
         $('.patterns-server-list-table-wrap').first().prepend('<div id="patterns-server-upload-form-js" class="hero-unit"></div>');

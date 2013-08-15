@@ -1,8 +1,8 @@
 <?php
 
-module_load_include('inc', 'patternentity', 'includes/patternentity.votingapi');
+module_load_include('inc', 'patterns_server', 'includes/votingapi');
 /**
- * theme the 'pattern' field in 'patternentity' table.
+ * theme the 'pattern' field in 'patterns_server' table.
  */
 function _patterns_server_parser_field_pattern($pattern)  {
   $content_this = NULL;
@@ -26,7 +26,7 @@ function _patterns_server_parser_field_pattern($pattern)  {
     }
     elseif (!is_numeric($key) && is_array($value)) {
       $content_this .= '<li><span class="yaml_aa5500">' . $key . '</span> :' . '</li><ul>';
-      $content_this .= _pattern_entity_parser_field_pattern($value);
+      $content_this .= _patterns_server_parser_field_pattern($value);
       $content_this .= '</ul>';
     }
     elseif (is_numeric($key) && !is_array($value)) {
@@ -43,7 +43,7 @@ function _patterns_server_parser_field_pattern($pattern)  {
  * theme pattern description part
  */
 function _patterns_server_view_pattern_description($pe) {
-  $content = '<div id="patternentity-page-pattern-description"><dl class="dl-horizontal">';
+  $content = '<div id="patterns-server-page-pattern-description"><dl class="dl-horizontal">';
 
   $content .= '<dt>title</dt><dd>' . $pe->title . '</dd>';
   $content .= '<dt>description</dt><dd>' . $pe->description. '</dd>';
@@ -62,7 +62,7 @@ function _patterns_server_view_pattern_description($pe) {
   $content .= '<dt>file name</dt><dd>' . $pe->file_name. '</dd>';
 
   $score = _patterns_server_get_voting_score($pe->pid);
-  $content .= '<dt>score</dt><dd id="pattern-entity-view-page-score">' . $score . '</dd>';
+  $content .= '<dt>score</dt><dd id="pattern-server-view-page-score">' . $score . '</dd>';
 
   //$voted = _patterns_server_check_whether_voted($pe->pid);
   //if($voted) {
@@ -71,7 +71,6 @@ function _patterns_server_view_pattern_description($pe) {
   //else {
   //  $vote_s = l(t('voting'), 'pattern/' . $pe->pid . '/voting', array('attributes' => array('class' => 'voting-link')));
   //}
-  //$content .= '<dt>voting</dt><dd class="voting-link" id="pattern-entity-view-page-vote">' . $vote_s . '</dd>';
 
   //$file_d = l(t('download'), 'pattern/' . $pe->pid . '/download', array('attributes' => array('class' => 'download-link')));
   //$content .= '<dt>file</dt><dd>' . $file_d . '</dd>';
@@ -87,10 +86,10 @@ function _patterns_server_view_pattern_description($pe) {
 /**
  * theme pattern list page.
  */
-function _pattern_entity_list_page($query, $fieldset_title) {
-  drupal_add_css(drupal_get_path('module', 'patternentity') . '/styles/css/patternentity.table.css');
+function _patterns_server_list_page($query, $fieldset_title) {
+  drupal_add_css(drupal_get_path('module', 'patterns_server') . '/styles/css/patterns_server.table.css');
   drupal_add_js("misc/autocomplete.js");
-  drupal_add_js(drupal_get_path('module', 'patternentity') . '/styles/js/patternentity.table.js');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.table.js');
 
   $header = array(
     t('Category'),
@@ -107,21 +106,20 @@ function _pattern_entity_list_page($query, $fieldset_title) {
   foreach($query->ordered_results as $value) {
     $ids[] = $value->entity_id;
   }
-  $entities = entity_load('patternentity', $ids);
+  $entities = entity_load('patterns_server', $ids);
   //dsm($entities);
   $rows = array();
   foreach($entities as $ety_obj) {
-    $rows[] = _pattern_entity_list_table_row($ety_obj);
+    $rows[] = _patterns_server_list_table_row($ety_obj);
   }
-  $html = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('class' => array('pattern-entity-list-table'))));
+  $html = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('class' => array('patterns-server-list-table'))));
   if (isset($query->pager['element'])) {
-    $patternentity_static_pager_element = $query->pager['element'];
+    $static_pager_element = $query->pager['element'];
   }
   else {
-    $patternentity_static_pager_element = 0;
+    $static_pager_element = 0;
   }
-  //dsm($patternentity_static_pager_element);
-  $html .= theme('pager', array('tags' => array(), 'element' => $patternentity_static_pager_element++));
+  $html .= theme('pager', array('tags' => array(), 'element' => $static_pager_element++));
 
   $upload_button = _patterns_server_upload_button();
   $div_b = "<div class='patterns-server-list-table-wrap'><fieldset><legend>$fieldset_title$upload_button</legend><div class='fieldset-wrapper'>";
@@ -132,9 +130,9 @@ function _pattern_entity_list_page($query, $fieldset_title) {
 
 /**
  * generate pattern list table row.
- * used by _pattern_entity_list_page($query).
+ * used by _patterns_server_list_page($query).
  */
-function _pattern_entity_list_table_row($ety_obj) {
+function _patterns_server_list_table_row($ety_obj) {
   $row = array();
   
   $row[] = l($ety_obj->category, 'pattern/category/' . $ety_obj->category);

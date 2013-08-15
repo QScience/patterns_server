@@ -91,7 +91,7 @@ $(document).ready(function() {
           $(table_wrap).hide();
           $(table_wrap).html(table).slideDown('slow');
 
-          $(".pattern-entity-list-table .upload-time").text(function(){
+          $(".patterns-server-list-table .upload-time").text(function(){
             return moment.unix($(this).attr("value")).fromNow();
           });
           $('.patterns-server-list-table-wrap').first().prepend('<div id="patterns-server-upload-form-js" class="hero-unit"></div>');
