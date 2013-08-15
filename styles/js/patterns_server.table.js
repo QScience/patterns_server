@@ -28,7 +28,7 @@ $(document).ready(function() {
       url: url,
       success: function(data) {
         var $score = $('#patterns-server-page-pattern-description #patterns-server-view-page-score', data);
-        var $vote = $('#pattern-entity-view-page-vote', data);
+        var $vote = $('#patterns-server-view-page-vote', data);
 
         console.log($vote.text());
         var link_parent = $(link).parent();

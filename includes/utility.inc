@@ -3,7 +3,7 @@
  * upload button link in the list page.
  */
 function _patterns_server_upload_button() {
-  $url = 'admin/structure/patternentity/add';
+  $url = 'admin/patterns_server/add';
   $upload_link = l(t('New Pattern'), $url, array('attributes' => array('class' => array('upload-button-link'))));
   return "<strong>$upload_link</strong>";
 }
@@ -21,11 +21,11 @@ function _patterns_server_back_like_button($pid) {
 
   $voted = _patterns_server_check_whether_voted($pid);
   if($voted) {
-    $vote_s = '<strong class="voted-sign" id="pattern-entity-view-page-vote">voted</strong>';
+    $vote_s = '<strong class="voted-sign" id="patterns-server-view-page-vote">voted</strong>';
   }
   else {
     $url = 'pattern/' . $pid . '/voting';
-    $vote_s = l(t('voting'), $url, array('attributes' => array('class' => array('voting-link', "voting-link-$pid"), 'title' => "voting-link-$pid", 'id' => array('pattern-entity-view-page-vote'))));
+    $vote_s = l(t('voting'), $url, array('attributes' => array('class' => array('voting-link', "voting-link-$pid"), 'title' => "voting-link-$pid", 'id' => array('patterns-server-view-page-vote'))));
   }
 
   
@@ -36,7 +36,7 @@ function _patterns_server_back_like_button($pid) {
  * find tag's tid by tag's name
  * operate taxonomy_term_data table.
  */
-function _pattern_entity_findtagtid_by_tagname($tagname) {
+function _patterns_server_findtagtid_by_tagname($tagname) {
   $split_strings = preg_split('/[\,]+/', $tagname);
   //dsm($split_strings);
 
@@ -55,9 +55,9 @@ function _pattern_entity_findtagtid_by_tagname($tagname) {
 }
 
 /**
- * find entity_id from tid and 'patternentity' in taxonomy_entity_index.
+ * find entity_id from tid and 'patterns_server' in taxonomy_entity_index.
  */
-function _pattern_entity_findentityid_by_tagvid($tagvids, $tables) {
+function _patterns_server_findentityid_by_tagvid($tagvids, $tables) {
   if (count($tagvids) == 0 || !$tables) {
     return array(); 
   }
@@ -87,10 +87,10 @@ function _pattern_entity_findentityid_by_tagvid($tagvids, $tables) {
 }
 
 /**
- * get the patternentity list ordered by voting.
+ * get the pattern list ordered by voting.
  * return rendered table.
  */
-function _pattern_entity_list_orderby_voting($query) {
+function _patterns_server_list_orderby_voting($query) {
 
   $vscore = array();
   if (isset($query->ordered_results) && count($query->ordered_results)) {

@@ -28,7 +28,7 @@ function _patterns_server_list($property, $arg, $operate = '=', $showupload = tr
   }
 
   $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'patternentity');
+  $query->entityCondition('entity_type', 'patterns_server');
 
 
   switch ($property_sign) {
@@ -44,7 +44,6 @@ function _patterns_server_list($property, $arg, $operate = '=', $showupload = tr
       break;
 
     case 'pid':
-      //drupal_set_title('all patternentity:');
       $fieldset_title = 'Most Recent Patterns:';
       $query->propertyCondition($property, $arg, $operate);
       break;
@@ -90,8 +89,8 @@ function _patterns_server_list($property, $arg, $operate = '=', $showupload = tr
 function _patterns_server_search($selected, $value) {
 
   drupal_set_title('search :');
-  drupal_add_js(drupal_get_path('module', 'patternentity') . '/styles/js/patternentity.search.js');
-  $form = drupal_get_form('patternentity_search', $selected, $value);
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
+  $form = drupal_get_form('patterns_server_search', $selected, $value);
   $list = drupal_render($form);
 
   $query;
@@ -102,7 +101,7 @@ function _patterns_server_search($selected, $value) {
       drupal_set_title('patterns with title: ' . $value);
       $fieldset_title = "patterns with title: $value";
       $query = new EntityFieldQuery();
-      $query->entityCondition('entity_type', 'patternentity')
+      $query->entityCondition('entity_type', 'patterns_server')
         ->propertyCondition('title', '%' . db_like($value) . '%', 'LIKE')
         ->propertyOrderBy('created', 'DESC')
         ->pager(10)
@@ -162,7 +161,7 @@ function _patterns_server_search($selected, $value) {
       drupal_set_title('pattern with: ' . $value);
       $fieldset_title = "pattern with uuuid: $value";
       $query = new EntityFieldQuery();
-      $query->entityCondition('entity_type', 'patternentity')
+      $query->entityCondition('entity_type', 'patterns_server')
         ->propertyCondition('uuuid', $value)
         ->propertyOrderBy('created', 'DESC')
         ->pager(10)
@@ -181,7 +180,7 @@ function _patterns_server_search($selected, $value) {
     case 4: //pid (not use anymore).
       $fieldset_title = "pattern with pid: $value";
       $query = new EntityFieldQuery();
-      $query->entityCondition('entity_type', 'patternentity')
+      $query->entityCondition('entity_type', 'patterns_server')
         ->propertyCondition('pid', $value, '=')
         ->propertyOrderBy('created', 'DESC')
         ->pager(10)
@@ -199,9 +198,9 @@ function _patterns_server_search($selected, $value) {
 
     case 5: //tags
       drupal_set_title('patterns with tags: ' . $value);
-      $tagtids = _pattern_entity_findtagtid_by_tagname($value);
+      $tagtids = _patterns_server_findtagtid_by_tagname($value);
       //dsm($tagtids);
-      $tags_table_db = _patterns_server_get_all_taxonomyfields_name('patternentity');
+      $tags_table_db = _patterns_server_get_all_taxonomyfields_name('patterns_server');
       //dsm($tags_table_db);
       $list .= '<div id="patterns-server-all-table-wrap">';
       if (count($tags_table_db) && count($tagtids)) {
