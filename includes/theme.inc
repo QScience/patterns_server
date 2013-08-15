@@ -62,7 +62,7 @@ function _patterns_server_view_pattern_description($pe) {
   $content .= '<dt>file name</dt><dd>' . $pe->file_name. '</dd>';
 
   $score = _patterns_server_get_voting_score($pe->pid);
-  $content .= '<dt>score</dt><dd id="pattern-server-view-page-score">' . $score . '</dd>';
+  $content .= '<dt>score</dt><dd id="patterns-server-view-page-score">' . $score . '</dd>';
 
   //$voted = _patterns_server_check_whether_voted($pe->pid);
   //if($voted) {

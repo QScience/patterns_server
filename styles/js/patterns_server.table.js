@@ -31,6 +31,7 @@ $(document).ready(function() {
         var $vote = $('#patterns-server-view-page-vote', data);
 
         console.log($vote.text());
+        console.log($score.text());
         var link_parent = $(link).parent();
         console.log(link_parent);
         $(link_parent).prev().prev().html($score.text());
