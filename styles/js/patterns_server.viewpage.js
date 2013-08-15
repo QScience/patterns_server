@@ -1,6 +1,6 @@
 /**
  * @file 
- * patternentity view page js.
+ * patterns server view page js.
  *
  */
 (function($){
@@ -31,7 +31,7 @@ $(document).ready(function() {
 			url: url,
 			success: function(data) {
 				if ( $(upload_form_div).is(':hidden')) {
-					var upload_form = $('#patternentity-form', data).wrap("<div></div>").parent().html();
+					var upload_form = $('#patterns-server-form', data).wrap("<div></div>").parent().html();
 					$(upload_form_div).html(upload_form).slideDown('slow');
 				}
 				else {

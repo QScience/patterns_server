@@ -1,12 +1,12 @@
-.block-patternentity ul {
+.block-patterns-server ul {
 }
 
-.block-patternentity ul li {
+.block-patterns-server ul li {
   margin-bottom: 7px;
   color: #999;
 }
 
-.block-patternentity ul li a {
+.block-patterns-server ul li a {
   background-color: #E0EAF1;
   border-bottom: 1px solid #B3CEE1;
   border-right: 1px solid #B3CEE1;
@@ -14,7 +14,7 @@
   padding: 1px 4px;
 }
 
-.block-patternentity ul li a:hover {
+.block-patterns-server ul li a:hover {
   background-color: #C4DAE9;
   border-bottom: 1px solid #C4DAE9;
   border-right: 1px solid #C4DAE9;

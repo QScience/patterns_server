@@ -15,21 +15,21 @@ $(document).ready(function() {
     }
     return value_autofill;
   }
-  var value_input = $('#patternentity-search input#edit-search').val();
+  var value_input = $('#patterns-server-search input#edit-search').val();
   var value_autofill = '';
   var value_default= '';
   var autofill_sign = false;
   if (value_input.length == 0 ) {
     var text_select = $("select#edit-selected option:selected").text();
     value_default = switch_autofill(text_select);
-    $('#patternentity-search input#edit-search').autofill({
+    $('#patterns-server-search input#edit-search').autofill({
       value: value_default,
       defaultTextColor: '#666',
       activeTextColor: '#333',
     });
     autofill_sign = true;
   }
-  $('#patternentity-search input#edit-search').blur(function() {
+  $('#patterns-server-search input#edit-search').blur(function() {
     var text_select = $("select#edit-selected option:selected").text();
     value_autofill = switch_autofill(text_select);
     value_input = $(this).val();
@@ -50,7 +50,7 @@ $(document).ready(function() {
       if ( autofill_sign ) {
         var text_select = $(this).text();
         value_autofill = switch_autofill(text_select);
-        $('#patternentity-search input#edit-search').autofill({
+        $('#patterns-server-search input#edit-search').autofill({
           value: value_autofill,
           defaultTextColor: '#666',
           activeTextColor: '#333',
@@ -63,19 +63,19 @@ $(document).ready(function() {
   $('input#edit-search').css('width', '65%');
 
   //search functionality ajax implementation
-  $('#patternentity-search #edit-submit').bind('click', function() {
+  $('#patterns-server-search #edit-submit').bind('click', function() {
     var table_wrap = $('#patterns-server-all-table-wrap');
     var page_title = $('#page-title');
 
     var text_select = $("select#edit-selected option:selected").text();
     var value_default = switch_autofill(text_select);
-    var search_text = $('#patternentity-search #edit-search').val().trim();
+    var search_text = $('#patterns-server-search #edit-search').val().trim();
     if ( search_text == '' || search_text == value_default) {
       $(table_wrap).hide();
       $(table_wrap).html('To begin the search, type something, e.g. "Block"').show('slow');
     }
     else {
-      var search_type = $('#patternentity-search #edit-selected option:selected').val();
+      var search_type = $('#patterns-server-search #edit-selected option:selected').val();
       var path = $(this).attr('name');
       path += search_type + '/' + encodeURIComponent(search_text);
       //console.log(path); 

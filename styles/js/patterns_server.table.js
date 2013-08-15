@@ -1,6 +1,6 @@
 /**
  * @file 
- * patternentity list table js.
+ * patterns server list table js.
  *
  */
 (function($){
@@ -62,9 +62,9 @@ $(document).ready(function() {
       url: url,
       success: function(data) {
         if ( $(upload_form_div).is(':hidden')) {
-        var upload_form = $('#patternentity-form', data).wrap("<div></div>").parent().html();
+        var upload_form = $('#patterns-server-form', data).wrap("<div></div>").parent().html();
         $(upload_form_div).html(upload_form).slideDown('slow');
-        Drupal.attachBehaviors($("#patternentity-form"));
+        Drupal.attachBehaviors($("#patterns-server-form"));
         }
         else {
         $(upload_form_div).slideUp('slow');
