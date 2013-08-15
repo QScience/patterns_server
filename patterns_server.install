@@ -1,19 +1,19 @@
 <?php
 /**
  * @file
- * Implements pattern entity.
+ * patterns server install file.
  */
 
 /**
  * Implements hook_install().
- * create the public://patternentity folder.
+ * create the public://patterns_server folder.
  */
-function patternentity_install() {
+function patterns_server_install() {
 
-  //create public://patternentity folder.
+  //create public://patterns_server folder.
   $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
-  if (!file_exists($public_dir_path . '/patternentity')) {
-    if(!drupal_mkdir($public_dir_path . '/patternentity')) {
+  if (!file_exists($public_dir_path . '/patterns_server')) {
+    if(!drupal_mkdir($public_dir_path . '/patterns_server')) {
       drupal_set_message(t('cannot create folder in public directory, this should be caused by permission of public directory. e.g. "sites/default/files".'),'error');
     }
   }
@@ -35,9 +35,9 @@ function patternentity_install() {
 	$role_rid = $role->rid;
 	// Define our 'editor' role permissions
 	$role_permissions = array(
-    'administer patternentity' => TRUE,
-    'view patternentity' => TRUE,
-    'upload patternentity' => TRUE,
+    'administer patterns server' => TRUE,
+    'view patterns server' => TRUE,
+    'upload patterns server' => TRUE,
 	);
 	// Grant permissions to our 'editor' role
 	user_role_change_permissions($role_rid, $role_permissions);
@@ -46,9 +46,9 @@ function patternentity_install() {
 /**
  * Implements hook_schema().
  */
-function patternentity_schema() {
-  $schema['patternentity'] = array(
-    'description' => 'Pattern entity for Patterns module',
+function patterns_server_schema() {
+  $schema['patterns_server'] = array(
+    'description' => 'Patterns server for Patterns module',
     'fields' => array(
       'pid' => array(
         'type' => 'serial',
@@ -141,12 +141,12 @@ function patternentity_schema() {
  * 2. clean votingapi_vote table.
  * 3. clean all attached field.
  */
-function patternentity_uninstall() {
+function patterns_server_uninstall() {
 
   //delete uploaded file, clean file_managed table.
   $query = db_select('file_managed', 'fm')
     ->fields('fm', array('fid'))
-    ->condition('uri', '%' . db_like('patternentity') . '%', 'LIKE') 
+    ->condition('uri', '%' . db_like('patterns_server') . '%', 'LIKE') 
     ->execute()
     ->fetchAll();
   $file_fids = array();
@@ -160,17 +160,16 @@ function patternentity_uninstall() {
 
   //clean votingapi_vote table.
   $num_deleted = db_delete('votingapi_vote')
-    ->condition('entity_type', 'patternentity')
+    ->condition('entity_type', 'patterns_server')
     ->execute();
   $num_deleted = db_delete('votingapi_cache')
-    ->condition('entity_type', 'patternentity')
+    ->condition('entity_type', 'patterns_server')
     ->execute();
 
 
   //clean all attached field.
-  field_attach_delete_bundle('patternentity', 'patternentity');
+  field_attach_delete_bundle('patterns_server', 'patterns_server');
   
   //delete the role.
   user_role_delete('patterns_server_user');
 }
-
