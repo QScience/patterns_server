@@ -16,7 +16,7 @@
  * is set to the matching user ID.
  */
 
-function _patterns_server_login_authenticate($user, $password) {
+function _pattern_entity_login_authenticate($user, $password) {
   $status = PATTERNS_SUCCESS;
   
   if (empty($user)) {
@@ -66,36 +66,36 @@ function _patterns_server_login_authenticate($user, $password) {
     return patterns_results(PATTERNS_ERR, t('You have reached the maximum number of login attempts for your username: :name. Your account is temporarily disabled, please try later.', array(':name' => $user)));;
   }
   
-  if (_patterns_server_check_password($user, $password)) {
-    _patterns_server_login_success($identifier);
+  if (_pattern_entity_check_password($user, $password)) {
+    _pattern_entity_login_success($identifier);
     return patterns_results(PATTERNS_SUCCESS, t('Login successful'));
   }
   else {
-   	_patterns_server_login_fail($identifier);
+   	_pattern_entity_login_fail($identifier);
   	return patterns_results(PATTERNS_ERR, t('Login failed'));
   }
 
 }
 
-function _patterns_server_check_password($user, $password) {
+function _pattern_entity_check_password($user, $password) {
   $account = user_load_by_name($user);
   return $account && $account->pass == $password;
 }
 
-function _patterns_server_token_authenticate($user, $token) {
+function _pattern_entity_token_authenticate($user, $token) {
 	$queryparam = array(':uid' => $user, ':token' => $token);
   $found = db_query("SELECT * FROM {patterns_server_tokens} WHERE uid = :uid AND token = :token", $queryparam)->fetchObject();
   return $found;
 }
 
 
-function _patterns_server_login_success($identifier) {
+function _pattern_entity_login_success($identifier) {
   if (!empty($identifier)) {
      flood_clear_event('failed_login_attempt_user', $identifier);
   }
 }
 
-function _patterns_server_login_fail($identifier) {
+function _pattern_entity_login_fail($identifier) {
   flood_register_event('failed_login_attempt_ip', variable_get('user_failed_login_ip_window', 3600));
        
   if (!empty($identifier)) {
@@ -104,7 +104,7 @@ function _patterns_server_login_fail($identifier) {
       
 }
 
-function patterns_server_log_failed_login($user, $pwd) {
+//used in patternentity.io.inc
+function _pattern_entity_log_failed_login($user, $pwd) {
 		watchdog('patterns_server', 'username :user failed authentication with password :pwd', array(':user' => $user, ':pwd' => $pwd), WATCHDOG_NOTICE);
 }
-

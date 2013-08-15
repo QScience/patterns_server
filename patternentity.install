@@ -1,0 +1,176 @@
+<?php
+/**
+ * @file
+ * Implements pattern entity.
+ */
+
+/**
+ * Implements hook_install().
+ * create the public://patternentity folder.
+ */
+function patternentity_install() {
+
+  //create public://patternentity folder.
+  $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
+  if (!file_exists($public_dir_path . '/patternentity')) {
+    if(!drupal_mkdir($public_dir_path . '/patternentity')) {
+      drupal_set_message(t('cannot create folder in public directory, this should be caused by permission of public directory. e.g. "sites/default/files".'),'error');
+    }
+  }
+	
+	// Check if role patterns_server_user exists
+ 	$result = db_select('role', 'r')
+    ->fields('r', array('name'))
+    ->condition('name', 'patterns_server_user', '=')
+    ->execute()
+    ->fetchAssoc();
+  if (!empty($result['name'])) {
+    return;
+  }
+	// Otherwise creates the role
+	$role = new stdClass();
+	$role->name = 'patterns_server_user';
+	user_role_save($role);
+	$role = user_role_load_by_name('patterns_server_user');
+	$role_rid = $role->rid;
+	// Define our 'editor' role permissions
+	$role_permissions = array(
+    'administer patternentity' => TRUE,
+    'view patternentity' => TRUE,
+    'upload patternentity' => TRUE,
+	);
+	// Grant permissions to our 'editor' role
+	user_role_change_permissions($role_rid, $role_permissions);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function patternentity_schema() {
+  $schema['patternentity'] = array(
+    'description' => 'Pattern entity for Patterns module',
+    'fields' => array(
+      'pid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique pattern id',
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Human readable name.', 
+      ),
+      'description' => array(
+        'type' => 'text',
+        'description' => 'Description of the pattern.', 
+      ),
+      'category' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Category of the pattern.', 
+      ),
+      'pattern' => array(
+        'type' => 'text',
+        'size' => 'medium',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'description' => 'A serialized array containing pattern code.',
+      ),
+      'author' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'description' => 'pattern\'s author',
+      ),
+      'uploader' => array(
+        'type' => 'int',
+        'length' => 50,
+        'default' => 0,
+        'nut null' => TRUE,
+        'description' => 'pattern\'s uploader',
+      ),
+      'file_name' => array(
+        'type' => 'varchar',
+        'length' => 155,
+        'not null' => TRUE,
+        'description' => 'Machine readable name of this pattern.',
+      ),
+      'file_format' => array(
+        'type' => 'varchar',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => 'Format of the patterns (XML, YAML, etc.).',
+      ),
+      'file_path' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Path of the pattern file relative to Drupal root.',
+      ),
+      'file_downloads' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Download Number.',
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'unsigned' => TRUE,
+        'description' => 'The Unix timestamp indicating when the pattern file was created.',
+      ),
+      'uuuid' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'default' => '',
+        'description' => 'Identify patterns and their parent',
+      ),
+    ),
+    'primary key' => array('pid'),
+    'unique keys' => array('file_name' => array('file_name')),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall() 
+ * 1. clean file_managed table.
+ * 2. clean votingapi_vote table.
+ * 3. clean all attached field.
+ */
+function patternentity_uninstall() {
+
+  //delete uploaded file, clean file_managed table.
+  $query = db_select('file_managed', 'fm')
+    ->fields('fm', array('fid'))
+    ->condition('uri', '%' . db_like('patternentity') . '%', 'LIKE') 
+    ->execute()
+    ->fetchAll();
+  $file_fids = array();
+  foreach ($query as $fid) {
+    $file_fids[] = $fid->fid;
+  }
+  $files = file_load_multiple($file_fids);
+  foreach ($files as $file) {
+    file_delete($file);
+  }
+
+  //clean votingapi_vote table.
+  $num_deleted = db_delete('votingapi_vote')
+    ->condition('entity_type', 'patternentity')
+    ->execute();
+  $num_deleted = db_delete('votingapi_cache')
+    ->condition('entity_type', 'patternentity')
+    ->execute();
+
+
+  //clean all attached field.
+  field_attach_delete_bundle('patternentity', 'patternentity');
+  
+  //delete the role.
+  user_role_delete('patterns_server_user');
+}
+

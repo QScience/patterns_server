@@ -1,0 +1,22 @@
+.block-patternentity ul {
+}
+
+.block-patternentity ul li {
+  margin-bottom: 7px;
+  color: #999;
+}
+
+.block-patternentity ul li a {
+  background-color: #E0EAF1;
+  border-bottom: 1px solid #B3CEE1;
+  border-right: 1px solid #B3CEE1;
+  color: #3E6D8E;
+  padding: 1px 4px;
+}
+
+.block-patternentity ul li a:hover {
+  background-color: #C4DAE9;
+  border-bottom: 1px solid #C4DAE9;
+  border-right: 1px solid #C4DAE9;
+  text-decoration: none;
+}

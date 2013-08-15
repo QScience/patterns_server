@@ -1,0 +1,18 @@
+name = Pattern Entity
+description = build a new entity type for the Patterns module's pattern file.
+core = 7.x
+package = u_d
+
+dependencies[] = entity
+dependencies[] = patterns
+dependencies[] = patterns_xmlparser
+dependencies[] = patterns_yamlparser
+dependencies[] = votingapi
+dependencies[] = d2d
+
+files[] = includes/patternentity.inc
+files[] = includes/patternentity.controller.inc
+files[] = includes/patternentity.ui.inc
+
+scripts[] = styles/js/jquery.autofill.min.js
+scripts[] = styles/js/moment.min.js

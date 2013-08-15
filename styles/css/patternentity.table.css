@@ -1,0 +1,64 @@
+.download-link {
+	background: url("../img/download.png") no-repeat scroll 0 0 transparent;
+	display: block;
+	height: 20px;
+	text-indent: -9999px;
+	width: 22px;
+}
+
+.voting-link {
+  background: url("../img/like_white.png") no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 25px;
+  text-indent: -9999px;
+  width: 27px;
+}
+
+.voting-link-odd {
+  background: url("../img/like_black.png") no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 25px;
+  text-indent: -9999px;
+  width: 27px;
+}
+
+.voted-sign{
+  background: url("../img/like_black.png") no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 25px;
+  text-indent: -9999px;
+  width: 27px;
+}
+/*
+.upload-button-link {
+  margin-right: 20px;
+  float: right;
+  margin-top: 6px;
+	background: url("../img/upload.png") no-repeat scroll 0 0 transparent;
+	display: block;
+	height: 39px;
+	text-indent: -9999px;
+	width: 48px;
+  margin-right: 1px;
+}
+*/
+
+.upload-button-link {
+  margin-right: 20px;
+  float: right;
+	background: url("../img/upload.png") no-repeat scroll 0 0 transparent;
+	display: block;
+	height: 30px;
+	text-indent: -9999px;
+	width: 30px;
+}
+
+#patternentity-upload-form-js {
+	border: 2px solid #D8D8D8;
+	padding-left: 13px;
+	padding-top: 9px;
+}
+
+.pattern-entity-list-table-wrap {
+	    margin-bottom: 50px;
+}

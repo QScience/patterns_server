@@ -1,0 +1,144 @@
+/* description part */
+dl {
+	margin-bottom: 20px;
+}
+dl:before, dl:after {
+	content: "";
+	display: table;
+	line-height: 0;
+}
+dl:before, dl:after {
+	content: "";
+	display: table;
+	line-height: 0;
+}
+dl:after {
+	clear: both;
+}
+
+dt, dd {
+	line-height: 20px;
+}
+dt {
+	font-weight: bold;
+}
+dl dt {
+	clear: left;
+	float: left;
+	overflow: hidden;
+	text-align: right;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 160px;
+}
+
+
+dt, dd {
+	line-height: 20px;
+}
+dd {
+	margin-left: 10px;
+}
+dl dd {
+	margin-left: 180px;
+}
+
+/* pattern field part */
+#patternentity-page-pattern-field {
+	border: 1px solid #BAB1B1;
+	margin: 10px;
+	width: 80%;
+	padding-top: 20px;
+}
+
+#patternentity-page-pattern-field ul{
+	list-style: none;
+	margin: 0;
+}
+
+.yaml_aa5500 {
+	color: #221199;
+}
+
+.yaml_221199{
+	color: #aa5500;
+}
+
+.yaml_116644 {
+	color: #116644;
+}
+
+
+/* download and voting link png 
+
+.voting-link {
+  background: url("../img/like.png") no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 25px;
+  text-indent: -9999px;
+  width: 27px;
+}
+*/
+
+.download-link {
+  float: right;
+  margin-top: 6px;
+	background: url("../img/download.png") no-repeat scroll 0 0 transparent;
+	display: block;
+	height: 25px;
+	text-indent: -9999px;
+	width: 27px;
+  margin-right: 1px;
+}
+
+.voting-link {
+  float: right;
+  margin-top: 3px;
+  background: url("../img/like_white.png") no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 25px;
+  text-indent: -9999px;
+  width: 27px;
+  margin-right: 6px;
+}
+
+.voted-sign{
+  float: right;
+  margin-top: 3px;
+  background: url("../img/like_black.png") no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 25px;
+  text-indent: -9999px;
+  width: 27px;
+  margin-right: 5px;
+}
+
+/*#patternentity-upload-form-js {
+	text-align: center;
+}*/
+
+.backtoserver-button-link {
+  float: right;
+  background: url("../img/home.png") no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 25px;
+  text-indent: -9999px;
+  width: 27px;
+  margin-top: 2px;
+}
+
+/*
+.field-type-taxonomy-term-reference .field-label {
+	display: inline;
+	padding-right: 10px;
+}
+
+.field-type-taxonomy-term-reference .field-items {
+	display: inline;
+}
+*/
+
+.field-type-taxonomy-term-reference .field-item {
+	display: inline;
+	padding-right: 10px;
+}
