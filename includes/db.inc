@@ -8,9 +8,9 @@
 /**
  * latest patterns
  */
-function _pattern_entity_get_pattern_timeDESC_from_db($num) {
+function _patterns_server_get_pattern_timeDESC_from_db($num) {
   $num = is_numeric($num)?$num:10;
-  $result = db_select('patternentity', 'p')
+  $result = db_select('patterns_server', 'p')
                   ->fields('p', array())
                   ->orderBy('created', 'DESC')
                   ->range(0, $num)
@@ -27,8 +27,8 @@ function _pattern_entity_get_pattern_timeDESC_from_db($num) {
 /**
  * one pattern defined by pid.
  */
-function _pattern_entity_get_pattern_pid_from_db($pid) {
-  $result = db_select('patternentity', 'p')
+function _patterns_server_get_pattern_pid_from_db($pid) {
+  $result = db_select('patterns_server', 'p')
                   ->fields('p', array())
                   ->condition('p.pid', $pid)
                   ->execute()
@@ -44,7 +44,7 @@ function _pattern_entity_get_pattern_pid_from_db($pid) {
 /**
  * Used by search page.
  */
-function _pattern_entity_search_pattern($key, $type) {
+function _patterns_server_search_pattern($key, $type) {
   $or = db_or();
   switch ($type) {
     case 0:
@@ -63,7 +63,7 @@ function _pattern_entity_search_pattern($key, $type) {
       $or->condition('pid', $key, '=');
       break;
   }
-  $result = db_select('patternentity', 'p')
+  $result = db_select('patterns_server', 'p')
                   ->fields('p', array())
                   ->condition($or)
                   ->orderBy('created', 'DESC')
@@ -87,14 +87,14 @@ function _pattern_entity_search_pattern($key, $type) {
 
 /**
  */
-function _pattern_entity_download_recode($id) {
-  $download_origin_times = db_select('patternentity', 'ps')
+function _patterns_server_download_recode($id) {
+  $download_origin_times = db_select('patterns_server', 'ps')
     ->fields('ps', array('file_downloads', 'pid'))
     ->condition('pid', $id)
     ->execute()
     ->fetchAssoc();
   $download_origin_times['file_downloads']  += 1;
-  db_update('patternentity')
+  db_update('patterns_server')
     ->condition('pid', $id)
     ->fields(array('file_downloads' => $download_origin_times['file_downloads']))
     ->execute();
