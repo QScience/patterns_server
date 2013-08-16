@@ -3,8 +3,8 @@
 /**
  * Implements ENTITY_TYPE_form for admin UI.
  * all field in table: patterns_server.
- * no need care: pid, uuuid, created, updated, file_downloads, 
- * need: title, description, category, pattern, author, file_name, file_format, file_path,
+ * no need care: pid, created, updated, file_downloads, 
+ * need: title, description, category, pattern, author, file_name, file_format, file_path, uuuid
  */
 function patterns_server_form($form, &$form_state, $patterns_server) {
   $form['pattern_file'] = array(
@@ -99,6 +99,14 @@ function patterns_server_form_validate(&$form, &$form_state) {
     $form_state['values']['file_name'] = $file->filename;
     $form_state['values']['file_format'] = $file_extension;
     //$form_state['values']['file_path'] = $file->uri;
+
+    if (isset($pattern['info']['uuuid']) && !empty($pattern['info']['uuuid'])) {
+      $form_state['values']['uuuid'] = $pattern['info']['uuuid'];
+    }
+    else {
+      $form_state['values']['uuuid'] = _patterns_server_generate_uuuid();
+    }
+
 
     $dir = 'public://patterns_server/';
     if (!file_prepare_directory($dir)) {

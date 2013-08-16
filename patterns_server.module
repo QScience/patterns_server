@@ -13,7 +13,7 @@ module_load_include('module', 'votingapi', 'votingapi');
  */
 function patterns_server_entity_info() {
   $return['patterns_server'] = array(
-    'label' => t('Patterns Server'),
+    'label' => t('PatternsServer'),
     'base table' => 'patterns_server',
     'entity keys' => array(
       'id' => 'pid',
