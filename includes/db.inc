@@ -99,3 +99,113 @@ function _patterns_server_download_recode($id) {
     ->fields(array('file_downloads' => $download_origin_times['file_downloads']))
     ->execute();
 }
+
+/**
+ * Writes the pattern metadata (and the actual pattern) to the database.
+ *
+ * @param array $pattern
+ *   The pattern represented as an array.
+ * @param mixed $path
+ *   The new path where the file has just been saved or read from.
+ * @param mixed $name
+ *   The name of the pattern file without the extension.
+ * @param mixed $format 
+ *   The format of the pattern (YAML, XML, etc.)
+ * @param mixed $username (Optional)
+ *   A name for the author/uploader of the pattern. Defaults, logged user
+ * @param string $uuuid (Optional)
+ *   Optional argument to force the use of certain UUUID (i.e.: while clonning)  
+ */
+function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL, $username = NULL, $uuuid = NULL) {
+
+  $title        = patterns_utils_init_from_pattern('title', $pattern);
+  $description  = patterns_utils_init_from_pattern('description', $pattern);
+  $format       = patterns_utils_init_from_pattern('format', $pattern, $format, PATTERNS_FORMAT_YAML);
+
+  if (is_null($username)) {
+    global $user;
+    $username = $user->name;
+  }
+  
+  // Check if it is valid pattern: only syntax is validated, not the tags
+  if (patterns_validate_pattern($pattern, $format, PATTERNS_VALIDATE_SYNTAX)) {
+    $status = PATTERNS_STATUS_OK;
+  }
+  else {
+    $status = PATTERNS_STATUS_INVALID;
+  }
+
+  $pattern_data = db_select('patterns_server', 'p')
+                    ->fields('p', array('pid','file_name', 'file_format', 'file_path', 'created' ))
+                    ->condition('p.file_name', $name)
+                    ->condition('p.file_format', $format)
+                    ->execute()
+                    ->fetchAssoc();
+
+  // Pattern already in the DB, data needs to be updated.
+  if (!empty($pattern_data)) {
+
+//    // TODO: how to update the status correctly? Improve!
+//    if ($pattern_data['status'] == PATTERNS_STATUS_TRASHED) {
+//      $status = PATTERNS_STATUS_TRASHED;
+//    }
+//    elseif ($pattern_data['status'] == PATTERNS_STATUS_ENABLED) {
+//      if ($status == PATTERNS_STATUS_OK) {
+//        $status = PATTERNS_STATUS_ENABLED;
+//      }
+//    }
+//
+//    $pid = $pattern_data['pid'];
+//    $updated = $pattern_data['updated'];
+//    $file = $pattern_data['file'];
+//
+//    // Change of location.
+//    if ($path != $file) {
+//        $query_params = array('file' => $path, 'updated' => time(), 'pid' => $pid, 'uuuid' => patterns_utils_get_uuuid(), 'author' => $username );
+//        db_query("UPDATE {patterns} SET file = :file, updated = :updated , uuuid = :uuuid , author = :author WHERE pid = :pid", $query_params);
+//    }
+//
+//    if (($new_updated = filemtime($path)) > $updated) {
+//      $query_params = array('pattern' => serialize($pattern),
+//                            'title' => $title,
+//                            'file' => $path,
+//                            'updated' => $new_updated,
+//                            'descr' => $description,
+//                            'pid' => $pid,
+//                            'status' => $status,
+//                            'uuuid' => (is_null($uuuid)) ? patterns_utils_get_uuuid() : $uuuid,
+//                            'author' => $username,
+//      );
+//      db_query("UPDATE {patterns} SET pattern = :pattern, title = :title, file = :file, updated = :updated, status = :status, description = :descr , uuuid = :uuuid, author = :author WHERE pid = :pid", $query_params);
+//    }
+//    else {
+//      $query_params = array('pattern' => serialize($pattern),
+//                            'title' => $title, 'file' => $path,
+//                            'descr' => $description,
+//                            'pid' => $pid,
+//                            'status' => $status,
+//                            'uuuid' => (is_null($uuuid)) ? patterns_utils_get_uuuid() : $uuuid,
+//                            'author' => $username,
+//      );
+//      db_query("UPDATE {patterns} SET pattern = :pattern, title = :title, file = :file, status = :status, description = :descr , uuuid = :uuuid , author = :author WHERE pid = :pid", $query_params);
+//    }
+  }
+  // It is a new Pattern.
+  else {
+    // Note: time() != REQUEST_TIME since it's a long process.
+    $entity = entity_create('patterns_server', array('type' => 'patterns_server'));
+    $entity->title = $title;
+    $entity->description = $description;
+    $entity->category = 'test';
+    $entity->pattern = $pattern;
+    $entity->author = $username;
+    $entity->uploader = 1;
+    $entity->file_name = $name;
+    $entity->file_format = $format;
+    $entity->file_path = $path;
+    $entity->file_downloads = 0;
+    $entity->uuuid = _patterns_server_generate_uuuid();
+    $entity->save();
+    }
+  return TRUE;
+}

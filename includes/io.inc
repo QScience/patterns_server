@@ -231,7 +231,7 @@ function _patterns_server_io_save_pattern($content = NULL, $name = NULL, $format
     return patterns_results(PATTERNS_ERR, $msg);
   }
   
-  patterns_db_save_pattern($pattern, $path, $name, $format, $username, $uuuid);
+  _patterns_server_db_save_pattern($pattern, $path, $name, $format, $username, $uuuid);
   
   $msg = t('Pattern was saved in %path.', array('%path' => $path, ));
 
