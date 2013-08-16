@@ -166,7 +166,7 @@ function _sub_patterns_server_register_client($user, $pwd, $email) {
  * 
  * Returns a patterns_results object with a message, instead of a boolean
  */
-function _patterns_server_io_save_pattern($content = NULL, $name = NULL, $format = PATTERNS_FORMAT_YAML, $dir = NULL, $original = NULL, $username = NULL, $uuuid = NULL) {
+function _patterns_server_io_save_pattern($content = NULL, $name = NULL, $format = PATTERNS_FORMAT_YAML, $username = NULL, $uuuid = NULL) {
   $status = PATTERNS_SUCCESS;
   $msg = NULL;
   
@@ -180,13 +180,21 @@ function _patterns_server_io_save_pattern($content = NULL, $name = NULL, $format
     return patterns_results(PATTERNS_ERR, $msg);
   }
 
-  if (is_null($dir)) {
-    $dir = patterns_path_get_files_dir();
+
+  $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
+  $dir = $public_dir_path . '/patterns_server/incoming'; 
+  if (!file_exists($dir)) {
+    if(!drupal_mkdir($dir)) {
+      drupal_set_message(t('cannot create folder in public/incomming directory, this should be caused by permission.'),'error');
+    }
   }
+
   if (!file_prepare_directory($dir, FILE_CREATE_DIRECTORY)) {
     $msg = t('Error: the pattern is not writable. Please check the file system permissions.');
     return patterns_results(PATTERNS_ERR, $msg);
   }
+	
+
 
   // Check if the file has a valid extension
   // and in case add the format at the end
@@ -196,13 +204,11 @@ function _patterns_server_io_save_pattern($content = NULL, $name = NULL, $format
 
   $path_original = $dir . '/' . $name;
 
-  if (is_null($original)) {
-    if (is_array($content)) {
-      $original = patterns_parser_dump($content, $format);
-    }
-    else {
-      $original = $content;
-    }
+  if (is_array($content)) {
+    $original = patterns_parser_dump($content, $format);
+  }
+  else {
+    $original = $content;
   }
   
   $path = file_unmanaged_save_data($original, $path_original, FILE_EXISTS_REPLACE);
@@ -227,15 +233,14 @@ function _patterns_server_io_save_pattern($content = NULL, $name = NULL, $format
   
   patterns_db_save_pattern($pattern, $path, $name, $format, $username, $uuuid);
   
-  $link = l($name, 'admin/patterns/edit/' . $name);
-  $msg = t('Pattern !name was saved in %path.', array('!name' => $link, '%path' => $path, ));
+  $msg = t('Pattern was saved in %path.', array('%path' => $path, ));
 
   return patterns_results(PATTERNS_SUCCESS, $msg);
 }
 
 function _patterns_server_save_pattern($pattern_name, $pattern, $format, $user) {  
   
-  $result = _patterns_server_io_save_pattern($pattern, $pattern_name, $format, NULL, NULL, $user);
+  $result = _patterns_server_io_save_pattern($pattern, $pattern_name, $format, $user);
   
   if (!empty($result['msg'])) {
     $status = ($result['status'] == PATTERNS_SUCCESS) ? WATCHDOG_INFO : WATCHDOG_ERROR;
@@ -303,11 +308,11 @@ function _patterns_server_incoming_patterns($arguments, $rpc_info) {
         $format = $exploded_pattern['format'];        
         $result = _patterns_server_save_pattern($name, $pattern, $format, $user);
         if ($result['status'] == PATTERNS_SUCCESS) {
-        	patterns_db_publish_pattern($name);
+        	//patterns_db_publish_pattern($name);
   				$saved[] = $name;
         }
         else {
-          $errors[] = $name . ' -> ' . $result['msg'];
+          $errors[] = $name . ' ----> ' . $result['msg'];
         }
       }
     }
@@ -315,7 +320,7 @@ function _patterns_server_incoming_patterns($arguments, $rpc_info) {
   
 	
   
-  $outcome = count($saved) . ' pattern(s) received and saved.';
+  $outcome = count($saved) . 'xxx pattern(s) received and saved.';
   if (count($errors) > 0) {
   	$outcome .= ' The following patterns could not be saved: ' . implode(',', $errors);
   }
