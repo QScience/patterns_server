@@ -7,7 +7,6 @@
 
 module_load_include('inc', 'patterns_server', 'includes/auth');
 module_load_include('inc', 'patterns_server', 'includes/db');
-module_load_include('inc', 'patterns', 'includes/io/io');
 
 /**
  * Implements hook_d2d_secure_rpc().
@@ -160,96 +159,6 @@ function _sub_patterns_server_register_client($user, $pwd, $email) {
 	return user_save(null, $new_user);
 }
 
-/**
- * Lower level primitive for patterns_io_save_pattern.
- * Includes an optional argument to force the UUUID
- * 
- * Returns a patterns_results object with a message, instead of a boolean
- */
-function _patterns_server_io_save_pattern($content = NULL, $name = NULL, $format = PATTERNS_FORMAT_YAML, $username = NULL, $uuuid = NULL) {
-  $status = PATTERNS_SUCCESS;
-  $msg = NULL;
-  
-  if (is_null($name)) {
-    $msg = t('Cannot save pattern with \'NULL\' identifier.');
-    return patterns_results(PATTERNS_ERR, $msg);
-  }
-
-  if (!patterns_validate_pattern($content, $format, PATTERNS_VALIDATE_SYNTAX)) {
-    $msg = t("Pattern '%name' could not be saved. Make sure edited code is well-formed.", array('%name' => $name));
-    return patterns_results(PATTERNS_ERR, $msg);
-  }
-
-
-  $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
-  $dir = $public_dir_path . '/patterns_server/incoming'; 
-  if (!file_exists($dir)) {
-    if(!drupal_mkdir($dir)) {
-      drupal_set_message(t('cannot create folder in public/incomming directory, this should be caused by permission.'),'error');
-    }
-  }
-
-  if (!file_prepare_directory($dir, FILE_CREATE_DIRECTORY)) {
-    $msg = t('Error: the pattern is not writable. Please check the file system permissions.');
-    return patterns_results(PATTERNS_ERR, $msg);
-  }
-	
-
-
-  // Check if the file has a valid extension
-  // and in case add the format at the end
-  if (!_patterns_io_file_has_valid_extension($name)) {
-    $name = $name . '.' . $format;
-  }
-
-  $path_original = $dir . '/' . $name;
-
-  if (is_array($content)) {
-    $original = patterns_parser_dump($content, $format);
-  }
-  else {
-    $original = $content;
-  }
-  
-  $path = file_unmanaged_save_data($original, $path_original, FILE_EXISTS_REPLACE);
-  if (!$path) {
-    $msg = t('An error occurred while saving the file to %path. A file with the same name exists.', array('%path' => $path_original));
-    return patterns_results(PATTERNS_ERR, $msg);
-  }
-
-  // Load and save pattern.
-  $load_function = patterns_parser_get_parser_function($format, PATTERNS_PARSER_LOAD);
-  if (!$load_function) {
-    $msg = t('Could not find a parser for ', array('%name' => $name));
-   return patterns_results(PATTERNS_ERR, $msg);
-  }
-
-  $pattern = $load_function($path);
-  if (!$pattern) {
-    $msg = t("Pattern '%name' could not be saved into the database. Make sure edited code is well-formed.", array('%name' => $name));
-    patterns_io_remove_pattern_from_fs($path);
-    return patterns_results(PATTERNS_ERR, $msg);
-  }
-  
-  _patterns_server_db_save_pattern($pattern, $path, $name, $format, $username, $uuuid);
-  
-  $msg = t('Pattern was saved in %path.', array('%path' => $path, ));
-
-  return patterns_results(PATTERNS_SUCCESS, $msg);
-}
-
-function _patterns_server_save_pattern($pattern_name, $pattern, $format, $user) {  
-  
-  $result = _patterns_server_io_save_pattern($pattern, $pattern_name, $format, $user);
-  
-  if (!empty($result['msg'])) {
-    $status = ($result['status'] == PATTERNS_SUCCESS) ? WATCHDOG_INFO : WATCHDOG_ERROR;
-    watchdog('patterns_server', $result['msg'], array(), $status);
-  }
-  
-  return $result;
-}
-
 function _patterns_server_incoming_patterns($arguments, $rpc_info) {
 	
   if (empty($arguments)) {
@@ -308,11 +217,10 @@ function _patterns_server_incoming_patterns($arguments, $rpc_info) {
         $format = $exploded_pattern['format'];        
         $result = _patterns_server_save_pattern($name, $pattern, $format, $user);
         if ($result['status'] == PATTERNS_SUCCESS) {
-        	//patterns_db_publish_pattern($name);
   				$saved[] = $name;
         }
         else {
-          $errors[] = $name . ' ----> ' . $result['msg'];
+          $errors[] = $name . ' : ' . $result['msg'];
         }
       }
     }

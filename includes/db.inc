@@ -5,6 +5,7 @@
  * all function operating db in patters_server module.
  */
 
+module_load_include('inc', 'patterns', 'includes/io/io');
 /**
  * latest patterns
  */
@@ -110,51 +111,111 @@ function _patterns_server_download_recode($id) {
  * @param string $uuuid (Optional)
  *   Optional argument to force the use of certain UUUID (i.e.: while clonning)  
  */
-function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL, $username = NULL, $uuuid = NULL) {
+function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL, $username = NULL) {
 
-  $title        = patterns_utils_init_from_pattern('title', $pattern);
-  $description  = patterns_utils_init_from_pattern('description', $pattern);
-  $format       = patterns_utils_init_from_pattern('format', $pattern, $format, PATTERNS_FORMAT_YAML);
-
-  if (is_null($username)) {
-    global $user;
-    $username = $user->name;
-  }
-  
-  // Check if it is valid pattern: only syntax is validated, not the tags
-  if (patterns_validate_pattern($pattern, $format, PATTERNS_VALIDATE_SYNTAX)) {
-    $status = PATTERNS_STATUS_OK;
-  }
-  else {
-    $status = PATTERNS_STATUS_INVALID;
-  }
-
-  $pattern_data = db_select('patterns_server', 'p')
-                    ->fields('p', array('pid','file_name', 'file_format', 'file_path', 'created' ))
-                    ->condition('p.file_name', $name)
-                    ->condition('p.file_format', $format)
+  //FOR LATER
+  $uuuid = NULL;
+  if (isset($pattern['info']['uuuid'])) {
+    $uuuid=$pattern['info']['uuuid'];
+    $pattern_data = db_select('patterns_server', 'p')
+                    ->fields('p', array('pid'))
+                    ->condition('p.uuuid', $uuuid)
                     ->execute()
                     ->fetchAssoc();
 
-  // Pattern already in the DB, data needs to be updated.
-  if (!empty($pattern_data)) {
-  }
-  // It is a new Pattern.
-  else {
-    // Note: time() != REQUEST_TIME since it's a long process.
-    $entity = entity_create('patterns_server', array('type' => 'patterns_server'));
-    $entity->title = $title;
-    $entity->description = $description;
-    $entity->category = 'test';
-    $entity->pattern = $pattern;
-    $entity->author = $username;
-    $entity->uploader = 1;
-    $entity->file_name = $name;
-    $entity->file_format = $format;
-    $entity->file_path = $path;
-    $entity->file_downloads = 0;
-    $entity->uuuid = _patterns_server_generate_uuuid();
-    $entity->save();
+    if (!empty($pattern_data)) {
+      //drupal_set_message(t('already exist.'), 'error');
+      $msg = t('Pattern already exist.');
+      return patterns_results(PATTERNS_ERR, $msg);
     }
-  return TRUE;
+  }
+
+  // Pattern already in the DB, data needs to be updated.
+  // It is a new Pattern.
+  $entity = entity_create('patterns_server', array('type' => 'patterns_server'));
+  $entity->title = $pattern['info']['title'];
+  $entity->description = $pattern['info']['description'];
+  $entity->category = $pattern['info']['category'];
+  $entity->pattern = $pattern;
+  $entity->author = $pattern['info']['author'];
+  $uid = user_load_by_name($username);
+  $entity->uploader = $uid->uid;
+
+  $entity->file_name = $name;
+  $entity->file_format = $format;
+  $entity->file_path = $path;
+  $entity->file_downloads = 0;
+  $entity->uuuid = _patterns_server_generate_uuuid();
+  $entity->save();
+
+  $msg = t('Pattern was saved in %path.', array('%path' => $path, ));
+  return patterns_results(PATTERNS_SUCCESS, $msg);
+}
+
+
+function _patterns_server_save_pattern($name, $content, $format, $username) {  
+  
+  $status = PATTERNS_SUCCESS;
+  $msg = NULL;
+  
+  if (is_null($name)) {
+    $msg = t('Cannot save pattern with \'NULL\' identifier.');
+    return patterns_results(PATTERNS_ERR, $msg);
+  }
+
+  if (!patterns_validate_pattern($content, $format, PATTERNS_VALIDATE_SYNTAX)) {
+    $msg = t("Pattern '%name' could not be saved. Make sure edited code is well-formed.", array('%name' => $name));
+    return patterns_results(PATTERNS_ERR, $msg);
+  }
+
+
+  $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
+  $dir = $public_dir_path . '/patterns_server/incoming'; 
+  if (!file_exists($dir)) {
+    if(!drupal_mkdir($dir)) {
+      drupal_set_message(t('cannot create folder in public/incomming directory, this should be caused by permission.'),'error');
+    }
+  }
+  if (!file_prepare_directory($dir, FILE_CREATE_DIRECTORY)) {
+    $msg = t('Error: the pattern is not writable. Please check the file system permissions.');
+    return patterns_results(PATTERNS_ERR, $msg);
+  }
+
+  // Check if the file has a valid extension
+  // and in case add the format at the end
+  if (!_patterns_io_file_has_valid_extension($name)) {
+    $name = $name . '.' . $format;
+  }
+
+  $path_original = $dir . '/' . $name;
+
+  if (is_array($content)) {
+    $original = patterns_parser_dump($content, $format);
+  }
+  else {
+    $original = $content;
+  }
+  
+  $path = file_unmanaged_save_data($original, $path_original, FILE_EXISTS_REPLACE);
+  if (!$path) {
+    $msg = t('An error occurred while saving the file to %path. A file with the same name exists.', array('%path' => $path_original));
+    return patterns_results(PATTERNS_ERR, $msg);
+  }
+
+  // Load and save pattern.
+  $load_function = patterns_parser_get_parser_function($format, PATTERNS_PARSER_LOAD);
+  if (!$load_function) {
+    $msg = t('Could not find a parser for ', array('%name' => $name));
+   return patterns_results(PATTERNS_ERR, $msg);
+  }
+
+  $pattern = $load_function($path);
+  if (!$pattern) {
+    $msg = t("Pattern '%name' could not be saved into the database. Make sure edited code is well-formed.", array('%name' => $name));
+    patterns_io_remove_pattern_from_fs($path);
+    return patterns_results(PATTERNS_ERR, $msg);
+  }
+  
+  return _patterns_server_db_save_pattern($pattern, $path, $name, $format, $username);
+  
 }
