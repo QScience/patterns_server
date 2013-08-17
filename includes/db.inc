@@ -144,51 +144,6 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
 
   // Pattern already in the DB, data needs to be updated.
   if (!empty($pattern_data)) {
-
-//    // TODO: how to update the status correctly? Improve!
-//    if ($pattern_data['status'] == PATTERNS_STATUS_TRASHED) {
-//      $status = PATTERNS_STATUS_TRASHED;
-//    }
-//    elseif ($pattern_data['status'] == PATTERNS_STATUS_ENABLED) {
-//      if ($status == PATTERNS_STATUS_OK) {
-//        $status = PATTERNS_STATUS_ENABLED;
-//      }
-//    }
-//
-//    $pid = $pattern_data['pid'];
-//    $updated = $pattern_data['updated'];
-//    $file = $pattern_data['file'];
-//
-//    // Change of location.
-//    if ($path != $file) {
-//        $query_params = array('file' => $path, 'updated' => time(), 'pid' => $pid, 'uuuid' => patterns_utils_get_uuuid(), 'author' => $username );
-//        db_query("UPDATE {patterns} SET file = :file, updated = :updated , uuuid = :uuuid , author = :author WHERE pid = :pid", $query_params);
-//    }
-//
-//    if (($new_updated = filemtime($path)) > $updated) {
-//      $query_params = array('pattern' => serialize($pattern),
-//                            'title' => $title,
-//                            'file' => $path,
-//                            'updated' => $new_updated,
-//                            'descr' => $description,
-//                            'pid' => $pid,
-//                            'status' => $status,
-//                            'uuuid' => (is_null($uuuid)) ? patterns_utils_get_uuuid() : $uuuid,
-//                            'author' => $username,
-//      );
-//      db_query("UPDATE {patterns} SET pattern = :pattern, title = :title, file = :file, updated = :updated, status = :status, description = :descr , uuuid = :uuuid, author = :author WHERE pid = :pid", $query_params);
-//    }
-//    else {
-//      $query_params = array('pattern' => serialize($pattern),
-//                            'title' => $title, 'file' => $path,
-//                            'descr' => $description,
-//                            'pid' => $pid,
-//                            'status' => $status,
-//                            'uuuid' => (is_null($uuuid)) ? patterns_utils_get_uuuid() : $uuuid,
-//                            'author' => $username,
-//      );
-//      db_query("UPDATE {patterns} SET pattern = :pattern, title = :title, file = :file, status = :status, description = :descr , uuuid = :uuuid , author = :author WHERE pid = :pid", $query_params);
-//    }
   }
   // It is a new Pattern.
   else {
