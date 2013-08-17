@@ -49,38 +49,24 @@ function _patterns_server_view_pattern_description($pe) {
   $content = '<div id="patterns-server-page-pattern-description"><dl class="dl-horizontal">';
 
   $content .= '<dt>title</dt><dd>' . $pe->title . '</dd>';
-  $content .= '<dt>description</dt><dd>' . $pe->description. '</dd>';
+  $content .= '<dt>description</dt><dd>' . $pe->description . '</dd>';
 
   $category_s = l($pe->category, 'pattern/category/' . $pe->category);
-  $content .= '<dt>category</dt><dd>' . $category_s. '</dd>';
+  $content .= '<dt>category</dt><dd>' . $category_s . '</dd>';
 
   $author_s = l($pe->author, 'pattern/author/' . $pe->author);
   $content .= '<dt>author</dt><dd>' . $author_s . '</dd>';
 
   $usr_obj = user_load($pe->uploader);
-  //dsm($usr_obj);
   $uploader_s = l($usr_obj->uid == 0 ? 'Anonymous' : $usr_obj->name , 'pattern/uploader/' . $pe->uploader);
   $content .= '<dt>uploader</dt><dd>' . $uploader_s . '</dd>';
 
-  $content .= '<dt>file name</dt><dd>' . $pe->file_name. '</dd>';
+  $content .= '<dt>file name</dt><dd>' . $pe->file_name . '</dd>';
 
   $score = _patterns_server_get_voting_score($pe->pid);
   $content .= '<dt>score</dt><dd id="patterns-server-view-page-score">' . $score . '</dd>';
 
-  //$voted = _patterns_server_check_whether_voted($pe->pid);
-  //if($voted) {
-  //  $vote_s = '<strong class="voted-sign">voted</strong>';
-  //}
-  //else {
-  //  $vote_s = l(t('voting'), 'pattern/' . $pe->pid . '/voting', array('attributes' => array('class' => 'voting-link')));
-  //}
-
-  //$file_d = l(t('download'), 'pattern/' . $pe->pid . '/download', array('attributes' => array('class' => 'download-link')));
-  //$content .= '<dt>file</dt><dd>' . $file_d . '</dd>';
-
   $content .= '<dt>content</dt><dd>' . '<a href="" id="pattern_file_popup">show</a>' . '</dd>';
-
-  //$content .= '<dt>backto</dt><dd>' . "<a href=$all_patteren_list>server</a>" . '</dd>';
 
   $content .= '</dl></div>';
   return $content;
@@ -103,16 +89,14 @@ function _patterns_server_list_page($query, $fieldset_title) {
     t('Score'),
     t('File'),
     t('Like'),
-   // t('Upload'),
   );
   $ids = array();
-  foreach($query->ordered_results as $value) {
+  foreach ($query->ordered_results as $value) {
     $ids[] = $value->entity_id;
   }
   $entities = entity_load('patterns_server', $ids);
-  //dsm($entities);
   $rows = array();
-  foreach($entities as $ety_obj) {
+  foreach ($entities as $ety_obj) {
     $rows[] = _patterns_server_list_table_row($ety_obj);
   }
   $html = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('class' => array('patterns-server-list-table'))));
@@ -137,24 +121,20 @@ function _patterns_server_list_page($query, $fieldset_title) {
  */
 function _patterns_server_list_table_row($ety_obj) {
   $row = array();
-  
+
   $row[] = l($ety_obj->category, 'pattern/category/' . $ety_obj->category);
   $row[] = l($ety_obj->title, 'pattern/' . $ety_obj->pid);
   $row[] = l($ety_obj->author, 'pattern/author/' . $ety_obj->author);
-  //$usr_obj = user_load($ety_obj->uploader);
-  //$row[] = l($usr_obj->name , 'pattern/uploader/' . $ety_obj->uploader);
-  $row[] = '<i value="' . $ety_obj->created. '" ' . 'class="upload-time">' . date('j-m-Y H:i:s (P)', $ety_obj->created) . '</i>';
+  $row[] = '<i value="' . $ety_obj->created . '" ' . 'class="upload-time">' . date('j-m-Y H:i:s (P)', $ety_obj->created) . '</i>';
   $row[] = $ety_obj->file_downloads;
   $row[] = _patterns_server_get_voting_score($ety_obj->pid);
   $row[] = l(t('download'), 'pattern/' . $ety_obj->pid . '/download', array('attributes' => array('class' => 'download-link')));
-
   $voted = _patterns_server_check_whether_voted($ety_obj->pid);
-  if($voted) {
+  if ($voted) {
     $row['voting_link'] = '<strong class="voted-sign">voted</strong>';
   }
   else {
     $row['voting_link'] = l(t('voting'), 'pattern/' . $ety_obj->pid . '/voting', array('attributes' => array('class' => "voting-link voting-link-$ety_obj->pid", 'title' => "voting-link-$ety_obj->pid")));
   }
-
   return $row;
 }

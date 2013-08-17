@@ -79,7 +79,7 @@ function _patterns_server_block_hottest_tags() {
   if (!count($tags_table_db)) {
     return t('no available tags.');
   }
- 
+
   $query = array();
   foreach ($tags_table_db as $table) {
     $table_name = 'field_data_' . $table;
@@ -127,7 +127,7 @@ function _patterns_server_tagname_by_tagid($tagid) {
     ->condition('tid', $tagid)
     ->execute()
     ->fetchAssoc();
- 
+
   return $name;
 }
 

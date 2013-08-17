@@ -7,7 +7,7 @@
  * class entity UI controller.
  */
 class Patterns_Server_EntityUIController extends EntityDefaultUIController {
-  
+
   /**
    * Generates the render array for a overview table for arbitrary entities
    * matching the given conditions.
@@ -133,7 +133,6 @@ class Patterns_Server_EntityUIController extends EntityDefaultUIController {
       $row[] = array('data' => l(t('clone'), $this->path . '/manage/' . $id . '/clone'), 'colspan' => $this->operationCount());
     }
     else {
-      //$row[] = l(t('edit'), $this->path . '/manage/' . $id);
 
       if ($field_ui) {
         $row[] = l(t('manage fields'), $this->path . '/manage/' . $id . '/fields');
@@ -254,5 +253,5 @@ class Patterns_Server_EntityUIController extends EntityDefaultUIController {
     return $items;
   }
 
- 
+
 }

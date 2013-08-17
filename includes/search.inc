@@ -53,8 +53,6 @@ function patterns_server_search_submit($form, &$form_state) {
   }
 
   $form_id = $form['form_id']['#value'];
-  //dsm($form_state);
   $form_state['redirect'] = 'pattern/search/' . trim($form_state['values']['selected']) . '/' . trim($form_state['values']['search']);
-  
 
 }

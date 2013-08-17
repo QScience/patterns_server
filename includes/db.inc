@@ -154,11 +154,11 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
 /**
  *
  */
-function _patterns_server_save_pattern($name, $content, $format, $username) {  
- 
+function _patterns_server_save_pattern($name, $content, $format, $username) {
+
   $status = PATTERNS_SUCCESS;
   $msg = NULL;
-  
+
   if (is_null($name)) {
     $msg = t('Cannot save pattern with \'NULL\' identifier.');
     return patterns_results(PATTERNS_ERR, $msg);
@@ -171,10 +171,10 @@ function _patterns_server_save_pattern($name, $content, $format, $username) {
 
 
   $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
-  $dir = $public_dir_path . '/patterns_server/incoming'; 
+  $dir = $public_dir_path . '/patterns_server/incoming';
   if (!file_exists($dir)) {
-    if(!drupal_mkdir($dir)) {
-      drupal_set_message(t('cannot create folder in public/incomming directory, this should be caused by permission.'),'error');
+    if (!drupal_mkdir($dir)) {
+      drupal_set_message(t('cannot create folder in public/incomming directory, this should be caused by permission.'), 'error');
     }
   }
   if (!file_prepare_directory($dir, FILE_CREATE_DIRECTORY)) {
@@ -196,7 +196,7 @@ function _patterns_server_save_pattern($name, $content, $format, $username) {
   else {
     $original = $content;
   }
-  
+
   $path = file_unmanaged_save_data($original, $path_original, FILE_EXISTS_REPLACE);
   if (!$path) {
     $msg = t('An error occurred while saving the file to %path. A file with the same name exists.', array('%path' => $path_original));
@@ -206,8 +206,8 @@ function _patterns_server_save_pattern($name, $content, $format, $username) {
   // Load and save pattern.
   $load_function = patterns_parser_get_parser_function($format, PATTERNS_PARSER_LOAD);
   if (!$load_function) {
-    $msg = t('Could not find a parser for ', array('%name' => $name));
-   return patterns_results(PATTERNS_ERR, $msg);
+    $msg = t('Could not find a parser for %name', array('%name' => $name));
+    return patterns_results(PATTERNS_ERR, $msg);
   }
 
   $pattern = $load_function($path);
@@ -216,7 +216,7 @@ function _patterns_server_save_pattern($name, $content, $format, $username) {
     patterns_io_remove_pattern_from_fs($path);
     return patterns_results(PATTERNS_ERR, $msg);
   }
-  
+
   return _patterns_server_db_save_pattern($pattern, $path, $name, $format, $username);
-  
+
 }

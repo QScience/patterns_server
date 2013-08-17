@@ -19,12 +19,12 @@ function _patterns_server_back_like_button($pid) {
   $url = 'patterns_server_homepage';
   $backtoserver_link = l(t('Back To Server'), $url, array('attributes' => array('class' => array('backtoserver-button-link'))));
   $backtoserver_link = "<strong>$backtoserver_link</strong>";
-  
-  
+
+
   $file_d = l(t('download'), 'pattern/' . $pid . '/download', array('attributes' => array('class' => 'download-link')));
 
   $voted = _patterns_server_check_whether_voted($pid);
-  if($voted) {
+  if ($voted) {
     $vote_s = '<strong class="voted-sign" id="patterns-server-view-page-vote">voted</strong>';
   }
   else {
@@ -32,7 +32,7 @@ function _patterns_server_back_like_button($pid) {
     $vote_s = l(t('voting'), $url, array('attributes' => array('class' => array('voting-link', "voting-link-$pid"), 'title' => "voting-link-$pid", 'id' => array('patterns-server-view-page-vote'))));
   }
 
-  
+
   return $backtoserver_link . $file_d . $vote_s;
 }
 
@@ -42,12 +42,10 @@ function _patterns_server_back_like_button($pid) {
  */
 function _patterns_server_findtagtid_by_tagname($tagname) {
   $split_strings = preg_split('/[\,]+/', $tagname);
-  //dsm($split_strings);
 
   $or = db_or();
   foreach ($split_strings as $value) {
     $or->condition('name', trim($value));
-    //dsm($value);
   }
 
   $query = db_select('taxonomy_term_data', 'ttd')
@@ -63,7 +61,7 @@ function _patterns_server_findtagtid_by_tagname($tagname) {
  */
 function _patterns_server_findentityid_by_tagvid($tagvids, $tables) {
   if (count($tagvids) == 0 || !$tables) {
-    return array(); 
+    return array();
   }
 
   $query = array();
@@ -79,7 +77,6 @@ function _patterns_server_findentityid_by_tagvid($tagvids, $tables) {
       ->condition($or)
       ->execute()
       ->fetchAllAssoc('entity_id');
-   // dsm($query);
   }
 
   $result = array();
@@ -102,13 +99,11 @@ function _patterns_server_list_orderby_voting($query) {
       $vscore[$key] = _patterns_server_get_voting_score($value->entity_id);
     }
     arsort($vscore);
-    //dsm($vscore);
     $new_ordered_results = array();
     foreach ($vscore as $key => $value) {
       $new_ordered_results[] = $query->ordered_results[$key];
     }
     $query->ordered_results = array_slice($new_ordered_results, 0, 10);
-    //dsm($query);
 
     $fieldset_title = 'Most Liked Patterns:';
     $upload_button = _patterns_server_upload_button();
@@ -118,7 +113,7 @@ function _patterns_server_list_orderby_voting($query) {
     return $list;
   }
   else {
-    return false;
+    return FALSE;
   }
 }
 

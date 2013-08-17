@@ -18,7 +18,6 @@ function _patterns_server_get_voting_score($pid) {
     'function' => 'sum',
   );
   $vote = votingapi_select_results($criteria);
-  //dsm($vote);
   if ($vote) {
     return $vote[0]['value'];
   }
@@ -38,9 +37,7 @@ function _patterns_server_voting_pattern($pid) {
     'value' => '1',
   );
   votingapi_set_votes($votes);
-  //$vote_score_now = _patterns_server_get_voting_score($pid);
-  //return $vote_score_now;
-  
+
   drupal_goto("pattern/$pid");
 }
 
@@ -58,6 +55,4 @@ function _patterns_server_check_whether_voted($pid) {
   );
   $votes = votingapi_select_votes($criteria);
   return count($votes);
-  //dsm($votes);
-  //return $votes;
 }

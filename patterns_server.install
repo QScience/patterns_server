@@ -136,7 +136,8 @@ function patterns_server_schema() {
 }
 
 /**
- * Implements hook_uninstall()
+ * Implements hook_uninstall().
+ *
  * 1. clean file_managed table.
  * 2. clean votingapi_vote table.
  * 3. clean all attached field.
@@ -169,7 +170,7 @@ function patterns_server_uninstall() {
 
   //clean all attached field.
   field_attach_delete_bundle('patterns_server', 'patterns_server');
- 
+
   //delete the role.
   user_role_delete('patterns_server_user');
 }

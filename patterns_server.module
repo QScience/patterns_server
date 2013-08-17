@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Patterns Server 
+ * Patterns Server
  *
  *
  */
@@ -170,7 +170,7 @@ function patterns_server_menu() {
     'access arguments' => array('view patterns server'),
   );
 
-  //four basic list table page. they all use the core function: _patterns_server_list();
+  //four basic list table page. they all use the core function "_patterns_server_list()";
   //these four:
   //  if success, return page which contains two parts: search form & a pattern table.
   //  if not, go to the main page and give an error message.
@@ -320,7 +320,7 @@ function _patterns_server_download_pattern($pid) {
     drupal_goto('patterns_server_homepage');
   }
   $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
- 
+
   $file_path = $ety_obj->file_path;
   $file = file_get_contents($file_path);
   if (!$file) {
@@ -345,7 +345,7 @@ function _patterns_server_list_basicpage($property, $arg) {
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
   $searchform = drupal_get_form('patterns_server_search');
   $searchform = drupal_render($searchform);
- 
+
   $list = _patterns_server_list($property, $arg);
   if ($list === FALSE) {
     drupal_set_message(t("The pattern list doesn't exist."), "error");
@@ -374,7 +374,7 @@ function _patterns_server_list_tags_all($tid) {
     drupal_set_message(t("The pattern list doesn't exist.", "error"));
     drupal_goto('patterns_server_homepage');
   }
- 
+
   $list .= "<div id='patterns-server-all-table-wrap'>";
   foreach ($tags_fields_name as $field_name) {
     $list .= _patterns_server_list($field_name, $tid);

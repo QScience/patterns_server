@@ -39,8 +39,7 @@ class Patterns_Server_EntityController extends EntityAPIController {
     foreach ($entities as $entity) {
       $build = entity_build_content($this->entityType, $entity, $view_mode, $langcode);
 
-      //dsm($build);
-      
+
       foreach ($build as $key => $value) {
         if (isset($value['#field_type']) and $value['#field_type'] == 'taxonomy_term_reference') {
           if (isset($value['#items'])) {
@@ -52,7 +51,6 @@ class Patterns_Server_EntityController extends EntityAPIController {
           }
         }
       }
-      //dsm($build);
 
       $build += array(
         // If the entity type provides an implementation, use this instead the
