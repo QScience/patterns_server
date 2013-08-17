@@ -58,10 +58,10 @@ function patterns_server_d2d_secure_rpc() {
  *
  */
 function _patterns_server_register_client($arguments, $rpc_info) {
-  $errStr = 'Registration-Error. ';
+  $errstr = 'Registration-Error. ';
 
   if (empty($arguments)) {
-    return $errStr . 'Empty request received.';
+    return $errstr . 'Empty request received.';
   }
 
   $check = array(
@@ -71,7 +71,7 @@ function _patterns_server_register_client($arguments, $rpc_info) {
   );
 
   if (!d2d_check_array($arguments, $check)) {
-    return $errStr . 'Could not extract the credentials from the encrypted message.';
+    return $errstr . 'Could not extract the credentials from the encrypted message.';
   }
 
   $user = $arguments['user'];
@@ -79,14 +79,14 @@ function _patterns_server_register_client($arguments, $rpc_info) {
   $email = $arguments['email'];
 
 
-  if (db_query("SELECT COUNT(*) FROM {users} WHERE name = :name", array(':name' => $user))->fetchField()) {
-    return $errStr . 'Username already existing.';
+  if (db_query("SELECT * FROM {users} WHERE name = :name", array(':name' => $user))->fetchField()) {
+    return $errstr . 'Username already existing.';
   }
 
   $account = _sub_patterns_server_register_client($user, $pwd, $email);
 
   if (!$account) {
-    return $errStr . ' Registration did not succeed. Please try again later.';
+    return $errstr . ' Registration did not succeed. Please try again later.';
   }
   else {
     return $account->pass;
@@ -99,10 +99,10 @@ function _patterns_server_register_client($arguments, $rpc_info) {
  *
  */
 function _patterns_server_link_client($arguments, $rpc_info) {
-  $errStr = 'LinkingUser-Error. ';
+  $errstr = 'LinkingUser-Error. ';
 
   if (empty($arguments)) {
-    return $errStr . 'Empty request received.';
+    return $errstr . 'Empty request received.';
   }
 
   $check = array(
@@ -111,7 +111,7 @@ function _patterns_server_link_client($arguments, $rpc_info) {
   );
 
   if (!d2d_check_array($arguments, $check)) {
-    return $errStr . 'Could not extract the credentials from the encrypted message.';
+    return $errstr . 'Could not extract the credentials from the encrypted message.';
   }
 
   $user = $arguments['user'];
@@ -120,25 +120,25 @@ function _patterns_server_link_client($arguments, $rpc_info) {
   $result = db_query("SELECT email, pass FROM {users} WHERE name = :name AND pass = :pass", array(':name' => $user))->fetchAssoc();
 
   if (empty($result)) {
-     return $errStr . 'Username or password incorrect.';
+    return $errstr . 'Username or password incorrect.';
   }
 
   $result = d2d_implode($result);
 
   if ($result === FALSE) {
-    return $errStr . 'Server error while compacting the results.';
+    return $errstr . 'Server error while compacting the results.';
   }
   else {
     return $result;
   }
 }
 
-
+/**
+ */
 function _sub_patterns_server_register_client($user, $pwd, $email) {
   $role = user_role_load_by_name('patterns_server_user');
   $role_rid = $role->rid;
 
-  //watchdog('pp', 'role_got');
 
   // Determine the roles of our new user
   $new_user_roles = array(
@@ -159,6 +159,8 @@ function _sub_patterns_server_register_client($user, $pwd, $email) {
   return user_save(NULL, $new_user);
 }
 
+/**
+ */
 function _patterns_server_incoming_patterns($arguments, $rpc_info) {
 
   if (empty($arguments)) {
@@ -252,7 +254,7 @@ function _patterns_server_get_patterns_list($arguments, $rpc_info) {
   $patterns_list = array();
 
   // We will perform the error checking first and implode the error string as well if any
-  if (!d2d_check_convert_int($arguments['limit'])){
+  if (!d2d_check_convert_int($arguments['limit'])) {
     $error_string = 'Expected an integer value as limit';
   }
   elseif ($arguments['limit']<=0) {
@@ -270,7 +272,7 @@ function _patterns_server_get_patterns_list($arguments, $rpc_info) {
       $pattern_data['author'] = $pattern->author;
       //We will provide the full download url ready to be downloaded. Check if clean urls are enabled
       if ($GLOBALS['conf']['clean_url']) {
-       $pattern_data['view_url'] = $GLOBALS['base_url'] . 'pattern/' . $pattern->pid;
+        $pattern_data['view_url'] = $GLOBALS['base_url'] . 'pattern/' . $pattern->pid;
       }
       else{
         $pattern_data['view_url'] = $GLOBALS['base_url'] . '/?q=' . 'pattern/' . $pattern->pid;
@@ -297,7 +299,7 @@ function _patterns_server_fetch_pattern($arguments, $rpc_info) {
   $return = array();
 
   // We will perform the error checking first and implode the error string as well if any
-  if (!d2d_check_convert_int($arguments['pid'])){
+  if (!d2d_check_convert_int($arguments['pid'])) {
     $error_string = 'Expected an integer value as PID';
   }
   elseif ($arguments['pid']<=0) {
@@ -337,7 +339,7 @@ function _patterns_server_search_2($arguments, $rpc_info) {
   $patterns_list = array();
 
   // We will perform the error checking first and implode the error string as well if any
-  if (!d2d_check_convert_int($arguments['type'])){
+  if (!d2d_check_convert_int($arguments['type'])) {
     $error_string = 'Expected an integer value as type';
   }
   elseif ($arguments['type']<0 || $arguments['type']>4) {
@@ -358,7 +360,7 @@ function _patterns_server_search_2($arguments, $rpc_info) {
         $pattern_data['author'] = $pattern->author;
         //We will provide the full download url ready to be downloaded. Check if clean urls are enabled
         if ($GLOBALS['conf']['clean_url']) {
-         $pattern_data['view_url'] = $GLOBALS['base_url'] . 'pattern/' . $pattern->pid;
+          $pattern_data['view_url'] = $GLOBALS['base_url'] . 'pattern/' . $pattern->pid;
         }
         else{
           $pattern_data['view_url'] = $GLOBALS['base_url'] . '/?q=' . 'pattern/' . $pattern->pid;
