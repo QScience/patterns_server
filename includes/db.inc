@@ -17,8 +17,6 @@ function _patterns_server_get_pattern_timeDESC_from_db($num) {
                   ->execute()
                   ->fetchAll();
   foreach ($result as $k => $v) {
-    $v->uuuid = "helloworld-test";
-    $v->format = $v->file_format;
     $result[$k] = $v;
   }
   return $result;
@@ -34,8 +32,6 @@ function _patterns_server_get_pattern_pid_from_db($pid) {
                   ->execute()
                   ->fetchAll();
   foreach ($result as $k => $v) {
-    $v->uuuid = "helloworld-test";
-    $v->format = $v->file_format;
     $result[$k] = $v;
   }
   return $result;
@@ -70,8 +66,6 @@ function _patterns_server_search_pattern($key, $type) {
                   ->execute()
                   ->fetchAll();
   foreach ($result as $k => $v) {
-    $v->uuuid = "helloworld-test";
-    $v->format = $v->file_format;
     $result[$k] = $v;
   }
 

@@ -354,7 +354,7 @@ function _patterns_server_get_patterns_list($arguments, $rpc_info) {
     foreach (_patterns_server_get_pattern_timeDESC_from_db($arguments['limit']) as $pattern) {
       $pattern_data['pid'] = $pattern->pid;
       $pattern_data['uuuid'] = $pattern->uuuid;
-      $pattern_data['format'] = $pattern->format;
+      $pattern_data['format'] = $pattern->file_format;
       $pattern_data['title'] = $pattern->title;
       $pattern_data['description'] = $pattern->description;
       $pattern_data['author'] = $pattern->author;
@@ -400,7 +400,7 @@ function _patterns_server_fetch_pattern($arguments, $rpc_info) {
       _patterns_server_download_recode($arguments['pid']);
       // Prepare the response
       $return['file'] = $pattern;
-      $return['format'] = $query[0]->format;
+      $return['format'] = $query[0]->file_format;
       $return['uuuid'] = $query[0]->uuuid;
     }else{
       $error_string = 'Invalid PID';
@@ -436,7 +436,7 @@ function _patterns_server_search_2($arguments, $rpc_info) {
       foreach ($query as $pattern) {
         $pattern_data['pid'] = $pattern->pid;
         $pattern_data['uuuid'] = $pattern->uuuid;
-        $pattern_data['format'] = $pattern->format;
+        $pattern_data['format'] = $pattern->file_format;
         $pattern_data['title'] = $pattern->title;
         $pattern_data['description'] = $pattern->description;
         $pattern_data['author'] = $pattern->author;
