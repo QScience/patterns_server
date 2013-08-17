@@ -6,7 +6,7 @@
 /**
  * class entity UI controller.
  */
-class Patterns_Server_EntityUIController extends EntityDefaultUIController {
+class PatternsServerEntityUIController extends EntityDefaultUIController {
 
   /**
    * Generates the render array for a overview table for arbitrary entities
