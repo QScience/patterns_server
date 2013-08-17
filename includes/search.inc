@@ -1,5 +1,9 @@
 <?php
 /**
+ * @file
+ */
+
+/**
  * Implement search function form for patterns_server.
  */
 function patterns_server_search($form, &$form_state, $search_type='', $search_value='') {

@@ -104,12 +104,12 @@ function _patterns_server_download_recode($id) {
  *   The new path where the file has just been saved or read from.
  * @param mixed $name
  *   The name of the pattern file without the extension.
- * @param mixed $format 
+ * @param mixed $format
  *   The format of the pattern (YAML, XML, etc.)
  * @param mixed $username (Optional)
  *   A name for the author/uploader of the pattern. Defaults, logged user
  * @param string $uuuid (Optional)
- *   Optional argument to force the use of certain UUUID (i.e.: while clonning)  
+ *   Optional argument to force the use of certain UUUID (i.e.: while clonning)
  */
 function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL, $username = NULL) {
 
@@ -124,7 +124,6 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
                     ->fetchAssoc();
 
     if (!empty($pattern_data)) {
-      //drupal_set_message(t('already exist.'), 'error');
       $msg = t('Pattern already exist.');
       return patterns_results(PATTERNS_ERR, $msg);
     }
@@ -152,9 +151,11 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
   return patterns_results(PATTERNS_SUCCESS, $msg);
 }
 
-
+/**
+ *
+ */
 function _patterns_server_save_pattern($name, $content, $format, $username) {  
-  
+ 
   $status = PATTERNS_SUCCESS;
   $msg = NULL;
   

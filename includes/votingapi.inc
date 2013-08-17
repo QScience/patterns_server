@@ -1,5 +1,9 @@
 <?php
 /**
+ * @file
+ */
+
+/**
  * implement some vote function based on votingapi framework.
  */
 

@@ -13,13 +13,13 @@ function patterns_server_install() {
   //create public://patterns_server folder.
   $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
   if (!file_exists($public_dir_path . '/patterns_server')) {
-    if(!drupal_mkdir($public_dir_path . '/patterns_server')) {
-      drupal_set_message(t('cannot create folder in public directory, this should be caused by permission of public directory. e.g. "sites/default/files".'),'error');
+    if (!drupal_mkdir($public_dir_path . '/patterns_server')) {
+      drupal_set_message(st('cannot create folder in public directory, this should be caused by permission of public directory. for example "sites/default/files".'), 'error');
     }
   }
-	
-	// Check if role patterns_server_user exists
- 	$result = db_select('role', 'r')
+
+  // Check if role patterns_server_user exists
+  $result = db_select('role', 'r')
     ->fields('r', array('name'))
     ->condition('name', 'patterns_server_user', '=')
     ->execute()
@@ -27,20 +27,20 @@ function patterns_server_install() {
   if (!empty($result['name'])) {
     return;
   }
-	// Otherwise creates the role
-	$role = new stdClass();
-	$role->name = 'patterns_server_user';
-	user_role_save($role);
-	$role = user_role_load_by_name('patterns_server_user');
-	$role_rid = $role->rid;
-	// Define our 'editor' role permissions
-	$role_permissions = array(
+  // Otherwise creates the role
+  $role = new stdClass();
+  $role->name = 'patterns_server_user';
+  user_role_save($role);
+  $role = user_role_load_by_name('patterns_server_user');
+  $role_rid = $role->rid;
+  // Define our 'editor' role permissions
+  $role_permissions = array(
     'administer patterns server' => TRUE,
     'view patterns server' => TRUE,
     'upload patterns server' => TRUE,
-	);
-	// Grant permissions to our 'editor' role
-	user_role_change_permissions($role_rid, $role_permissions);
+  );
+  // Grant permissions to our 'editor' role
+  user_role_change_permissions($role_rid, $role_permissions);
 }
 
 /**
@@ -60,17 +60,17 @@ function patterns_server_schema() {
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
-        'description' => 'Human readable name.', 
+        'description' => 'Human readable name.',
       ),
       'description' => array(
         'type' => 'text',
-        'description' => 'Description of the pattern.', 
+        'description' => 'Description of the pattern.',
       ),
       'category' => array(
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
-        'description' => 'Category of the pattern.', 
+        'description' => 'Category of the pattern.',
       ),
       'pattern' => array(
         'type' => 'text',
@@ -136,7 +136,7 @@ function patterns_server_schema() {
 }
 
 /**
- * Implements hook_uninstall() 
+ * Implements hook_uninstall()
  * 1. clean file_managed table.
  * 2. clean votingapi_vote table.
  * 3. clean all attached field.
@@ -146,7 +146,7 @@ function patterns_server_uninstall() {
   //delete uploaded file, clean file_managed table.
   $query = db_select('file_managed', 'fm')
     ->fields('fm', array('fid'))
-    ->condition('uri', '%' . db_like('patterns_server') . '%', 'LIKE') 
+    ->condition('uri', '%' . db_like('patterns_server') . '%', 'LIKE')
     ->execute()
     ->fetchAll();
   $file_fids = array();
@@ -169,7 +169,7 @@ function patterns_server_uninstall() {
 
   //clean all attached field.
   field_attach_delete_bundle('patterns_server', 'patterns_server');
-  
+ 
   //delete the role.
   user_role_delete('patterns_server_user');
 }

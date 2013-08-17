@@ -1,7 +1,6 @@
 /**
  * @file 
  * patterns server view page js.
- *
  */
 (function($){
 $(document).ready(function() {

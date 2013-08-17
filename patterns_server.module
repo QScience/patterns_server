@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ * Patterns Server 
+ *
+ *
+ */
 
 module_load_include('inc', 'patterns_server', 'includes/utility');
 module_load_include('inc', 'patterns_server', 'includes/search');
@@ -60,12 +66,12 @@ function patterns_server_entity_info() {
  */
 function patterns_server_admin_access($op, $profile = NULL, $account = NULL) {
   if (user_access('administer patterns server', $account)) {
-    return true;
+    return TRUE;
   }
-  else if ($op == 'create' && user_access('upload patterns server', $account)) {
-    return true;
+  elseif ($op == 'create' && user_access('upload patterns server', $account)) {
+    return TRUE;
   }
-  return false;
+  return FALSE;
 }
 
 /**
@@ -85,7 +91,7 @@ function patterns_server_permission() {
   );
 }
 
-/** 
+/**
  * Implements hook_block_info().
  */
 function patterns_server_block_info() {
@@ -158,7 +164,7 @@ function patterns_server_menu() {
   );
   $items['pattern/%/voting'] = array(
     'title' => 'pattern voting link',
-    'description' => 'pattern voting link', 
+    'description' => 'pattern voting link',
     'page callback' => '_patterns_server_voting_pattern',
     'page arguments' => array(1),
     'access arguments' => array('view patterns server'),
@@ -198,16 +204,16 @@ function patterns_server_menu() {
   );
 
   //this is search function. search text & search type.
-  //actually its result is composed by the above four basic kinds of table. 
+  //actually its result is composed by the above four basic kinds of table.
   $items['pattern/search/%/%'] = array(
     'title' => 'search pattern',
     'description' => 'search pattern with value/category, and so on',
     'page callback' => '_patterns_server_search',
-    'page arguments' => array(2,3),
+    'page arguments' => array(2, 3),
     'access arguments' => array('view patterns server'),
   );
 
-  //not quite sure. 
+  //not quite sure.
   $items['pattern/alltags/%'] = array(
     'title' => 'all pattern with the tag % in all fields',
     'description' => 'all pattern with the tag % in all fields',
@@ -241,8 +247,8 @@ function _patterns_server_all_list_page() {
 
     $ordered_results_backup = $query->ordered_results;
 
-    //Most Recent Patterns. 
-    $query->ordered_results = array_slice($ordered_results_backup, 0, 10, true);
+    //Most Recent Patterns.
+    $query->ordered_results = array_slice($ordered_results_backup, 0, 10, TRUE);
     $fieldset_title = 'Most Recent Patterns:';
     $list .= _patterns_server_list_page($query, $fieldset_title);
 
@@ -255,7 +261,7 @@ function _patterns_server_all_list_page() {
     foreach ($vscore as $key => $value) {
       $new_ordered_results[] = $ordered_results_backup[$key];
     }
-    $query->ordered_results = array_slice($new_ordered_results, 0, 10, true);
+    $query->ordered_results = array_slice($new_ordered_results, 0, 10, TRUE);
     $fieldset_title = 'Most Liked Patterns:';
     $list .= _patterns_server_list_page($query, $fieldset_title);
   }
@@ -279,9 +285,7 @@ function _patterns_server_all_list_page() {
 function _patterns_server_view_page($pid) {
   $pe = entity_object_load($pid, 'patterns_server');
   if (!$pe) {
-    drupal_set_message("The pattern file doesn't exist.", "error");
-    //global $base_url;
-    //drupal_goto($base_url);
+    drupal_set_message(t("The pattern file doesn't exist.", "error"));
     drupal_goto('patterns_server_homepage');
   }
   drupal_set_title($pe->title);
@@ -311,15 +315,13 @@ function _patterns_server_view_page($pid) {
  */
 function _patterns_server_download_pattern($pid) {
   $ety_obj = entity_object_load($pid, 'patterns_server');
-  if(!$ety_obj) {
-    drupal_set_message("The pattern file doesn't exist.", "error");
+  if (!$ety_obj) {
+    drupal_set_message(t("The pattern file doesn't exist."), "error");
     drupal_goto('patterns_server_homepage');
   }
   $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
-  
+ 
   $file_path = $ety_obj->file_path;
-  //$file_path = substr_replace($ety_obj->file_path, $public_dir_path, 0, 8);
-  //dsm($file_path);
   $file = file_get_contents($file_path);
   if (!$file) {
     return;
@@ -343,10 +345,10 @@ function _patterns_server_list_basicpage($property, $arg) {
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
   $searchform = drupal_get_form('patterns_server_search');
   $searchform = drupal_render($searchform);
-  
+ 
   $list = _patterns_server_list($property, $arg);
-  if ($list === false) {
-    drupal_set_message("The pattern list doesn't exist.", "error");
+  if ($list === FALSE) {
+    drupal_set_message(t("The pattern list doesn't exist."), "error");
     drupal_goto('patterns_server_homepage');
   }
   else {
@@ -360,21 +362,20 @@ function _patterns_server_list_basicpage($property, $arg) {
  */
 function _patterns_server_list_tags_all($tid) {
   $tag_name = _patterns_server_tagname_by_tagid($tid);
-  drupal_set_title("Patterns with tags: " . $tag_name['name']);
+  drupal_set_title(t("Patterns with tags: " . $tag_name['name']));
 
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
   $searchform = drupal_get_form('patterns_server_search');
   $list = drupal_render($searchform);
 
   $tags_fields_name = _patterns_server_get_all_taxonomyfields_name('patterns_server');
-  //dsm($tags_fields_name); 
 
-  if ($tags_fields_name === false) {
-    drupal_set_message("The pattern list doesn't exist.", "error");
+  if ($tags_fields_name === FALSE) {
+    drupal_set_message(t("The pattern list doesn't exist.", "error"));
     drupal_goto('patterns_server_homepage');
   }
-  
-  $list .= "<div id='patterns-server-all-table-wrap'>"; 
+ 
+  $list .= "<div id='patterns-server-all-table-wrap'>";
   foreach ($tags_fields_name as $field_name) {
     $list .= _patterns_server_list($field_name, $tid);
   }

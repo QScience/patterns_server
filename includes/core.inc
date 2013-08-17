@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file
+ */
 
 define("NOSEARCHRESULT", " <div class='patterns-server-list-table-wrap'>nothing found.</div>");
 

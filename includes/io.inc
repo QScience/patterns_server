@@ -18,79 +18,79 @@ function patterns_server_d2d_secure_rpc() {
     'callback' => '_patterns_server_incoming_patterns',
     'description' => 'save incoming patterns to the database',
   );
-  
+ 
   $methods['patterns_server_register_client'] = array(
     'arguments' => array('user' => 'is_string', 'pwd' => 'is_string', 'email' => 'is_string'),
     'callback' => '_patterns_server_register_client',
     'description' => 'creates programmatically a new user with patterns_server access privileges',
   );
-  
+ 
   $methods['patterns_server_link_client'] = array(
     'arguments' => array('user' => 'is_string', 'pwd' => 'is_string'),
     'callback' => '_patterns_server_link_client',
     'description' => 'confirms that a client is the authorized owner of an existing account',
   );
-  
+ 
   $methods['patterns_server_get_patterns_list'] = array(
     'arguments' => array('limit' => 'is_string'),
     'callback' => '_patterns_server_get_patterns_list',
     'description' => 'Returns a list of the patterns currently hosted in this server',
   );
-  
+ 
   $methods['patterns_server_fetch_pattern'] = array(
       'arguments' => array('pid' => 'is_string'),
       'callback' => '_patterns_server_fetch_pattern',
       'description' => 'Returns a imploded version of the whole pattern',
   );
-  
+ 
   $methods['patterns_server_search'] = array(
-      'arguments' => array('token' => 'is_string', 'type' => 'is_string',),
+      'arguments' => array('token' => 'is_string', 'type' => 'is_string'),
       'callback' => '_patterns_server_search_2',
       'description' => 'Returns a list of patterns according to the given criteria',
   );
-  
+ 
   return $methods;
 }
 
 /**
  * On error, returns a string starting with 'Registration-Error.'
  * On success, returns the hashed password
- * 
+ *
  */
 function _patterns_server_register_client($arguments, $rpc_info) {
-	$errStr = 'Registration-Error. '; 
-  
-	if (empty($arguments)) {
+  $errStr = 'Registration-Error. ';
+ 
+  if (empty($arguments)) {
     return $errStr . 'Empty request received.';
   }
-  
+ 
   $check = array(
     'user' => 'is_string',
     'pwd' => 'is_string',
-  	'email' => 'is_string',
+    'email' => 'is_string',
   );
- 
+
   if (!d2d_check_array($arguments, $check)) {
     return $errStr . 'Could not extract the credentials from the encrypted message.';
   }
-  
+ 
   $user = $arguments['user'];
   $pwd = $arguments['pwd'];
   $email = $arguments['email'];
-  
-	
-	if (db_query("SELECT COUNT(*) FROM {users} WHERE name = :name", array(':name' => $user))->fetchField()) {
-  	return $errStr . 'Username already existing.';
-	}
-	
-	$account = _sub_patterns_server_register_client($user, $pwd, $email);
-	
-	if (!$account) {
-		return $errStr . ' Registration did not succeed. Please try again later.';
-	}
-	else {
-		return $account->pass;
-	}
+ 
+
+  if (db_query("SELECT COUNT(*) FROM {users} WHERE name = :name", array(':name' => $user))->fetchField()) {
+    return $errStr . 'Username already existing.';
+  }
+
+  $account = _sub_patterns_server_register_client($user, $pwd, $email);
+
+  if (!$account) {
+    return $errStr . ' Registration did not succeed. Please try again later.';
+  }
+  else {
+    return $account->pass;
+  }
 }
 
 /**
@@ -99,8 +99,8 @@ function _patterns_server_register_client($arguments, $rpc_info) {
  * 
  */
 function _patterns_server_link_client($arguments, $rpc_info) {
-	$errStr = 'LinkingUser-Error. ';
-	
+  $errStr = 'LinkingUser-Error. ';
+  
   if (empty($arguments)) {
     return $errStr . 'Empty request received.';
   }
@@ -116,51 +116,51 @@ function _patterns_server_link_client($arguments, $rpc_info) {
   
   $user = $arguments['user'];
   $pwd = $arguments['pwd'];
-	
-	$result = db_query("SELECT email, pass FROM {users} WHERE name = :name AND pass = :pass", array(':name' => $user))->fetchAssoc();
+  
+  $result = db_query("SELECT email, pass FROM {users} WHERE name = :name AND pass = :pass", array(':name' => $user))->fetchAssoc();
 
-	if (empty($result)) {
-	   return $errStr . 'Username or password incorrect.';
-	}
-	
+  if (empty($result)) {
+     return $errStr . 'Username or password incorrect.';
+  }
+  
   $result = d2d_implode($result);
-	
+  
   if ($result === FALSE) {
     return $errStr . 'Server error while compacting the results.';
   }
-	else {
-		return $result;
-	}
+  else {
+    return $result;
+  }
 }
 
 
 function _sub_patterns_server_register_client($user, $pwd, $email) {
-	$role = user_role_load_by_name('patterns_server_user');
-	$role_rid = $role->rid;
+  $role = user_role_load_by_name('patterns_server_user');
+  $role_rid = $role->rid;
 
-	//watchdog('pp', 'role_got');
-	
-	// Determine the roles of our new user
-	$new_user_roles = array(
-  	DRUPAL_AUTHENTICATED_RID => 'authenticated user',
-  	$role_rid => TRUE,
-	);
-	
-	$new_user = array(
-		'name' => $user,
-		'pass' => $pwd,
-		'mail' => $email,
-		'status' => 1,
-		'access' => REQUEST_TIME,
-		'roles' => $new_user_roles,
-	);
-	
-	// $account returns user object
-	return user_save(null, $new_user);
+  //watchdog('pp', 'role_got');
+  
+  // Determine the roles of our new user
+  $new_user_roles = array(
+    DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+    $role_rid => TRUE,
+  );
+  
+  $new_user = array(
+    'name' => $user,
+    'pass' => $pwd,
+    'mail' => $email,
+    'status' => 1,
+    'access' => REQUEST_TIME,
+    'roles' => $new_user_roles,
+  );
+  
+  // $account returns user object
+  return user_save(null, $new_user);
 }
 
 function _patterns_server_incoming_patterns($arguments, $rpc_info) {
-	
+  
   if (empty($arguments)) {
     return 'Error. Empty request received.';
   }
@@ -184,11 +184,11 @@ function _patterns_server_incoming_patterns($arguments, $rpc_info) {
   $user = $exploded_credentials['user'];
   $pwd = $exploded_credentials['pwd'];
   
-	$result = _patterns_server_login_authenticate($user, $pwd);
+  $result = _patterns_server_login_authenticate($user, $pwd);
   
-	if ($result['status'] != PATTERNS_SUCCESS) {
-		global $base_url;
-		_patterns_server_log_failed_login($user, $pwd);
+  if ($result['status'] != PATTERNS_SUCCESS) {
+    global $base_url;
+    _patterns_server_log_failed_login($user, $pwd);
     return 'Error. Authentication failed. Please check your username and password on server ' . $base_url;
   }
 
@@ -217,7 +217,7 @@ function _patterns_server_incoming_patterns($arguments, $rpc_info) {
         $format = $exploded_pattern['format'];        
         $result = _patterns_server_save_pattern($name, $pattern, $format, $user);
         if ($result['status'] == PATTERNS_SUCCESS) {
-  				$saved[] = $name;
+          $saved[] = $name;
         }
         else {
           $errors[] = $name . ' : ' . $result['msg'];
@@ -226,11 +226,11 @@ function _patterns_server_incoming_patterns($arguments, $rpc_info) {
     }
   }
   
-	
+  
   
   $outcome = count($saved) . 'xxx pattern(s) received and saved.';
   if (count($errors) > 0) {
-  	$outcome .= ' The following patterns could not be saved: ' . implode(',', $errors);
+    $outcome .= ' The following patterns could not be saved: ' . implode(',', $errors);
   }
    
   return $outcome;

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file
+ */
 
 module_load_include('inc', 'patterns_server', 'includes/votingapi');
 /**

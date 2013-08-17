@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file
+ */
 
 /**
  * class entity UI controller.

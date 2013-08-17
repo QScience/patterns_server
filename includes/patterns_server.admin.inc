@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file
+ */
 
 /**
  * Implements ENTITY_TYPE_form for admin UI.

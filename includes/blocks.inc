@@ -1,11 +1,11 @@
 <?php
-
 /**
+ * @file
  * build several blocks for patterns_server.
  */
 
 /**
- * most prolific author 
+ * most prolific author
  * used by patterns_server_block_view.
  */
 function _patterns_server_block_most_prolific_author() {
@@ -21,11 +21,11 @@ function _patterns_server_block_most_prolific_author() {
 
   $authors_score = array();
   if (isset($query->ordered_results) && count($query->ordered_results)) {
-    foreach($query->ordered_results as $value) {
+    foreach ($query->ordered_results as $value) {
       $ids[] = $value->entity_id;
     }
     $entities = entity_load('patterns_server', $ids);
-    foreach($entities as $pe) {
+    foreach ($entities as $pe) {
       $pe->author = strtolower($pe->author);
       if (isset($authors_score[$pe->author])) {
         $authors_score[$pe->author]++;
@@ -39,7 +39,7 @@ function _patterns_server_block_most_prolific_author() {
     return t('no available authors.');
   }
   arsort($authors_score);
-  $authors_score = array_slice($authors_score, 0, 10, true);
+  $authors_score = array_slice($authors_score, 0, 10, TRUE);
 
   $items = array();
   foreach ($authors_score as $author => $score) {
@@ -76,11 +76,10 @@ function _patterns_server_block_hottest_tags() {
       }
     }
   }
-  //dsm($tags_table_db);
   if (!count($tags_table_db)) {
     return t('no available tags.');
   }
-  
+ 
   $query = array();
   foreach ($tags_table_db as $table) {
     $table_name = 'field_data_' . $table;
@@ -89,7 +88,6 @@ function _patterns_server_block_hottest_tags() {
       ->execute()
       ->fetchAll();
   }
- // dsm($query);
 
   $tags_score = array();
   foreach ($query as $tb => $value) {
@@ -105,7 +103,7 @@ function _patterns_server_block_hottest_tags() {
     }
   }
   arsort($tags_score);
-  $tags_score = array_slice($tags_score, 0, 10, true);
+  $tags_score = array_slice($tags_score, 0, 10, TRUE);
 
   $items = array();
   foreach ($tags_score as $tid => $score_tb) {
@@ -129,7 +127,7 @@ function _patterns_server_tagname_by_tagid($tagid) {
     ->condition('tid', $tagid)
     ->execute()
     ->fetchAssoc();
-  
+ 
   return $name;
 }
 
@@ -137,7 +135,7 @@ function _patterns_server_tagname_by_tagid($tagid) {
  * get an entity's all taxonomy fields' name.
  */
 function _patterns_server_get_all_taxonomyfields_name($entity_type) {
- 
+
   //get all tags field for patterns_server.
   $tags_table_db = array();
   $fields_info = field_info_instances($entity_type);
@@ -151,7 +149,7 @@ function _patterns_server_get_all_taxonomyfields_name($entity_type) {
     }
   }
   if (!count($tags_table_db)) {
-    return false;
+    return FALSE;
   }
   else {
     return $tags_table_db;

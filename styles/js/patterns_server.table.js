@@ -1,7 +1,6 @@
 /**
  * @file 
  * patterns server list table js.
- *
  */
 (function($){
 $(document).ready(function() {

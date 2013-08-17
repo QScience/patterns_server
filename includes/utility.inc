@@ -1,5 +1,9 @@
 <?php
 /**
+ * @file
+ */
+
+/**
  * upload button link in the list page.
  */
 function _patterns_server_upload_button() {
