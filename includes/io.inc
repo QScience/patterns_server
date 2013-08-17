@@ -333,8 +333,8 @@ function _patterns_server_search_2($arguments, $rpc_info) {
   // We will perform the error checking first and implode the error string as well if any
   if(!d2d_check_convert_int($arguments['type'])){
     $error_string = 'Expected an integer value as type';
-  }elseif ($arguments['type']<0 || $arguments['type']>3) {
-    $error_string = 'Type should be an integer value in the range 0-3';
+  }elseif ($arguments['type']<0 || $arguments['type']>4) {
+    $error_string = 'Type should be an integer value in the range 0-4';
   }else{
     // Retrieve the patterns using the function developed for the server itself.
     $query = _patterns_server_search_pattern($arguments['token'], $arguments['type']);
