@@ -129,9 +129,11 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
     }
   }
 
+  $uid = user_load_by_name($username);
   $file_exist = db_select('patterns_server', 'pe')
       ->fields('pe', array('file_name'))
       ->condition('file_name', $name, '=')
+      ->condition('uploader', $uid->uid)
       ->execute()
       ->fetchAssoc();
   if (!empty($file_exist)) {
@@ -147,7 +149,6 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
   $entity->category = $pattern['info']['category'];
   $entity->pattern = $pattern;
   $entity->author = $pattern['info']['author'];
-  $uid = user_load_by_name($username);
   $entity->uploader = $uid->uid;
 
   $entity->file_name = $name;
