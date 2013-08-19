@@ -129,6 +129,16 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
     }
   }
 
+  $file_exist = db_select('patterns_server', 'pe')
+      ->fields('pe', array('file_name'))
+      ->condition('file_name', $name, '=')
+      ->execute()
+      ->fetchAssoc();
+  if (!empty($file_exist)) {
+      $msg = t('Pattern already exist.');
+      return patterns_results(PATTERNS_ERR, $msg);
+  }
+ 
   // Pattern already in the DB, data needs to be updated.
   // It is a new Pattern.
   $entity = entity_create('patterns_server', array('type' => 'patterns_server'));

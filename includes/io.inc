@@ -230,7 +230,7 @@ function _patterns_server_incoming_patterns($arguments, $rpc_info) {
 
 
 
-  $outcome = count($saved) . 'xxx pattern(s) received and saved.';
+  $outcome = count($saved) . ' pattern(s) received and saved.';
   if (count($errors) > 0) {
     $outcome .= ' The following patterns could not be saved: ' . implode(',', $errors);
   }
