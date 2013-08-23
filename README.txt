@@ -1,32 +1,26 @@
-# other modules required 
-* entity api module is required.
-* votingapi module is required.
-* include/patternentity.admin.inc row 53-64 need patterns, patterns_xmlparser, patterns_yamlparser. 
-	* rewrite these 12 rows can make patternentity module Independent of patterns, patterns_xmlparser, patterns_yamlparser; but instead, patternentity will depend on libraries module and the validation code on the existence of spyc&codomirror library is needed to add.
-* token is actually required by Patterns module, it's not required by this module.
+-- SUMMARY --
 
-# reason for use votingapi
-* first I can't find a module about vote quick fit our situation.
-* votingapi supply a framework, smart framework. e.g. 
-	* one user can vote again after two days. 
-	* allow anomymous votes to vote, but forbiden too Frequently vote from the same computer.
-	* wo can count how many times a user totally voted, or how many times the user voted to a centain category.
+Patterns Server is a module that extends Patterns allowing you to set up a "hub" for sharing pattern files.
+Version 7.x-2.x store the patterns as entities.
+It relies on D2D to exchange the information in a distributed and secure way.
 
-# about comments
-* reply module works fine with patternentity. (though the appearance needs some improvement.)
-* commentfield don't meet our requirement, because the comment field will show in the admin ui page instead of pattern view page.
+-- REQUIREMENTS --
 
-# taxonomy problem
-* though patternentity is already a entity type, taxonomy can't work with it. it's because that taxonomy only works with node(content type) entity, but not all kinds of entities. (hardcode int taxonomy's source code, just like comments module-only works with node.)
+* Patterns: https://drupal.org/project/patterns
+* D2D: https://drupal.org/sandbox/shakty/1889370
+* Entity API: https://drupal.org/project/entity
+* Voting API: https://drupal.org/project/votingapi
 
-# how to use
-* install patternentity module.
-* build the folder 'sites/default/files/patternentity', make sure drupal can read and write this folder. (this folder is used to store all uploaded yaml/xml pattern file.)
-* uploader some yaml/xml file in 'admin/structure/patternentity'.
-* try all kinds of links.
-* manage field on page 'admin/structure/patternentity/fields'
+-- INSTALLATION --
 
-# about permission
-* only people having 'adminster patternentity' permission can access the admin page "admin/structure/patternentity".
-* people having 'upload patternentity' permission can upload pattern file, that means they can access "admin/structure/patternentity/add" page.
-* people having 'view patternentity' permission can view all related patternentity page.
+* Install as usual, see http://drupal.org/node/70151 for further information.
+
+-- USE --
+* Create a 'patternentity' folder in your default folder (i.e.:lder 'sites/default/files/patternentity')
+  and ensure Drupal has permissions to read and write on it.
+* Visit admin/patterns_server to upload some patterns.
+
+-- PERMISSIONS --
+* Users with 'administer patternentity' permission have full administration access (via "admin/patterns_server").
+* Users with 'upload patternentity' permission can upload pattern files,  accessing "admin/patterns_server/add".
+* Users with 'view patternentity' permission can view the main patterns server page.
