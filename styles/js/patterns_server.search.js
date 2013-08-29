@@ -75,7 +75,7 @@ $(document).ready(function() {
     var search_text = $('#patterns-server-search #edit-search').val().trim();
     if ( search_text == '' || search_text == value_default) {
       $(table_wrap).hide();
-      $(table_wrap).html('To begin the search, type something, e.g. "Block"').show('slow');
+      $(table_wrap).html('To begin the search, type something, for example "block"').show('slow');
     }
     else {
       var search_type = $('#patterns-server-search #edit-selected option:selected').val();
