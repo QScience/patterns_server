@@ -58,7 +58,8 @@ function _patterns_server_list($property, $arg, $operate = '=', $showupload = TR
 
     case 'author':
       $fieldset_title = $property . ': ' . $arg;
-      $query->propertyCondition($property, $arg, '=');
+      //$query->propertyCondition($property, $arg, '=');
+      $query->propertyCondition($property, '%' . db_like($arg) . '%', 'LIKE');
       break;
 
     default:
