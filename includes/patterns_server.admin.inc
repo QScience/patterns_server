@@ -61,7 +61,7 @@ function patterns_server_form_validate(&$form, &$form_state) {
 
         // Load and save pattern.
         if (!$load_function || !($pattern = $load_function($file->uri))) {
-          form_set_error('pattern_file', t('parser pattern file failed.'));
+          form_set_error('pattern_file', t('parsing pattern file failed.'));
         }
 
         if (!patterns_validate_pattern($pattern, $file_extension, PATTERNS_VALIDATE_SYNTAX)) {
