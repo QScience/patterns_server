@@ -48,14 +48,22 @@ function _patterns_server_parser_field_pattern($pattern)  {
 function _patterns_server_view_pattern_description($pe) {
   $content = '<div id="patterns-server-page-pattern-description"><dl class="dl-horizontal">';
 
-  $content .= '<dt>title</dt><dd>' . $pe->title . '</dd>';
-  $content .= '<dt>description</dt><dd>' . $pe->description . '</dd>';
+  if (isset($pe->title)) {
+    $content .= '<dt>title</dt><dd>' . $pe->title . '</dd>';
+  }
+  if (isset($pe->description)) {
+    $content .= '<dt>description</dt><dd>' . $pe->description . '</dd>';
+  }
 
-  $category_s = l($pe->category, 'pattern/category/' . $pe->category);
-  $content .= '<dt>category</dt><dd>' . $category_s . '</dd>';
+  if (isset($pe->category)) {
+    $category_s = l($pe->category, 'pattern/category/' . $pe->category);
+    $content .= '<dt>category</dt><dd>' . $category_s . '</dd>';
+  }
 
-  $author_s = l($pe->author, 'pattern/author/' . $pe->author);
-  $content .= '<dt>author</dt><dd>' . $author_s . '</dd>';
+  if (isset($pe->author)) {
+    $author_s = l($pe->author, 'pattern/author/' . $pe->author);
+    $content .= '<dt>author</dt><dd>' . $author_s . '</dd>';
+  }
 
   $usr_obj = user_load($pe->uploader);
   $uploader_s = l($usr_obj->uid == 0 ? 'Anonymous' : $usr_obj->name , 'pattern/uploader/' . $pe->uploader);
