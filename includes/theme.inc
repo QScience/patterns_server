@@ -65,9 +65,11 @@ function _patterns_server_view_pattern_description($pe) {
     $content .= '<dt>author</dt><dd>' . $author_s . '</dd>';
   }
 
-  $usr_obj = user_load($pe->uploader);
-  $uploader_s = l($usr_obj->uid == 0 ? 'Anonymous' : $usr_obj->name , 'pattern/uploader/' . $pe->uploader);
-  $content .= '<dt>uploader</dt><dd>' . $uploader_s . '</dd>';
+  if (isset($pe->uploader)) {
+    $usr_obj = user_load($pe->uploader);
+    $uploader_s = l($usr_obj->uid == 0 ? 'Anonymous' : $usr_obj->name , 'pattern/uploader/' . $pe->uploader);
+    $content .= '<dt>uploader</dt><dd>' . $uploader_s . '</dd>';
+  }
 
   $content .= '<dt>file name</dt><dd>' . $pe->file_name . '</dd>';
 
