@@ -45,6 +45,9 @@ function _patterns_server_voting_pattern($pid) {
  * check whether certain user can vote or not.
  */
 function _patterns_server_check_whether_voted($pid) {
+  if (user_is_anonymous()) {
+    return 1;
+  }
   global $user;
   $criteria = array(
     'entity_type' => 'patterns_server',
