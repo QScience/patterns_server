@@ -139,14 +139,20 @@ function _patterns_server_list_table_row($ety_obj) {
   $row[] = l($ety_obj->author, 'pattern/author/' . $ety_obj->author);
   $row[] = '<i value="' . $ety_obj->created . '" ' . 'class="upload-time">' . date('j-m-Y H:i:s (P)', $ety_obj->created) . '</i>';
   $row[] = $ety_obj->file_downloads;
+
   $row[] = _patterns_server_get_voting_score($ety_obj->pid);
+
   $row[] = l(t('download'), 'pattern/' . $ety_obj->pid . '/download', array('attributes' => array('class' => 'download-link')));
+
   $voted = _patterns_server_check_whether_voted($ety_obj->pid);
-  if ($voted) {
-    $row['voting_link'] = '<strong class="voted-sign">voted</strong>';
+  if ($voted === 1) {
+    $row['voting_link'] = l(t('undovote'), 'pattern/' . $ety_obj->pid . '/undovote', array('attributes' => array('class' => "undovote-link undovote-link-$ety_obj->pid", 'title' => "undovote-link-$ety_obj->pid")));
+  }
+  elseif ($voted === 0) {
+    $row['voting_link'] = l(t('voting'), 'pattern/' . $ety_obj->pid . '/voting', array('attributes' => array('class' => "voting-link voting-link-$ety_obj->pid", 'title' => "voting-link-$ety_obj->pid")));
   }
   else {
-    $row['voting_link'] = l(t('voting'), 'pattern/' . $ety_obj->pid . '/voting', array('attributes' => array('class' => "voting-link voting-link-$ety_obj->pid", 'title' => "voting-link-$ety_obj->pid")));
+    $row['voting_link'] = l(t('forbidden'), 'user/register', array('attributes' => array('class' => "vote-forbid-sign", 'title' => "Login or Register to vote")));
   }
   return $row;
 }

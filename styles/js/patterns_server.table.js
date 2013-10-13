@@ -14,12 +14,12 @@ $(document).ready(function() {
   });
 
   //voting link ajax.
-  $('body').delegate('.patterns-server-list-table a[class*="voting-link-"]', 'click', function () {
+  $('body').delegate('.patterns-server-list-table a[class*="voting-link-"], .patterns-server-list-table a[class*="undovote-link-"]', 'click', function () {
     var class_pid = $(this).attr('title');
     var link = $('.' + class_pid);
-    $(link).each(function() {
-      $(this).parent().children('.voting-link').addClass('voting-link-odd');
-    });
+    //$(link).each(function() {
+    //  $(this).parent().children('.voting-link').addClass('voting-link-odd');
+    //});
 
     var url = $(this).attr('href');
 
@@ -29,18 +29,18 @@ $(document).ready(function() {
         var $score = $('#patterns-server-page-pattern-description #patterns-server-view-page-score', data);
         var $vote = $('#patterns-server-view-page-vote', data);
 
-        console.log($vote.text());
-        console.log($score.text());
+        //console.log($vote.text());
+        //console.log($score.text());
         var link_parent = $(link).parent();
-        console.log(link_parent);
+        //console.log(link_parent);
         $(link_parent).prev().prev().html($score.text());
-        if ($vote.text() == 'voted'){
+        //if ($vote.text() == 'voted'){
           $(link_parent).html($vote.wrap("<div></div>").parent().html());
-          $(link_parent).children('.voted-sign').addClass('voting-link-odd');
-        }
-        else {
-          $(link_parent).html($vote.wrap("<div></div>").parent().html());
-        }
+          //$(link_parent).children('.voted-sign').addClass('voting-link-odd');
+        //}
+        //else {
+        //  $(link_parent).html($vote.wrap("<div></div>").parent().html());
+        //}
       }
     });
     return false;

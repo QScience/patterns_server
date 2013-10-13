@@ -24,12 +24,18 @@ function _patterns_server_back_like_button($pid) {
   $file_d = l(t('download'), 'pattern/' . $pid . '/download', array('attributes' => array('class' => 'download-link')));
 
   $voted = _patterns_server_check_whether_voted($pid);
-  if ($voted) {
-    $vote_s = '<strong class="voted-sign" id="patterns-server-view-page-vote">voted</strong>';
+  if ($voted === 1) {
+    $url = 'pattern/' . $pid . '/undovote';
+    $vote_s = l(t('undovote'), $url, array('attributes' => array('class' => array('undovote-link', "undovote-link-$pid"), 'title' => "undovote-link-$pid", 'id' => array("patterns-server-view-page-vote"))));
+    //$vote_s = '<strong class="voted-sign" id="patterns-server-view-page-vote">voted</strong>';
+  }
+  elseif ($voted === 0) {
+    $url = 'pattern/' . $pid . '/voting';
+    $vote_s = l(t('voting'), $url, array('attributes' => array('class' => array('voting-link', "voting-link-$pid"), 'title' => "voting-link-$pid", 'id' => array("patterns-server-view-page-vote"))));
   }
   else {
-    $url = 'pattern/' . $pid . '/voting';
-    $vote_s = l(t('voting'), $url, array('attributes' => array('class' => array('voting-link', "voting-link-$pid"), 'title' => "voting-link-$pid", 'id' => array('patterns-server-view-page-vote'))));
+    $url = 'user/register';
+    $vote_s = l(t('forbidden'), $url, array('attributes' => array('class' => array("vote-forbid-sign"), 'title' => "Login or Register to Vote", 'id' => array('patterns-server-view-page-vote'))));
   }
 
 

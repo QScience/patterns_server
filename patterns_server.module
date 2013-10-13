@@ -169,6 +169,13 @@ function patterns_server_menu() {
     'page arguments' => array(1),
     'access arguments' => array('view patterns server'),
   );
+  $items['pattern/%/undovote'] = array(
+    'title' => 'pattern undovote link',
+    'description' => 'pattern undovote link',
+    'page callback' => '_patterns_server_undovote_pattern',
+    'page arguments' => array(1),
+    'access arguments' => array('view patterns server'),
+  );
 
   //four basic list table page. they all use the core function "_patterns_server_list()";
   //these four:

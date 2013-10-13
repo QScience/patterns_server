@@ -91,6 +91,17 @@ dl dd {
   margin-right: 1px;
 }
 
+.undovote-link {
+  float: right;
+  margin-top: 3px;
+  background: url("../img/like_black.png") no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 25px;
+  text-indent: -9999px;
+  width: 27px;
+  margin-right: 6px;
+}
+
 .voting-link {
   float: right;
   margin-top: 3px;
@@ -102,10 +113,10 @@ dl dd {
   margin-right: 6px;
 }
 
-.voted-sign{
+.vote-forbid-sign{
   float: right;
   margin-top: 3px;
-  background: url("../img/like_black.png") no-repeat scroll 0 0 transparent;
+  background: url("../img/forbidden_vote.png") no-repeat scroll 0 0 transparent;
   display: block;
   height: 25px;
   text-indent: -9999px;
