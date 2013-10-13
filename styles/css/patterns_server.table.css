@@ -33,7 +33,7 @@
 .vote-forbid-sign{
   background: url("../img/forbidden_vote.png") no-repeat scroll 0 0 transparent;
   display: block;
-  height: 25px;
+  height: 21px;
   text-indent: -9999px;
   width: 27px;
 }
