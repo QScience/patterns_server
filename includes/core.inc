@@ -3,7 +3,7 @@
  * @file
  */
 
-define("NOSEARCHRESULT", " <div class='patterns-server-list-table-wrap'>nothing found.</div>");
+define("PATTERNS_SERVER_NOSEARCHRESULT", " <div class='patterns-server-list-table-wrap'>nothing found.</div>");
 
 /**
  * this function return a html table.
@@ -112,7 +112,7 @@ function _patterns_server_search($selected, $value) {
         $list .= _patterns_server_list_page($query, $fieldset_title);
       }
       else {
-        $list .= NOSEARCHRESULT;
+        $list .= PATTERNS_SERVER_NOSEARCHRESULT;
       }
       $list .= '</div>';
       return $list;
@@ -131,7 +131,7 @@ function _patterns_server_search($selected, $value) {
         }
       }
       if (!$sign_has_table) {
-        $list .= NOSEARCHRESULT;
+        $list .= PATTERNS_SERVER_NOSEARCHRESULT;
       }
       $list .= '</div>';
       return $list;
@@ -150,7 +150,7 @@ function _patterns_server_search($selected, $value) {
         }
       }
       if (!$sign_has_table) {
-        $list .= NOSEARCHRESULT;
+        $list .= PATTERNS_SERVER_NOSEARCHRESULT;
       }
       $list .= '</div>';
       return $list;
@@ -170,7 +170,7 @@ function _patterns_server_search($selected, $value) {
         $list .= _patterns_server_list_page($query, $fieldset_title);
       }
       else {
-        $list .= NOSEARCHRESULT;
+        $list .= PATTERNS_SERVER_NOSEARCHRESULT;
       }
       $list .= '</div>';
       return $list;
@@ -189,7 +189,7 @@ function _patterns_server_search($selected, $value) {
         $list .= _patterns_server_list_page($query, $fieldset_title);
       }
       else {
-        $list .= NOSEARCHRESULT;
+        $list .= PATTERNS_SERVER_NOSEARCHRESULT;
       }
       $list .= '</div>';
       return $list;
@@ -208,7 +208,7 @@ function _patterns_server_search($selected, $value) {
         }
       }
       else {
-        $list .= NOSEARCHRESULT;
+        $list .= PATTERNS_SERVER_NOSEARCHRESULT;
       }
       $list .= '</div>';
       return $list;
