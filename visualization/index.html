@@ -1,28 +1,71 @@
 <!DOCTYPE html>
-    <html>
-    <head>
-            <meta charset="utf-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <title>Test Visualization</title>
-            <link rel="stylesheet" href="">
-            <script type="text/javascript" src="js/d3.js"></script>
-            <script type="text/javascript" src="js/d3-layout.js"></script>
-            <script type="text/javascript" src="js/tree.js"></script>
-            <script type="text/javascript">
-                data = [
-                    {id: 0, name:'1', author:'test', category:'nice', parent: null},
-                    {id: 1, name:'2', author:'haha', category:'not so nice', parent:null},
-                    {id: 2, name:'3', author:'asdf', category:'cute', parent: 0},
-                    {id: 3, name:'4', author:'asdf', category:'nice', parent:1},
-                    {id: 4, name:'5', author:'asdf', category:'nice', parent:2},
-                    {id: 5, name:'6', author:'asdf', category:'nice', parent:2},
-                    {id: 6, name:'7', author:'asdf', category:'nice', parent:5},
-                ];
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Test Visualization</title>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
+    <style type="text/css">
 
-                tree.build(data);
-            </script>
-    </head>
-    <body>
-        
-    </body>
+    body {
+      text-align:center;
+    }
+
+
+    .node circle {
+      cursor: pointer;
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+  }
+
+  .node text {
+      font-size: 11px;
+  }
+
+  path.link {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 1.5px;
+  }
+
+  </style>
+  
+</head>
+<body>
+
+    <div id="body" style="text-align:left;display:inline-block;border:solid black 1px;margin:20px;width:750px; height:500px;">
+    </div>
+
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script type="text/javascript" src="js/d3.js"></script>
+  <script type="text/javascript" src="js/d3-layout.js"></script>
+  <script type="text/javascript" src="js/tree.js"></script>
+  <script type="text/javascript">
+  var data = [
+  {id: 0, name:'0', author:'test', category:'nice', children: [
+    {id: 3, name: 'cjild1', author:'test', category: 'nice', children: []}, 
+    {id: 4, name: 'cjild2', author:'test', category: 'nice', children: []}, 
+    {id: 5, name: 'cjild3', author:'test', category: 'nice', children: []},
+  ]},
+
+  {id: 2, name:'2', author:'asdf', category:'cute', children: [
+    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []}, {}, {},
+  ]},
+
+  {id: 1, name:'1', author:'haha', category:'not so nice', children: [
+    {id: 6, name: 'cjild5', author:'haha', category: 'not so nice', children: []}, 
+    {id: 7, name: 'cjild6', author:'haha', category: 'not so nice', children: [
+      {id: 8, name: 'cjild21', author:'haha', category: 'nice', children: []},
+      {id: 9, name: 'cjild22', author:'haha', category: 'nice', children: []},
+      {id: 10, name: 'cjild23', author:'haha', category: 'nice', children: []}, 
+    ]}, 
+    {id: 11, name: 'cjild7', author:'haha', category: 'not so nice', children: []}, 
+  ]},
+  ];
+
+  d3Tree.build(data, '#body');
+  
+  </script>
+</body>
 </html>
