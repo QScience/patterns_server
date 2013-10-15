@@ -94,6 +94,7 @@ var d3Tree = (function d3Tree() {
                 });
 
             nodeUpdate.select("circle")
+                // .attr("r", 1.5)
                 .attr("r", 4.5)
                 .style("fill", function(d) {
                     return d._children ? "lightsteelblue" : "#fff";
