@@ -7,7 +7,6 @@ var d3Tree = (function d3Tree() {
         var Tree = this;
         this.margin = 10,
         this.i = 0;
-
         this.height = h;
         this.width = w;
         this.position = p;
