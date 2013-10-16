@@ -11,7 +11,8 @@ var d3Tree = (function() {
         minLeafRadius = 2.0,
         maxLeafRadius = 7.0,
         minBranchLength = 40,
-        marginSVG = 10;
+        marginSVG = 10,
+        mouseWheelEvent = (/Firefox/i.test(navigator.userAgent)) ? 'DOMMouseScroll' : 'mousewheel';
 
     var Tree = function(data, w, h, p) {
         var Tree = this;
@@ -199,18 +200,20 @@ var d3Tree = (function() {
                     border: 'solid black 1px',
                     overflow: 'hidden'
                 })
+                .attr('onmousewheel', 'd3Tree.detectScroll(event)')
                 .html('<div id="patterns_server-visu-trees"></div>');
-            jQuery('#patterns_server-visu-trees').css({
-                display: 'inline-block',
-                width: width*nbSquares + 'px',
-                height: height*nbSquares + 'px',
-            });
+            jQuery('#patterns_server-visu-trees')
+                .css({
+                    display: 'inline-block',
+                    width: width * nbSquares + 'px',
+                    height: height * nbSquares + 'px',
+                });
             data.forEach(function(el, i, data) {
                 var x = (i % nbSquares) * width,
                     y = Math.floor(i / nbSquares) * height;
                 trees[i] = new Tree(el, width, height, [x, y]);
             });
-            if (height === minHeight || width === minWidth || !!isZoomed) {
+            if (height === minHeight || width === minWidth || !! isZoomed) {
                 jQuery(location).css({
                     cursor: 'move'
                 });
@@ -220,14 +223,25 @@ var d3Tree = (function() {
 
         zoomIn: function() {
             var curWidth = jQuery('#patterns_server-visu-trees').width(),
-            curHeight = jQuery('#patterns_server-visu-trees').height();
-            d3Tree.build(data, '#body', 1.25 * curWidth, 1.25*curHeight, true);
+                curHeight = jQuery('#patterns_server-visu-trees').height();
+            d3Tree.build(data, '#body', 1.25 * curWidth, 1.25 * curHeight, true);
         },
 
         zoomOut: function() {
             var curWidth = jQuery('#patterns_server-visu-trees').width(),
-            curHeight = jQuery('#patterns_server-visu-trees').height();
-            d3Tree.build(data, '#body', 0.75 * curWidth, 0.75*curHeight, true);
+                curHeight = jQuery('#patterns_server-visu-trees').height();
+            d3Tree.build(data, '#body', 0.75 * curWidth, 0.75 * curHeight, true);
+        },
+
+        detectScroll: function (e) {
+                var delta = e.detail ? e.detail * (-120) : e.wheelDelta; //delta returns +120 when wheel is scrolled up, -120 when scrolled down
+                console.log(delta);
+                if (delta <= -120) {
+                    d3Tree.zoomOut();
+                } else {
+                    d3Tree.zoomIn();
+                }
+                e.preventDefault();
         },
     };
 })();
