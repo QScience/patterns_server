@@ -11,8 +11,7 @@ var d3Tree = (function() {
         minLeafRadius = 2.0,
         maxLeafRadius = 7.0,
         minBranchLength = 40,
-        marginSVG = 10,
-        mouseWheelEvent = (/Firefox/i.test(navigator.userAgent)) ? 'DOMMouseScroll' : 'mousewheel';
+        marginSVG = 10;
 
     var Tree = function(data, w, h, p) {
         var Tree = this;
@@ -200,7 +199,6 @@ var d3Tree = (function() {
                     border: 'solid black 1px',
                     overflow: 'hidden'
                 })
-                .attr('onmousewheel', 'd3Tree.detectScroll(event)')
                 .html('<div id="patterns_server-visu-trees"></div>');
             jQuery('#patterns_server-visu-trees')
                 .css({
@@ -208,6 +206,9 @@ var d3Tree = (function() {
                     width: width * nbSquares + 'px',
                     height: height * nbSquares + 'px',
                 });
+            if (!isZoomed) {
+                jQuery(location).bind('mousewheel', d3Tree.detectScroll);
+            }
             data.forEach(function(el, i, data) {
                 var x = (i % nbSquares) * width,
                     y = Math.floor(i / nbSquares) * height;
@@ -233,15 +234,13 @@ var d3Tree = (function() {
             d3Tree.build(data, '#body', 0.75 * curWidth, 0.75 * curHeight, true);
         },
 
-        detectScroll: function (e) {
-                var delta = e.detail ? e.detail * (-120) : e.wheelDelta; //delta returns +120 when wheel is scrolled up, -120 when scrolled down
-                console.log(delta);
-                if (delta <= -120) {
-                    d3Tree.zoomOut();
-                } else {
-                    d3Tree.zoomIn();
-                }
-                e.preventDefault();
+        detectScroll: function(e, delta) {
+            if (delta <= 0) {
+                d3Tree.zoomOut();
+            } else {
+                d3Tree.zoomIn();
+            }
+            e.preventDefault();
         },
     };
 })();
