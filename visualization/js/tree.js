@@ -4,24 +4,30 @@
  * If the constraints are reached, then make the div draggable and still put the SVGs.
  */
 
-var d3Tree = (function d3Tree() {
-    var trees = [];
+var d3Tree = (function() {
+    var trees = [],
+        minWidth = 200,
+        minHeight = 40,
+        minLeafRadius = 2.0,
+        maxLeafRadius = 7.0,
+        minBranchLength = 40,
+        marginSVG = 10;
 
     var Tree = function(data, w, h, p) {
         var Tree = this;
-        this.margin = 10,
+        this.margin = marginSVG,
         this.i = 0;
         this.height = h;
         this.width = w;
-        this.branchLength = 40;
-        this.leafRadius = 2.0;
+        this.branchLength = 100;
+        this.leafRadius = minLeafRadius + ((1 - minHeight / this.height) * (maxLeafRadius - minLeafRadius));
         this.position = p;
         this.root = data;
         this.root.x0 = this.height / 2;
         this.root.y0 = 0;
 
         this.tree = d3.layout.tree()
-            .size([this.height - this.margin, this.width - this.margin]);
+            .size([this.height - 2 * this.margin, this.width - 2 * this.margin]);
 
         this.diagonal = d3.svg.diagonal()
             .projection(function(d) {
@@ -33,7 +39,7 @@ var d3Tree = (function d3Tree() {
             .attr('height', this.height)
             .attr('style', 'position:absolute;display:inline;margin-left:' + this.position[0] + 'px; margin-top:' + this.position[1] + 'px;')
             .append('svg:g')
-            .attr('transform', 'translate(' + this.margin / 2 + ',' + this.margin / 2 + ')');
+            .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
 
         this.toggle = function(d) {
             if (d.children) {
@@ -50,10 +56,12 @@ var d3Tree = (function d3Tree() {
 
             // Compute the new tree layout.
             var nodes = this.tree.nodes(this.root).reverse();
+            // console.log(nodes[0]);
+            // console.log(nodes[2]);
 
             // Normalize for fixed-depth.
             nodes.forEach(function(d) {
-                d.y = d.depth * Tree.branchLength;
+                // d.y = d.depth * Tree.branchLength;
             });
 
             // Update the nodes…
@@ -178,12 +186,10 @@ var d3Tree = (function d3Tree() {
 
 
     return {
-        build: function(data, location) {
-            var width = jQuery(location).width(),
-                height = jQuery(location).height(),
-                nbSquares = Math.ceil(Math.sqrt(data.length)),
-                minWidth = 200,
-                minHeight = 40;
+        build: function(data, location, w, h, isZoomed) {
+            var width = w || jQuery(location).width(),
+                height = h || jQuery(location).height(),
+                nbSquares = Math.ceil(Math.sqrt(data.length));
             width = width / nbSquares > minWidth ? width / nbSquares : minWidth;
             height = height / nbSquares > minHeight ? height / nbSquares : minHeight;
             jQuery(location)
@@ -191,16 +197,37 @@ var d3Tree = (function d3Tree() {
                     textAlign: 'left',
                     display: 'inline-block',
                     border: 'solid black 1px',
-                    overflow: 'hidden',
-                    cursor: 'move'
+                    overflow: 'hidden'
                 })
                 .html('<div id="patterns_server-visu-trees"></div>');
+            jQuery('#patterns_server-visu-trees').css({
+                display: 'inline-block',
+                width: width*nbSquares + 'px',
+                height: height*nbSquares + 'px',
+            });
             data.forEach(function(el, i, data) {
                 var x = (i % nbSquares) * width,
                     y = Math.floor(i / nbSquares) * height;
                 trees[i] = new Tree(el, width, height, [x, y]);
             });
-            jQuery('#patterns_server-visu-trees').draggable();
+            if (height === minHeight || width === minWidth || !!isZoomed) {
+                jQuery(location).css({
+                    cursor: 'move'
+                });
+                jQuery('#patterns_server-visu-trees').draggable();
+            }
+        },
+
+        zoomIn: function() {
+            var curWidth = jQuery('#patterns_server-visu-trees').width(),
+            curHeight = jQuery('#patterns_server-visu-trees').height();
+            d3Tree.build(data, '#body', 1.25 * curWidth, 1.25*curHeight, true);
+        },
+
+        zoomOut: function() {
+            var curWidth = jQuery('#patterns_server-visu-trees').width(),
+            curHeight = jQuery('#patterns_server-visu-trees').height();
+            d3Tree.build(data, '#body', 0.75 * curWidth, 0.75*curHeight, true);
         },
     };
 })();
