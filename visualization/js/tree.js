@@ -100,14 +100,14 @@ var d3Tree = (function() {
                 .on('mouseover', function(n) {
                     clearTimeout(bubbleTimeOut);
                     bubbleDiv
-                    .show()
-                    .html('<h3>' + n.name + '</h3><p>Pattern by <b>' + n.author + '</b>, in the <i>' + n.category + '</i> category.</p>');
+                        .show()
+                        .html('<h3><a href="' + n.pattern_link + '" target="_blank">' + n.name + '</a></h3><p align="justify">Pattern by <b><a href="' + n.d2did_link + '" target="_blank">' + n.author + '</a></b>, in the <i>' + n.category + '</i> category and on <u><a href="' + n.d2did_link + '" target="_blank">this D2D instance</a></u>. </p>');
                 }).
-                on('mouseout', function() {
-                    bubbleTimeOut = setTimeout(function() {
-                        bubbleDiv.hide();
-                    }, bubbleShowDuration);
-                });
+            on('mouseout', function() {
+                bubbleTimeOut = setTimeout(function() {
+                    bubbleDiv.hide();
+                }, bubbleShowDuration);
+            });
 
             nodeEnter.append("svg:circle")
                 .attr("r", 1e-6)
@@ -243,14 +243,18 @@ var d3Tree = (function() {
                 .on('mouseout', function() {
                     bubbleTimeOut = setTimeout(function() {
                         bubbleDiv.hide();
-                    }, bubbleShowDuration)
+                    }, bubbleShowDuration);
                 });
             svgDiv = jQuery(location + ' > #patterns_server-visu-trees');
             svgDiv.css({
                 display: 'inline-block',
                 width: width * nbSquares + 'px',
                 height: height * nbSquares + 'px',
-            });
+            })
+                .on('mousedown', function() {
+                    clearTimeout(bubbleTimeOut);
+                    bubbleDiv.hide();
+                });
             if (!isZoomed) {
                 jQuery(location).bind('mousewheel', d3Tree.detectScroll);
             } else {
