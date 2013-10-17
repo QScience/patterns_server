@@ -1,174 +1,195 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Test Visualization</title>
-    <link type="text/css" rel="stylesheet" href="style.css"/>
-    <style type="text/css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Test Visualization</title>
+  <link type="text/css" rel="stylesheet" href="style.css"/>
+  <style type="text/css">
 
-    body {
-      text-align:center;
-    }
+  body {
+    text-align:center;
+  }
 
-    .node circle {
-      cursor: pointer;
-      fill: #fff;
-      stroke: steelblue;
-      stroke-width: 1.5px;
+
+
+  /*Necessary for the display of trees.*/
+  .node circle {
+    cursor: pointer;
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
   }
 
   .node text {
-      font-size: 11px;
+    font-size: 11px;
   }
 
   path.link {
-      fill: none;
-      stroke: #ccc;
-      stroke-width: 1.5px;
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+  .patterns_server_bubble {
+    -webkit-border-bottom-right-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    -moz-border-radius-bottomright: 20px;
+    -moz-border-radius-bottomleft: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding:0px 10px;
+    display: inline-block;
+    position:absolute;
+    background-color:white;
+    border-bottom:solid black 1px;
+    border-right:solid black 1px;
+    border-left:solid black 1px;
+    display:none;
+    cursor: default;
+    z-index: 100;
   }
 
   </style>
-  
+
 </head>
 <body>
 
-    <div id="body" style="width:750px; height:500px;">
-    </div>
+ <div id="body" style="width:750px; height:500px;">
+ </div>
 
-  <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-  <script type="text/javascript" src="js/jquery-ui.min.js"></script>
-  <script type="text/javascript" src="js/jquery.mousewheel.js"></script>
-  <script type="text/javascript" src="js/d3.js"></script>
-  <script type="text/javascript" src="js/d3-layout.js"></script>
-  <script type="text/javascript" src="js/tree.js"></script>
-  <script type="text/javascript">
-  var data = [
-  {id: 0, name:'0', author:'test', category:'nice', children: [
-    {id: 3, name: 'cjild1', author:'test', category: 'nice', children: []}, 
-    {id: 4, name: 'cjild2', author:'test', category: 'nice', children: []}, 
-    {id: 5, name: 'cjild3', author:'test', category: 'nice', children: []},
-  ]},
+ <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+ <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+ <script type="text/javascript" src="js/jquery.mousewheel.js"></script>
+ <script type="text/javascript" src="js/d3.js"></script>
+ <script type="text/javascript" src="js/d3-layout.js"></script>
+ <script type="text/javascript" src="js/tree.js"></script>
+ <script type="text/javascript">
+ var data = [
+ {id: 0, name:'0', author:'test', category:'nice', children: [
+ {id: 3, name: 'cjild1', author:'test', category: 'nice', children: []}, 
+ {id: 4, name: 'cjild2', author:'test', category: 'nice', children: []}, 
+ {id: 5, name: 'cjild3', author:'test', category: 'nice', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: []},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: []},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild1', author:'asdf', category: 'cute', children: []},
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: [
-        {id: 12, name: 'cjild9', author:'asdf', category: 'cute', children: []},
-    ]},
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-    {id: 12, name: 'cjild9', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild1', author:'asdf', category: 'cute', children: []},
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: [
+ {id: 12, name: 'cjild9', author:'asdf', category: 'cute', children: []},
+ ]},
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ {id: 12, name: 'cjild9', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 2, name:'2', author:'asdf', category:'cute', children: [
-    {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
-  ]},
+ {id: 2, name:'2', author:'asdf', category:'cute', children: [
+ {id: 12, name: 'cjild4', author:'asdf', category: 'cute', children: []},
+ ]},
 
-  {id: 1, name:'1', author:'haha', category:'not so nice', children: [
-    {id: 6, name: 'cjild5', author:'haha', category: 'not so nice', children: []}, 
-    {id: 7, name: 'cjild6', author:'haha', category: 'not so nice', children: [
-      {id: 8134, name: 'cjild21', author:'haha', category: 'nice', children: []},
-      {id: 1249, name: 'cjild22', author:'haha', category: 'nice', children: [
+ {id: 1, name:'1', author:'haha', category:'not so nice', children: [
+ {id: 6, name: 'cjild5', author:'haha', category: 'not so nice', children: []}, 
+ {id: 7, name: 'cjild6', author:'haha', category: 'not so nice', children: [
+ {id: 8134, name: 'cjild21', author:'haha', category: 'nice', children: []},
+ {id: 1249, name: 'cjild22', author:'haha', category: 'nice', children: [
 
-        {id: 81234, name: 'cjild21', author:'haha', category: 'nice', children: []},
-        {id: 9124, name: 'cjild22', author:'haha', category: 'nice', children: [
+ {id: 81234, name: 'cjild21', author:'haha', category: 'nice', children: []},
+ {id: 9124, name: 'cjild22', author:'haha', category: 'nice', children: [
 
-            {id: 823, name: 'cjild21', author:'haha', category: 'nice', children: []},
-            {id: 9234, name: 'cjild22', author:'haha', category: 'nice', children: []},
-            {id: 130, name: 'cjild23', author:'haha', category: 'nice', children: [
-                      {id: 8314, name: 'cjild21', author:'haha', category: 'nice', children: []},
-                      {id: 934134, name: 'cjild22', author:'haha', category: 'nice', children: []},
-                      {id: 10, name: 'cjild23', author:'haha', category: 'nice', children: []}, 
-            ]}, 
-        ]},
-        {id: 112340, name: 'cjild23', author:'haha', category: 'nice', children: []}, 
-      ]},
-      {id: 12340, name: 'cjild23', author:'haha', category: 'nice', children: []}, 
-    ]}, 
-    {id: 11, name: 'cjild7', author:'haha', category: 'not so nice', children: []}, 
-  ]},
-  ];
+ {id: 823, name: 'cjild21', author:'haha', category: 'nice', children: []},
+ {id: 9234, name: 'cjild22', author:'haha', category: 'nice', children: []},
+ {id: 130, name: 'cjild23', author:'haha', category: 'nice', children: [
+ {id: 8314, name: 'cjild21', author:'haha', category: 'nice', children: []},
+ {id: 934134, name: 'cjild22', author:'haha', category: 'nice', children: []},
+ {id: 10, name: 'cjild23', author:'haha', category: 'nice', children: []}, 
+ ]}, 
+ ]},
+ {id: 112340, name: 'cjild23', author:'haha', category: 'nice', children: []}, 
+ ]},
+ {id: 12340, name: 'cjild23', author:'haha', category: 'nice', children: []}, 
+ ]}, 
+ {id: 11, name: 'cjild7', author:'haha', category: 'not so nice', children: []}, 
+ ]},
+ ];
 
-  d3Tree.build(data, '#body');
-  
-  </script>
+ d3Tree.build(data, '#body');
+
+ </script>
 </body>
 </html>

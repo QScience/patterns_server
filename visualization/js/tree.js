@@ -14,7 +14,10 @@ var d3Tree = (function() {
         minBranchLength = 40,
         marginSVG = 10,
         svgDiv,
+        bubbleDiv,
         getRandomColor,
+        bubbleTimeOut,
+        bubbleShowDuration = 3500,
         zoomFactor = 0.25;
 
 
@@ -72,12 +75,10 @@ var d3Tree = (function() {
 
             // Compute the new tree layout.
             var nodes = this.tree.nodes(this.root).reverse();
-            // console.log(nodes[0]);
-            // console.log(nodes[2]);
 
             // Normalize for fixed-depth.
             // nodes.forEach(function(d) {
-            //      d.y = d.depth * Tree.branchLength;
+            //      // d.y = d.depth * Tree.branchLength;
             // });
 
             // Update the nodes…
@@ -95,6 +96,17 @@ var d3Tree = (function() {
                 .on("click", function(d) {
                     Tree.toggle(d);
                     Tree.update(d);
+                })
+                .on('mouseover', function(n) {
+                    clearTimeout(bubbleTimeOut);
+                    bubbleDiv
+                    .show()
+                    .html('<h3>' + n.name + '</h3><p>Pattern by <b>' + n.author + '</b>, in the <i>' + n.category + '</i> category.</p>');
+                }).
+                on('mouseout', function() {
+                    bubbleTimeOut = setTimeout(function() {
+                        bubbleDiv.hide();
+                    }, bubbleShowDuration);
                 });
 
             nodeEnter.append("svg:circle")
@@ -217,8 +229,23 @@ var d3Tree = (function() {
                     border: 'solid black 1px',
                     overflow: 'hidden'
                 })
-                .html('<div id="patterns_server-visu-trees"></div>');
-            svgDiv = jQuery('#patterns_server-visu-trees');
+                .html('<div id="patterns_server-visu-bubble"></div><div id="patterns_server-visu-trees"></div>');
+            bubbleDiv = jQuery(location + ' > #patterns_server-visu-bubble');
+            bubbleDiv
+                .addClass('patterns_server_bubble')
+                .css({
+                    width: jQuery(location).width() / 2,
+                    marginLeft: jQuery(location).width() / 4,
+                })
+                .on('mouseover', function() {
+                    clearTimeout(bubbleTimeOut);
+                })
+                .on('mouseout', function() {
+                    bubbleTimeOut = setTimeout(function() {
+                        bubbleDiv.hide();
+                    }, bubbleShowDuration)
+                });
+            svgDiv = jQuery(location + ' > #patterns_server-visu-trees');
             svgDiv.css({
                 display: 'inline-block',
                 width: width * nbSquares + 'px',
@@ -280,9 +307,9 @@ var d3Tree = (function() {
 
         detectScroll: function(e, delta) {
             if (delta <= 0) {
-                d3Tree.zoomOut(this);
+                d3Tree.zoomOut('#' + this.id);
             } else {
-                d3Tree.zoomIn(this);
+                d3Tree.zoomIn('#' + this.id);
             }
             e.preventDefault();
         },
