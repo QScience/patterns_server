@@ -14,10 +14,23 @@ var d3Tree = (function() {
         minBranchLength = 40,
         marginSVG = 10,
         svgDiv,
+        getRandomColor,
         zoomFactor = 0.25;
 
-    var Tree = function(data, w, h, p) {
+
+    getRandomColor = function() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.round(Math.random() * 15)];
+        }
+        return color;
+    };
+
+    var Tree = function(data, w, h, p, c, cCC) {
         var Tree = this;
+        this.color = c || getRandomColor(),
+        this.closedCircleColor = cCC || getRandomColor(),
         this.margin = marginSVG,
         this.i = 0;
         this.height = h;
@@ -87,7 +100,7 @@ var d3Tree = (function() {
             nodeEnter.append("svg:circle")
                 .attr("r", 1e-6)
                 .style("fill", function(d) {
-                    return d._children ? "lightsteelblue" : "#fff";
+                    return d._children ? Tree.closedCircleColor : Tree.color;
                 });
 
             nodeEnter.append("svg:text")
@@ -113,7 +126,7 @@ var d3Tree = (function() {
             nodeUpdate.select("circle")
                 .attr("r", Tree.leafRadius)
                 .style("fill", function(d) {
-                    return d._children ? "lightsteelblue" : "#fff";
+                    return d._children ? Tree.closedCircleColor : Tree.color;
                 });
 
             nodeUpdate.select("text")
@@ -219,7 +232,11 @@ var d3Tree = (function() {
             data.forEach(function(el, i, data) {
                 var x = (i % nbSquares) * width,
                     y = Math.floor(i / nbSquares) * height;
-                trees[i] = new Tree(el, width, height, [x, y]);
+                if (!trees[i]) {
+                    trees[i] = new Tree(el, width, height, [x, y]);
+                } else {
+                    trees[i] = new Tree(el, width, height, [x, y], trees[i].color, trees[i].closedCircleColor);
+                }
             });
             if (height === minHeight || width === minWidth || !! isZoomed) {
                 jQuery(location).css({
@@ -229,32 +246,32 @@ var d3Tree = (function() {
             }
         },
 
-        zoomIn: function() {
+        zoomIn: function(location) {
             var curWidth = svgDiv.width(),
                 curHeight = svgDiv.height(),
                 imageX = svgDiv.offset().left,
                 imageY = svgDiv.offset().top,
                 newWidth = curWidth * (1 + zoomFactor),
                 newHeight = curHeight * (1 + zoomFactor),
-                newX = imageX - ((newWidth - curWidth) / 2),
-                newY = imageY - ((newHeight - curHeight) / 2);
-            d3Tree.build(data, '#body', newWidth, newHeight, true);
+                newX = imageX - (curWidth * zoomFactor / 2),
+                newY = imageY - (curHeight * zoomFactor / 2);
+            d3Tree.build(data, location, newWidth, newHeight, true);
             svgDiv.offset({
                 top: newY,
                 left: newX,
             });
         },
 
-        zoomOut: function() {
+        zoomOut: function(location) {
             var curWidth = svgDiv.width(),
                 curHeight = svgDiv.height(),
                 imageX = svgDiv.offset().left,
                 imageY = svgDiv.offset().top,
                 newWidth = curWidth / (1 + zoomFactor),
                 newHeight = curHeight / (1 + zoomFactor),
-                newX = imageX + ((newWidth - curWidth) / 2),
-                newY = imageY + ((newHeight - curHeight) / 2);
-            d3Tree.build(data, '#body', newWidth, newHeight, true);
+                newX = imageX + (curWidth * zoomFactor / 2),
+                newY = imageY + (curHeight * zoomFactor / 2);
+            d3Tree.build(data, location, newWidth, newHeight, true);
             svgDiv.offset({
                 top: newY,
                 left: newX,
@@ -263,9 +280,9 @@ var d3Tree = (function() {
 
         detectScroll: function(e, delta) {
             if (delta <= 0) {
-                d3Tree.zoomOut();
+                d3Tree.zoomOut(this);
             } else {
-                d3Tree.zoomIn();
+                d3Tree.zoomIn(this);
             }
             e.preventDefault();
         },
