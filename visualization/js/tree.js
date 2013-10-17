@@ -11,7 +11,9 @@ var d3Tree = (function() {
         minLeafRadius = 2.0,
         maxLeafRadius = 7.0,
         minBranchLength = 40,
-        marginSVG = 10;
+        marginSVG = 10,
+        svgDiv,
+        zoomFactor = 0.25;
 
     var Tree = function(data, w, h, p) {
         var Tree = this;
@@ -20,7 +22,8 @@ var d3Tree = (function() {
         this.height = h;
         this.width = w;
         this.branchLength = 100;
-        this.leafRadius = minLeafRadius + ((1 - minHeight / this.height) * (maxLeafRadius - minLeafRadius));
+        this.leafRadius = minLeafRadius + !(minHeight >= this.height) * Math.abs(Math.tan(1- minHeight/this.height)) * (maxLeafRadius - minLeafRadius);
+        console.log(this.leafRadius);
         this.position = p;
         this.root = data;
         this.root.x0 = this.height / 2;
@@ -60,9 +63,9 @@ var d3Tree = (function() {
             // console.log(nodes[2]);
 
             // Normalize for fixed-depth.
-            nodes.forEach(function(d) {
-                // d.y = d.depth * Tree.branchLength;
-            });
+            // nodes.forEach(function(d) {
+            //      d.y = d.depth * Tree.branchLength;
+            // });
 
             // Update the nodes…
             var node = this.vis.selectAll("g.node")
@@ -190,8 +193,10 @@ var d3Tree = (function() {
             var width = w || jQuery(location).width(),
                 height = h || jQuery(location).height(),
                 nbSquares = Math.ceil(Math.sqrt(data.length));
-            width = width / nbSquares > minWidth ? width / nbSquares : minWidth;
-            height = height / nbSquares > minHeight ? height / nbSquares : minHeight;
+            // width = width / nbSquares > minWidth ? width / nbSquares : minWidth;
+            // height = height / nbSquares > minHeight ? height / nbSquares : minHeight;
+            width = width / nbSquares;
+            height = height / nbSquares;
             jQuery(location)
                 .css({
                     textAlign: 'left',
@@ -200,14 +205,18 @@ var d3Tree = (function() {
                     overflow: 'hidden'
                 })
                 .html('<div id="patterns_server-visu-trees"></div>');
-            jQuery('#patterns_server-visu-trees')
-                .css({
-                    display: 'inline-block',
-                    width: width * nbSquares + 'px',
-                    height: height * nbSquares + 'px',
-                });
+            svgDiv = jQuery('#patterns_server-visu-trees');
+            svgDiv.css({
+                display: 'inline-block',
+                width: width * nbSquares + 'px',
+                height: height * nbSquares + 'px',
+                border: 'solid red 1px',
+                backgroundColor: 'red',
+            });
             if (!isZoomed) {
                 jQuery(location).bind('mousewheel', d3Tree.detectScroll);
+            } else {
+
             }
             data.forEach(function(el, i, data) {
                 var x = (i % nbSquares) * width,
@@ -218,23 +227,44 @@ var d3Tree = (function() {
                 jQuery(location).css({
                     cursor: 'move'
                 });
-                jQuery('#patterns_server-visu-trees').draggable();
+                svgDiv.draggable();
             }
         },
 
         zoomIn: function() {
-            var curWidth = jQuery('#patterns_server-visu-trees').width(),
-                curHeight = jQuery('#patterns_server-visu-trees').height();
-            d3Tree.build(data, '#body', 1.25 * curWidth, 1.25 * curHeight, true);
+            var curWidth = svgDiv.width(),
+                curHeight = svgDiv.height(),
+                imageX = svgDiv.offset().left,
+                imageY = svgDiv.offset().top,
+                newX = imageX - (curHeight * zoomFactor/2),
+                newY = imageY - (curWidth * zoomFactor/2);
+            d3Tree.build(data, '#body', (1 + zoomFactor) * curWidth, (1 + zoomFactor) * curHeight, true);
+            svgDiv.offset({
+                top: newY,
+                left: newX,
+            });
+            console.log(svgDiv.offset());
         },
 
         zoomOut: function() {
-            var curWidth = jQuery('#patterns_server-visu-trees').width(),
-                curHeight = jQuery('#patterns_server-visu-trees').height();
-            d3Tree.build(data, '#body', 0.75 * curWidth, 0.75 * curHeight, true);
+            var curWidth = svgDiv.width(),
+                curHeight = svgDiv.height(),
+                imageX = svgDiv.offset().left,
+                imageY = svgDiv.offset().top,
+                newX = imageX + (curHeight * zoomFactor/2),
+                newY = imageY + (curWidth * zoomFactor/2);
+            d3Tree.build(data, '#body', curWidth / (1 + zoomFactor), curHeight / (1 + zoomFactor), true);
+            svgDiv.offset({
+                top: newY,
+                left: newX,
+            });
         },
 
         detectScroll: function(e, delta) {
+            /* Cursor: e.pageX, e.pageY
+             * Div : jQuery(this).offset();
+             * Image: jQuery(image).offset();
+             */
             if (delta <= 0) {
                 d3Tree.zoomOut();
             } else {
