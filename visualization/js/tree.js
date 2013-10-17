@@ -1,7 +1,8 @@
 /*
- * Strategy chosen for size of trees:
- * Minimize the size as much as possible, but staying into the constraints. (ball-radius: 2.0, branch-length: 30)
- * If the constraints are reached, then make the div draggable and still put the SVGs.
+ * TODO:
+ * - Change color of nodes
+ * - Zoom towards center
+ * - Hover -> info bubble
  */
 
 var d3Tree = (function() {
@@ -22,8 +23,7 @@ var d3Tree = (function() {
         this.height = h;
         this.width = w;
         this.branchLength = 100;
-        this.leafRadius = minLeafRadius + !(minHeight >= this.height) * Math.abs(Math.tan(1- minHeight/this.height)) * (maxLeafRadius - minLeafRadius);
-        console.log(this.leafRadius);
+        this.leafRadius = minLeafRadius + !(minHeight >= this.height) * Math.abs(Math.tan(1 - minHeight / this.height)) * (maxLeafRadius - minLeafRadius);
         this.position = p;
         this.root = data;
         this.root.x0 = this.height / 2;
@@ -210,8 +210,6 @@ var d3Tree = (function() {
                 display: 'inline-block',
                 width: width * nbSquares + 'px',
                 height: height * nbSquares + 'px',
-                border: 'solid red 1px',
-                backgroundColor: 'red',
             });
             if (!isZoomed) {
                 jQuery(location).bind('mousewheel', d3Tree.detectScroll);
@@ -236,14 +234,15 @@ var d3Tree = (function() {
                 curHeight = svgDiv.height(),
                 imageX = svgDiv.offset().left,
                 imageY = svgDiv.offset().top,
-                newX = imageX - (curHeight * zoomFactor/2),
-                newY = imageY - (curWidth * zoomFactor/2);
-            d3Tree.build(data, '#body', (1 + zoomFactor) * curWidth, (1 + zoomFactor) * curHeight, true);
+                newWidth = curWidth * (1 + zoomFactor),
+                newHeight = curHeight * (1 + zoomFactor),
+                newX = imageX - ((newWidth - curWidth) / 2),
+                newY = imageY - ((newHeight - curHeight) / 2);
+            d3Tree.build(data, '#body', newWidth, newHeight, true);
             svgDiv.offset({
                 top: newY,
                 left: newX,
             });
-            console.log(svgDiv.offset());
         },
 
         zoomOut: function() {
@@ -251,9 +250,11 @@ var d3Tree = (function() {
                 curHeight = svgDiv.height(),
                 imageX = svgDiv.offset().left,
                 imageY = svgDiv.offset().top,
-                newX = imageX + (curHeight * zoomFactor/2),
-                newY = imageY + (curWidth * zoomFactor/2);
-            d3Tree.build(data, '#body', curWidth / (1 + zoomFactor), curHeight / (1 + zoomFactor), true);
+                newWidth = curWidth / (1 + zoomFactor),
+                newHeight = curHeight / (1 + zoomFactor),
+                newX = imageX + ((newWidth - curWidth) / 2),
+                newY = imageY + ((newHeight - curHeight) / 2);
+            d3Tree.build(data, '#body', newWidth, newHeight, true);
             svgDiv.offset({
                 top: newY,
                 left: newX,
@@ -261,10 +262,6 @@ var d3Tree = (function() {
         },
 
         detectScroll: function(e, delta) {
-            /* Cursor: e.pageX, e.pageY
-             * Div : jQuery(this).offset();
-             * Image: jQuery(image).offset();
-             */
             if (delta <= 0) {
                 d3Tree.zoomOut();
             } else {
