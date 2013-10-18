@@ -132,6 +132,85 @@ function patterns_server_schema() {
     'primary key' => array('pid'),
     'unique keys' => array('file_name' => array('file_name')),
   );
+  $schema['patterns_server_history_tree'] = array(
+    'description' => 'Patterns server hitory tree',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique pattern id',
+      ),
+      'root_pid' => array(
+        'type' => 'int',
+        'length' => 50,
+        'default' => 0,
+        'nut null' => TRUE,
+        'description' => 'the pid of the pattern that is the root of tree when the tree is created',
+      ),
+      'root_uuuid' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'default' => '',
+        'description' => 'the uuuid of the pattern with root_pid',
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'unsigned' => TRUE,
+        'description' => 'The Unix timestamp indicating when the pattern file was created.',
+      ),
+      'updated' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'unsigned' => TRUE,
+        'description' => 'The Unix timestamp indicating when the pattern file was updated.',
+      ),
+      'tree' => array(
+        'type' => 'text',
+        'size' => 'medium',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'description' => 'A serialized array containing all children of this pattern.',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema['patterns_server_pattern_tree'] = array(
+    'description' => 'Patterns server hitory tree',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique pattern id',
+      ),
+      'pid' => array(
+        'type' => 'int',
+        'length' => 50,
+        'default' => 0,
+        'not null' => TRUE,
+        'description' => 'the pid of the pattern in patterns_server table',
+      ),
+      'tree_id' => array(
+        'type' => 'int',
+        'length' => 50,
+        'default' => 0,
+        'not null' => TRUE,
+        'description' => 'a foreign key on patterns_server_history_tree',
+      ),
+      'updated' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'unsigned' => TRUE,
+        'description' => 'The Unix timestamp indicating when the pattern file was updated.',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
   return $schema;
 }
 
