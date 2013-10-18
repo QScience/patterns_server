@@ -194,6 +194,13 @@ function patterns_server_schema() {
         'not null' => TRUE,
         'description' => 'the pid of the pattern in patterns_server table',
       ),
+      'uuuid' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'default' => '',
+        'not null' => TRUE,
+        'description' => 'Identify patterns and their parent',
+      ),
       'tree_id' => array(
         'type' => 'int',
         'length' => 50,
@@ -217,6 +224,7 @@ function patterns_server_schema() {
       ),
     ),
     'primary key' => array('id'),
+    'unique keys' => array('pid' => array('pid'), 'uuuid' => array('uuuid')),
   );
   return $schema;
 }
