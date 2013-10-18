@@ -135,7 +135,7 @@ function patterns_server_schema() {
   $schema['patterns_server_history_tree'] = array(
     'description' => 'Patterns server hitory tree',
     'fields' => array(
-      'id' => array(
+      'tree_id' => array(
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
@@ -176,7 +176,7 @@ function patterns_server_schema() {
         'description' => 'A serialized array containing all children of this pattern.',
       ),
     ),
-    'primary key' => array('id'),
+    'primary key' => array('tree_id'),
   );
   $schema['patterns_server_pattern_tree'] = array(
     'description' => 'Patterns server hitory tree',
@@ -200,6 +200,13 @@ function patterns_server_schema() {
         'default' => 0,
         'not null' => TRUE,
         'description' => 'a foreign key on patterns_server_history_tree',
+      ),
+      'level' => array(
+        'type' => 'int',
+        'length' => 50,
+        'default' => 0,
+        'not null' => TRUE,
+        'description' => 'the level in tree',
       ),
       'updated' => array(
         'type' => 'int',

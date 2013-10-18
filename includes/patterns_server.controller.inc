@@ -2,6 +2,7 @@
 /**
  * @file
  */
+module_load_include('inc', 'patterns_server', 'includes/history');
 
 /**
  * customise entity controller class.
@@ -19,7 +20,37 @@ class PatternsServerEntityController extends EntityAPIController {
 
     $entity->created = REQUEST_TIME;
 
-    return parent::save($entity, $transaction);
+    $a = parent::save($entity, $transaction);
+    dsm($entity);
+
+    $pid = $entity->pid;
+    $uuuid = $entity->uuuid;
+
+    $pattern = $entity->pattern;
+    if (isset($pattern['info']['parent'])) {
+      $d2did = $pattern['info']['parent']['d2d_id'];
+      $my_d2d = d2d_api_own_instance_get();
+
+      if ($d2did != $my_d2d['d2d_id']) {
+        patterns_server_history_NULL_tree($pid, $uuuid, $pattern['info']['parent']);
+      }
+      else {
+        $uuuids = $pattern['info']['parent']['uuuids'];
+        foreach ($uuuids as $uuuid) {
+          if (patterns_server_check_whether_uuuid_exist($uuuid)) { //exist.
+            //TODO
+          }
+          else { //not exist.
+            //TODO
+          }
+        }
+      }
+    }
+    else {
+      patterns_server_history_new_tree($pid, $uuuid, '');
+    }
+
+    return $a;
   }
 
    /**

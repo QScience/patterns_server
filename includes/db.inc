@@ -231,3 +231,18 @@ function _patterns_server_save_pattern($name, $content, $format, $username) {
   return _patterns_server_db_save_pattern($pattern, $path, $name, $format, $username);
 
 }
+
+/**
+ */
+function patterns_server_check_whether_uuuid_exist($uuuid) {
+  $query = db_select('patterns_server', 'ps')
+    ->fields('ps', array())
+    ->condition('uuuid', $uuuid)
+    ->execute()
+    ->fetchAll();
+  if (count($query) > 0) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
