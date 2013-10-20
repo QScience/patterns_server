@@ -6,29 +6,27 @@
  */
 
 /**
- * patterns_server_history_update()
- * add a new tree to patterns_server_history_tree.
- * when upload or push a pattern file which don't contain a 'parent' section,
- * this function will be called.
- * add a new tree.
+ * this function will be called after a pattern file uploaded or pushed is
+ * already be saved into patterns_server table.
+ *
+ * so the new pattern will get a new uuuid. because the uuuid is new, so I 
+ * don't need to check whether the pair I want to insert is alreay existed or not.
+ *
+ * just insert.
+ * 
  */
-function patterns_server_history_new_tree($pid, $uuuid, $tree) {
-  $tree_id = db_insert('patterns_server_history_tree')
+function patterns_server_insert_pair($parent_uuuid, $child_uuuid, $action, $host, $d2did, $user, $date) {
+  $tree_id = db_insert('patterns_server_relation_pairs')
     ->fields(array(
-      'root_pid' => $pid,
-      'root_uuuid' => $uuuid,
+      'parent_uuuid' => $parent_uuuid,
+      'child_uuuid' => $child_uuuid,
+      'action' => $action,
+      'host' => $host,
+      'd2did' => $d2did,
+      'user' => $user,
+      'date' => $date,
       'created' => REQUEST_TIME,
-      'updated' => REQUEST_TIME,
-      'tree' => $tree,
       ))
-    ->execute();
-  db_insert('patterns_server_pattern_tree')
-    ->fields(array(
-      'pid' => $pid,
-      'tree_id' => $tree_id,
-      'level' => 0,
-      'updated' => REQUEST_TIME,
-    ))
     ->execute();
 }
 
