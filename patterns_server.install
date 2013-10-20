@@ -233,7 +233,7 @@ function patterns_server_schema() {
         'description' => 'The Unix timestamp indicating when the parents and children net are updated.',
       ),
     ),
-    'primary key' => array('id'),
+    'primary key' => array('iid'),
     'unique keys' => array('pid' => array('pid'), 'uuuid' => array('uuuid')),
   );
   return $schema;
