@@ -132,95 +132,105 @@ function patterns_server_schema() {
     'primary key' => array('pid'),
     'unique keys' => array('file_name' => array('file_name')),
   );
-  $schema['patterns_server_history_tree'] = array(
-    'description' => 'Patterns server hitory tree',
+  $schema['patterns_server_relation_pairs'] = array(
+    'description' => 'Patterns server relation pairs',
     'fields' => array(
-      'tree_id' => array(
+      'pair_id' => array(
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
-        'description' => 'Primary Key: Unique pattern id',
+        'description' => 'Primary Key: Unique relation pair id',
       ),
-      'root_pid' => array(
-        'type' => 'int',
+      'parent_uuuid' => array(
+        'type' => 'varchar',
+        'not null' => TRUE,
         'length' => 50,
-        'default' => 0,
-        'nut null' => TRUE,
-        'description' => 'the pid of the pattern that is the root of tree when the tree is created',
+        'description' => 'the uuuid of the parent',
       ),
-      'root_uuuid' => array(
+      'child_uuuid' => array(
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 50,
+        'description' => 'the uuuid of the child',
+      ),
+      //actully, because you can merge or pull in the same drupal instance,
+      //the host means where you pull the pattern, or where you merge some other
+      //pattern files to generate this pattern.
+      'host' => array(
         'type' => 'varchar',
         'length' => 50,
-        'default' => '',
-        'description' => 'the uuuid of the pattern with root_pid',
+        'not null' => TRUE,
+        'description' => 'The host of the parents.',
+      ),
+      //the d2did and host give the same information. all show where you get the 
+      //pattern.
+      'd2did' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The d2did of the d2d instance which the parents host on',
+      ),
+      'user' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'the uid of the user which uploads or pushes the pattern file',
+      ),
+      'date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'The Unix timestamp indicating when the pattern file was generated(pull or merge).',
       ),
       'created' => array(
         'type' => 'int',
         'not null' => TRUE,
-        'default' => 0,
         'unsigned' => TRUE,
-        'description' => 'The Unix timestamp indicating when the pattern file was created.',
-      ),
-      'updated' => array(
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-        'unsigned' => TRUE,
-        'description' => 'The Unix timestamp indicating when the pattern file was updated.',
-      ),
-      'tree' => array(
-        'type' => 'text',
-        'size' => 'medium',
-        'not null' => TRUE,
-        'serialize' => TRUE,
-        'description' => 'A serialized array containing all children of this pattern.',
+        'description' => 'The Unix timestamp indicating when the pattern file was uploaded or pushed).',
       ),
     ),
-    'primary key' => array('tree_id'),
+    'primary key' => array('pair_id'),
   );
-  $schema['patterns_server_pattern_tree'] = array(
-    'description' => 'Patterns server hitory tree',
+  $schema['patterns_server_relation_index'] = array(
+    'description' => 'Patterns server relation index',
     'fields' => array(
-      'id' => array(
+      'iid' => array(
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
-        'description' => 'Primary Key: Unique pattern id',
+        'description' => 'Primary Key: Unique index id',
       ),
       'pid' => array(
         'type' => 'int',
         'length' => 50,
-        'default' => 0,
         'not null' => TRUE,
         'description' => 'the pid of the pattern in patterns_server table',
       ),
       'uuuid' => array(
         'type' => 'varchar',
         'length' => 50,
-        'default' => '',
         'not null' => TRUE,
-        'description' => 'Identify patterns and their parent',
+        'description' => 'the uuuid of the pattern.',
       ),
-      'tree_id' => array(
-        'type' => 'int',
-        'length' => 50,
-        'default' => 0,
+      'parents' => array(
+        'type' => 'text',
+        'size' => 'medium',
         'not null' => TRUE,
-        'description' => 'a foreign key on patterns_server_history_tree',
+        'serialize' => TRUE,
+        'description' => 'A serialized array containing the parents net of this pattern.',
       ),
-      'level' => array(
-        'type' => 'int',
-        'length' => 50,
-        'default' => 0,
+      'children' => array(
+        'type' => 'text',
+        'size' => 'medium',
         'not null' => TRUE,
-        'description' => 'the level in tree',
+        'serialize' => TRUE,
+        'description' => 'A serialized array containing the children net of this pattern.',
       ),
       'updated' => array(
         'type' => 'int',
         'not null' => TRUE,
-        'default' => 0,
         'unsigned' => TRUE,
-        'description' => 'The Unix timestamp indicating when the pattern file was updated.',
+        'description' => 'The Unix timestamp indicating when the parents and children net are updated.',
       ),
     ),
     'primary key' => array('id'),
