@@ -37,9 +37,20 @@ class PatternsServerEntityController extends EntityAPIController {
       
       $uuuids = $pattern['info']['parent']['uuuids'];
 
+      $core = array(
+        'action' => $action,
+        'host' => $host,
+        'd2did' => $d2did,
+        'date' => $date,
+        'user' => $uid,
+      );
+
+
       foreach ($uuuids as $uuuid) {
         //TODO 
-        patterns_server_insert_pair($uuuid, $child_uuuid, $action, $host, $d2did, $uid, $date);
+        patterns_server_insert_pair($uuuid, $child_uuuid, $core);
+        patterns_server_update_index($uuuid, $child_uuuid, $action, 1, $core);
+        patterns_server_update_index($child_uuuid, $uuuid, $action, 0, $core);
       }
 
       //if ($d2did != $my_d2d['d2d_id']) {
