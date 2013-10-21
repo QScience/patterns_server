@@ -116,3 +116,92 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
       ->execute();
   }
 }
+
+/**
+ */
+function patterns_server_delete_pairs($parent_uuuid, $child_uuuid = FALSE) {
+  if ($child_uuuid === FALSE) {
+    $db_or = db_or();
+    $db_or->condition('parent_uuuid', $parent_uuuid);
+    $db_or->condition('child_uuuid', $parent_uuuid);
+    db_delete('patterns_server_relation_pairs')
+      ->condition($db_or)
+      ->execute();
+  }
+  else {
+    db_delete('patterns_server_relation_pairs')
+      ->condition('parent_uuuid', $parent_uuuid)
+      ->condition('child_uuuid', $child_uuuid)
+      ->execute();
+  }
+}
+
+/**
+ */
+function patterns_server_delete_index($key_uuuid) {
+  $index = patterns_server_get_index($key_uuuid);
+
+  if ($index != FALSE) {
+    $children = unserialize($index->children);
+    $parents = unserialize($index->parents);
+    foreach ($children as $uuuid => $child) {
+      patterns_server_delete_index_pair($uuuid, $key_uuuid, 0);
+    }
+    foreach ($parents as $uuuid => $parent) {
+      patterns_server_delete_index_pair($uuuid, $key_uuuid, 1);
+    }
+    db_delete('patterns_server_relation_index')
+      ->condition('uuuid', $key_uuuid)
+      ->execute();
+  }
+}
+
+/**
+ * $parent_child: 
+ *  0 means the $target_uuuid is the parent of $key_uuuid.
+ *  1 means the $target_uuuid is the child of $key_uuuid.
+ */
+function patterns_server_delete_index_pair($key_uuuid, $target_uuuid, $parent_child) {
+  $query = db_select('patterns_server_relation_index', 'pi')
+    ->fields('pi', array())
+    ->condition('uuuid', $key_uuuid)
+    ->execute()
+    ->fetchObject();
+
+  $children = array();
+  $parents = array();
+  if ($query != FALSE) {
+    if ($parent_child == 1) {
+      $children = unserialize($query->children);
+      unset($children[$target_uuuid]);
+      $children = serialize($children);
+      $parents = $query->parents;
+    }
+    else {
+      $parents = unserialize($query->parents);
+      unset($parents[$target_uuuid]);
+      $parents = serialize($parents);
+      $children = $query->children;
+    }
+
+    db_update('patterns_server_relation_index')
+      ->fields(array(
+        'parents' => $parents,
+        'children' => $children,
+        'updated' => REQUEST_TIME,
+      ))
+      ->condition('uuuid', $key_uuuid)
+      ->execute();
+  }
+}
+
+/**
+ */
+function patterns_server_get_index($key_uuuid) {
+  $query = db_select('patterns_server_relation_index', 'pi')
+    ->fields('pi', array())
+    ->condition('uuuid', $key_uuuid)
+    ->execute()
+    ->fetchObject();
+  return $query;
+}
