@@ -246,3 +246,46 @@ function patterns_server_check_whether_uuuid_exist($uuuid) {
   return FALSE;
 }
 
+/**
+ */
+function _patterns_server_get_random_history_tree_ajax() {
+  $tree = array();
+
+  $query = db_select('patterns_server_relation_index', 'pi')
+    ->fields('pi', array('uuuid', 'parents', 'children'))
+    ->range(0, 1)
+    ->orderRandom()
+    ->execute()
+    ->fetchObject();
+  dsm($query);
+  if ($query != FALSE) {
+    $parents = unserialize($query->parents);
+    dsm($parents);
+    $children = unserialize($query->children);
+    dsm($children);
+    if (count($parents) > 0) {
+      $rand = array_rand($parents);
+      $tree[$rand] = $parents[$rand];
+    }
+    else {
+      $tree[$query->uuuid] = array();
+    }
+    if (count($children) > 0) {
+      foreach($children as $uuuid => $child) {
+        $tree['children'][$uuuid] = $child;
+      }
+    }
+  }
+  if (count($tree) > 0) {
+    drupal_json_output(array(
+      'success' => TRUE,
+      'tree' => $tree,
+    ));
+  }
+  else {
+    drupal_json_output(array(
+      'success' => FALSE,
+      'tree' => $tree,
+    ));
+  }
+}
