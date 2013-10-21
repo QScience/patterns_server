@@ -167,20 +167,29 @@ function patterns_server_delete_index_pair($key_uuuid, $target_uuuid, $parent_ch
 
   $children = array();
   $parents = array();
+  $empty_c = FALSE;
+  $empty_p = FALSE;
   if ($query != FALSE) {
+    $children = unserialize($query->children);
+    $parents = unserialize($query->parents);
     if ($parent_child == 1) {
-      $children = unserialize($query->children);
       unset($children[$target_uuuid]);
-      $children = serialize($children);
-      $parents = $query->parents;
     }
     else {
-      $parents = unserialize($query->parents);
       unset($parents[$target_uuuid]);
-      $parents = serialize($parents);
-      $children = $query->children;
     }
 
+    if (count($children) == 0 && count($parents) == 0) {
+      db_delete('patterns_server_relation_index')
+        ->condition('uuuid', $key_uuuid)
+        ->execute();
+      return;
+    }
+
+    $parents = serialize($parents);
+    $children = serialize($children);
+
+    
     db_update('patterns_server_relation_index')
       ->fields(array(
         'parents' => $parents,

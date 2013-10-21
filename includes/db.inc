@@ -257,19 +257,16 @@ function _patterns_server_get_random_history_tree_ajax() {
     ->orderRandom()
     ->execute()
     ->fetchObject();
+    //->fields('pi', array('uuuid', 'parents', 'children'))
+    //->condition('uuuid', '90cd9cd5-6d4f-f064-3903-90082d3723ad')
+    //->execute()
+    //->fetchObject();
   if ($query != FALSE) {
-    $parents = unserialize($query->parents);
     $children = unserialize($query->children);
-    if (count($parents) > 0) {
-      $rand = array_rand($parents);
-      $tree[$rand] = $parents[$rand];
-    }
-    else {
-      $tree[$query->uuuid] = array();
-    }
+    $tree[$query->uuuid] = array();
     if (count($children) > 0) {
       foreach($children as $uuuid => $child) {
-        $tree['children'][$uuuid] = $child;
+        $tree[$query->uuuid]['children'][$uuuid] = $child;
       }
     }
   }
