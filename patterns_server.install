@@ -243,7 +243,7 @@ function patterns_server_schema() {
       ),
     ),
     'primary key' => array('iid'),
-    'unique keys' => array('pid' => array('pid'), 'uuuid' => array('uuuid')),
+    'unique keys' => array('uuuid' => array('uuuid')),
   );
   return $schema;
 }
