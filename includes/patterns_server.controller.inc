@@ -21,7 +21,6 @@ class PatternsServerEntityController extends EntityAPIController {
     $entity->created = REQUEST_TIME;
 
     $a = parent::save($entity, $transaction);
-    dsm($entity);
 
     $pid = $entity->pid;
     $child_uuuid = $entity->uuuid;

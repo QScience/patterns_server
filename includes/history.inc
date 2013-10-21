@@ -58,13 +58,11 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
     ->condition('uuuid', $key_uuuid)
     ->execute()
     ->fetchObject();
-  dsm($query);
   $pid = db_select('patterns_server', 'ps')
     ->fields('ps', array())
     ->condition('uuuid', $key_uuuid)
     ->execute()
     ->fetchObject();
-  dsm($pid);
   if ($pid === FALSE) {
     $pid = -1;
   }
@@ -95,7 +93,6 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
     if ($parent_child == 1) {
       $children = unserialize($query->children);
       $children[$target_uuuid] = $core;
-      dsm($children);
       $children = serialize($children);
       $parents = $query->parents;
     }
