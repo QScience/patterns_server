@@ -153,6 +153,15 @@ function patterns_server_schema() {
         'length' => 50,
         'description' => 'the uuuid of the child',
       ),
+      //for now, only two, one is pull. the other is merge.
+      //pull will have only one parent. 
+      //merge will have more than one.
+      'action' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The action generating the pattern.',
+      ),
       //actully, because you can merge or pull in the same drupal instance,
       //the host means where you pull the pattern, or where you merge some other
       //pattern files to generate this pattern.
