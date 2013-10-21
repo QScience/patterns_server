@@ -257,12 +257,9 @@ function _patterns_server_get_random_history_tree_ajax() {
     ->orderRandom()
     ->execute()
     ->fetchObject();
-  dsm($query);
   if ($query != FALSE) {
     $parents = unserialize($query->parents);
-    dsm($parents);
     $children = unserialize($query->children);
-    dsm($children);
     if (count($parents) > 0) {
       $rand = array_rand($parents);
       $tree[$rand] = $parents[$rand];
