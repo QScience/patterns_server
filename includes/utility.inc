@@ -21,7 +21,7 @@ function _patterns_server_back_like_button($pid, $uuuid) {
   $backtoserver_link = "<strong>$backtoserver_link</strong>";
 
 
-  $file_d = l(t('download'), 'pattern/' . $pid . '/download', array('attributes' => array('class' => 'download-link')));
+  $file_d = l(t('download'), 'pattern/' . $uuuid . '/download', array('attributes' => array('class' => 'download-link')));
 
   $voted = _patterns_server_check_whether_voted($pid);
   if ($voted === 1) {

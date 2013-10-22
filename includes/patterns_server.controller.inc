@@ -25,9 +25,9 @@ class PatternsServerEntityController extends EntityAPIController {
     $pid = $entity->pid;
     $child_uuuid = $entity->uuuid;
     $pattern = $entity->pattern;
-    $p_parents = $pattern['info']['parent'];
     
-    if (isset($p_parents) && count($p_parents) > 0) {
+    if (isset($pattern['info']['parent']) && count($pattern['info']['parent']) > 0) {
+      $p_parents = $pattern['info']['parent'];
       foreach ($p_parents as $p_parent) {
         Global $user;
         $uuuid = $p_parent['uuuid'];
