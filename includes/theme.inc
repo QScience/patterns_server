@@ -135,21 +135,21 @@ function _patterns_server_list_table_row($ety_obj) {
   $row = array();
 
   $row[] = l($ety_obj->category, 'pattern/category/' . $ety_obj->category);
-  $row[] = l($ety_obj->title, 'pattern/' . $ety_obj->pid);
+  $row[] = l($ety_obj->title, 'pattern/' . $ety_obj->uuuid);
   $row[] = l($ety_obj->author, 'pattern/author/' . $ety_obj->author);
   $row[] = '<i value="' . $ety_obj->created . '" ' . 'class="upload-time">' . date('j-m-Y H:i:s (P)', $ety_obj->created) . '</i>';
   $row[] = $ety_obj->file_downloads;
 
   $row[] = _patterns_server_get_voting_score($ety_obj->pid);
 
-  $row[] = l(t('download'), 'pattern/' . $ety_obj->pid . '/download', array('attributes' => array('class' => 'download-link')));
+  $row[] = l(t('download'), 'pattern/' . $ety_obj->uuuid . '/download', array('attributes' => array('class' => 'download-link')));
 
   $voted = _patterns_server_check_whether_voted($ety_obj->pid);
   if ($voted === 1) {
-    $row['voting_link'] = l(t('undovote'), 'pattern/' . $ety_obj->pid . '/undovote', array('attributes' => array('class' => "undovote-link undovote-link-$ety_obj->pid", 'title' => "undovote-link-$ety_obj->pid")));
+    $row['voting_link'] = l(t('undovote'), 'pattern/' . $ety_obj->uuuid . '/undovote', array('attributes' => array('class' => "undovote-link undovote-link-$ety_obj->uuuid", 'title' => "undovote-link-$ety_obj->uuuid")));
   }
   elseif ($voted === 0) {
-    $row['voting_link'] = l(t('voting'), 'pattern/' . $ety_obj->pid . '/voting', array('attributes' => array('class' => "voting-link voting-link-$ety_obj->pid", 'title' => "voting-link-$ety_obj->pid")));
+    $row['voting_link'] = l(t('voting'), 'pattern/' . $ety_obj->uuuid . '/voting', array('attributes' => array('class' => "voting-link voting-link-$ety_obj->uuuid", 'title' => "voting-link-$ety_obj->uuuid")));
   }
   else {
     $row['voting_link'] = l(t('forbidden'), 'user/register', array('attributes' => array('class' => "vote-forbid-sign", 'title' => "Login or Register to vote")));
