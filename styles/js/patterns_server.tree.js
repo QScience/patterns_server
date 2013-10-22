@@ -35,7 +35,6 @@
       success: function(data) {
         if (data.success) {
           var treeData = formatForTree(data.tree);
-          debugger;
           d3Tree.build(treeData, '#patterns_server-patterns-tree-visualization');
         } else {
           alert('Server error.');
