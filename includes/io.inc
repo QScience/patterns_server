@@ -160,6 +160,7 @@ function _sub_patterns_server_register_client($user, $pwd, $email) {
 }
 
 /**
+ * D2D callback; saves incoming patterns to database.
  */
 function _patterns_server_incoming_patterns($arguments, $rpc_info) {
 
@@ -257,7 +258,7 @@ function _patterns_server_get_patterns_list($arguments, $rpc_info) {
   if (!d2d_check_convert_int($arguments['limit'])) {
     $error_string = 'Expected an integer value as limit';
   }
-  elseif ($arguments['limit']<=0) {
+  elseif ($arguments['limit'] <= 0) {
     $error_string = 'Limit should be a positive number';
   }
   else{
