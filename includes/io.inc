@@ -117,7 +117,10 @@ function _patterns_server_link_client($arguments, $rpc_info) {
   $user = $arguments['user'];
   $pwd = $arguments['pwd'];
 
-  $result = db_query("SELECT email, pass FROM {users} WHERE name = :name AND pass = :pass", array(':name' => $user))->fetchAssoc();
+  $result = db_query("SELECT mail, pass FROM {users} WHERE name = :name AND pass = :pass", array(
+    ':name' => $user,
+    ':pass' => $pwd,
+  ))->fetchAssoc();
 
   if (empty($result)) {
     return $errstr . 'Username or password incorrect.';
