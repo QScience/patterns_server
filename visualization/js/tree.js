@@ -1,8 +1,12 @@
 /*
- * TODO:
- * - Change color of nodes
- * - Zoom towards center
- * - Hover -> info bubble
+ * When doing d3Tree.build(data, location):
+ * - location: should be a jQuery-like selector string. (Ex: '#mydiv') The element should have a width and height.
+ * - data: an array of objects. Here is a minimum data example:
+ * [
+ *  {name: "myName", children: [
+ *      ...The children of this node... (objects with children and name keys)
+ *  ] },
+ * ]
  */
 
 var d3Tree = (function() {
