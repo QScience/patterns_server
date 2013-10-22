@@ -26,6 +26,9 @@ function patterns_server_insert_pair($parent_uuuid, $child_uuuid, $core) {
       'user' => $core['user'],
       'date' => $core['date'],
       'created' => REQUEST_TIME,
+      'title' => $core['title'],
+      'category' => $core['category'],
+      'author' => $core['author'],
       ))
     ->execute();
 }
@@ -53,11 +56,6 @@ function patterns_server_insert_pair($parent_uuuid, $child_uuuid, $core) {
  * 
  */
 function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $parent_child, $core) {
-  $query = db_select('patterns_server_relation_index', 'pi')
-    ->fields('pi', array())
-    ->condition('uuuid', $key_uuuid)
-    ->execute()
-    ->fetchObject();
   $pid = db_select('patterns_server', 'ps')
     ->fields('ps', array())
     ->condition('uuuid', $key_uuuid)
@@ -72,6 +70,12 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
 
   $children = array();
   $parents = array();
+
+  $query = db_select('patterns_server_relation_index', 'pi')
+    ->fields('pi', array())
+    ->condition('uuuid', $key_uuuid)
+    ->execute()
+    ->fetchObject();
   if ($query === FALSE) {
     if ($parent_child == 1) {
       $children[$target_uuuid] = $core;

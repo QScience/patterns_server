@@ -25,42 +25,27 @@ class PatternsServerEntityController extends EntityAPIController {
     $pid = $entity->pid;
     $child_uuuid = $entity->uuuid;
     $pattern = $entity->pattern;
+    $p_parents = $pattern['info']['parent'];
     
-    if (isset($pattern['info']['parent'])) {
-      $action = $pattern['info']['parent']['action'];
-      $host = $pattern['info']['parent']['host'];
-      $d2did = $pattern['info']['parent']['d2d_id'];
-      $date = $pattern['info']['parent']['date'];
-      Global $user;
-      $uid = $user->uid;
-      
-      $uuuids = $pattern['info']['parent']['uuuids'];
-
-      $core = array(
-        'action' => $action,
-        'host' => $host,
-        'd2did' => $d2did,
-        'date' => $date,
-        'user' => $uid,
-      );
-
-
-      foreach ($uuuids as $uuuid) {
-        //TODO 
+    if (isset($p_parents) && count($p_parents) > 0) {
+      foreach ($p_parents as $p_parent) {
+        Global $user;
+        $uuuid = $p_parent['uuuid'];
+        $core = array(
+          'action' => $p_parent['action'],
+          'host' => $p_parent['host'],
+          'd2did' => $p_parent['d2d_id'],
+          'date' => $p_parent['date'],
+          'user' => $user->uid,
+          'title' => $p_parent['title'],
+          'category' => $p_parent['category'],
+          'author' => $p_parent['author'],
+        );
         patterns_server_insert_pair($uuuid, $child_uuuid, $core);
-        patterns_server_update_index($uuuid, $child_uuuid, $action, 1, $core);
-        patterns_server_update_index($child_uuuid, $uuuid, $action, 0, $core);
+        patterns_server_update_index($uuuid, $child_uuuid, $p_parent['action'], 1, $core);
+        patterns_server_update_index($child_uuuid, $uuuid, $p_parent['action'], 0, $core);
       }
-
-      //if ($d2did != $my_d2d['d2d_id']) {
-      //  patterns_server_history_NULL_tree($pid, $uuuid, $pattern['info']['parent']);
-      //}
-      //else {
-      //}
     }
-    //else {
-    //  patterns_server_history_new_tree($pid, $uuuid, '');
-    //}
 
     return $a;
   }
