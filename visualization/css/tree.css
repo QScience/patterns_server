@@ -1,0 +1,31 @@
+  .node circle {
+    cursor: pointer;
+    stroke-width: 1.5px;
+  }
+
+  .node text {
+    font-size: 11px;
+  }
+
+  path.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+  .patterns_server_bubble {
+    -webkit-border-bottom-right-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    -moz-border-radius-bottomright: 20px;
+    -moz-border-radius-bottomleft: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding:0px 10px;
+    position:absolute;
+    background-color:white;
+    border-bottom:solid black 1px;
+    border-right:solid black 1px;
+    border-left:solid black 1px;
+    display:none;
+    cursor: default;
+    z-index: 100;
+  }

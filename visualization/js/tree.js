@@ -1,12 +1,17 @@
 /*
- * TODO:
- * - Change color of nodes
- * - Zoom towards center
- * - Hover -> info bubble
+ * When doing d3Tree.build(data, location):
+ * - location: should be a jQuery-like selector string. (Ex: '#mydiv') The element should have a width and height.
+ * - data: an array of objects. Here is a minimum data example:
+ * [
+ *  {name: "myName", children: [
+ *      ...The children of this node... (objects with children and name keys)
+ *  ] },
+ * ]
  */
 
 var d3Tree = (function() {
     var trees = [],
+        data,
         minWidth = 200,
         minHeight = 40,
         minLeafRadius = 2.0,
@@ -214,7 +219,8 @@ var d3Tree = (function() {
 
 
     return {
-        build: function(data, location, w, h, isZoomed) {
+        build: function(treeData, location, w, h, isZoomed) {
+            data = treeData;
             var width = w || jQuery(location).width(),
                 height = h || jQuery(location).height(),
                 nbSquares = Math.ceil(Math.sqrt(data.length));
@@ -237,10 +243,10 @@ var d3Tree = (function() {
                     width: jQuery(location).width() / 2,
                     marginLeft: jQuery(location).width() / 4,
                 })
-                .on('mouseover', function() {
+                .bind('mouseover', function() {
                     clearTimeout(bubbleTimeOut);
                 })
-                .on('mouseout', function() {
+                .bind('mouseout', function() {
                     bubbleTimeOut = setTimeout(function() {
                         bubbleDiv.hide();
                     }, bubbleShowDuration);
@@ -251,7 +257,7 @@ var d3Tree = (function() {
                 width: width * nbSquares + 'px',
                 height: height * nbSquares + 'px',
             })
-                .on('mousedown', function() {
+                .bind('mousedown', function() {
                     clearTimeout(bubbleTimeOut);
                     bubbleDiv.hide();
                 });
@@ -273,7 +279,19 @@ var d3Tree = (function() {
                 jQuery(location).css({
                     cursor: 'move'
                 });
-                svgDiv.draggable();
+                svgDiv.draggable({
+                    drag: function(event, ui) {
+                        debugger;
+                        var mouseLeft = (event.pageX <= jQuery(location).offset().left),
+                            mouseRight = (event.pageX >= jQuery(location).offset().left + jQuery(location).width()),
+                            mouseTop = (event.pageY <= jQuery(location).offset().top),
+                            mouseBottom = (event.pageY >= jQuery(location).offset().top + jQuery(location).height());
+                        if (mouseLeft || mouseRight || mouseTop || mouseBottom) { //Mouse out of the location div
+                            return false;
+                        }
+                        return true;
+                    }
+                });
             }
         },
 
