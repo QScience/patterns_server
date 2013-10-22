@@ -251,6 +251,9 @@ function _patterns_server_all_list_page() {
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.tree.js');
   //_patterns_server_get_random_history_tree_ajax();
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/visualization/js/d3.js');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/visualization/js/d3-layout.js');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/visualization/js/tree.js');
   $searchform = drupal_get_form('patterns_server_search');
   $list = drupal_render($searchform);
 
