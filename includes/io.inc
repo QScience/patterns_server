@@ -38,15 +38,15 @@ function patterns_server_d2d_secure_rpc() {
   );
 
   $methods['patterns_server_fetch_pattern'] = array(
-      'arguments' => array('pid' => 'is_string'),
-      'callback' => '_patterns_server_fetch_pattern',
-      'description' => 'Returns a imploded version of the whole pattern',
+    'arguments' => array('pid' => 'is_string'),
+    'callback' => '_patterns_server_fetch_pattern',
+    'description' => 'Returns a imploded version of the whole pattern',
   );
 
   $methods['patterns_server_search'] = array(
-      'arguments' => array('token' => 'is_string', 'type' => 'is_string'),
-      'callback' => '_patterns_server_search_2',
-      'description' => 'Returns a list of patterns according to the given criteria',
+    'arguments' => array('token' => 'is_string', 'type' => 'is_string'),
+    'callback' => '_patterns_server_search_2',
+    'description' => 'Returns a list of patterns according to the given criteria',
   );
 
   return $methods;
@@ -113,9 +113,11 @@ function _patterns_server_link_client($arguments, $rpc_info) {
   if (!d2d_check_array($arguments, $check)) {
     return $errstr . 'Could not extract the credentials from the encrypted message.';
   }
-
   $user = $arguments['user'];
   $pwd = $arguments['pwd'];
+
+//  require 'includes/password.inc';
+//  $pwd = user_hash_password($arguments['pwd']);
 
   $result = db_query("SELECT mail, pass FROM {users} WHERE name = :name AND pass = :pass", array(
     ':name' => $user,
