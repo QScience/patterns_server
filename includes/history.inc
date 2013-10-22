@@ -56,16 +56,26 @@ function patterns_server_insert_pair($parent_uuuid, $child_uuuid, $core) {
  * 
  */
 function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $parent_child, $core) {
-  $pid = db_select('patterns_server', 'ps')
+  $ps = db_select('patterns_server', 'ps')
     ->fields('ps', array())
     ->condition('uuuid', $key_uuuid)
     ->execute()
     ->fetchObject();
-  if ($pid === FALSE) {
+  $pid;
+  $category;
+  $title;
+  $author;
+  if ($ps === FALSE) {
     $pid = -1;
+    $category = $core['category'];
+    $title = $core['title'];
+    $author = $core['author'];
   }
   else {
-    $pid = $pid->pid;
+    $pid = $ps->pid;
+    $category = $ps->category;
+    $title = $ps->title;
+    $author = $ps->author;
   }
 
   $children = array();
@@ -90,6 +100,9 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
         'parents' => serialize($parents),
         'children' => serialize($children),
         'updated' => REQUEST_TIME,
+        'category' => $category,
+        'author' => $author,
+        'title' => $title,
         ))
       ->execute();
   }
@@ -112,6 +125,9 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
         'children' => $children,
         'pid' => $pid,
         'updated' => REQUEST_TIME,
+        'category' => $category,
+        'author' => $author,
+        'title' => $title,
       ))
       ->condition('uuuid', $key_uuuid)
       ->execute();
