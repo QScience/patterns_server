@@ -132,6 +132,119 @@ function patterns_server_schema() {
     'primary key' => array('pid'),
     'unique keys' => array('file_name' => array('file_name')),
   );
+  $schema['patterns_server_relation_pairs'] = array(
+    'description' => 'Patterns server relation pairs',
+    'fields' => array(
+      'pair_id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique relation pair id',
+      ),
+      'parent_uuuid' => array(
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 50,
+        'description' => 'the uuuid of the parent',
+      ),
+      'child_uuuid' => array(
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 50,
+        'description' => 'the uuuid of the child',
+      ),
+      //for now, only two, one is pull. the other is merge.
+      //pull will have only one parent. 
+      //merge will have more than one.
+      'action' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The action generating the pattern.',
+      ),
+      //actully, because you can merge or pull in the same drupal instance,
+      //the host means where you pull the pattern, or where you merge some other
+      //pattern files to generate this pattern.
+      'host' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The host of the parents.',
+      ),
+      //the d2did and host give the same information. all show where you get the 
+      //pattern.
+      'd2did' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The d2did of the d2d instance which the parents host on',
+      ),
+      'user' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'the uid of the user which uploads or pushes the pattern file',
+      ),
+      'date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'The Unix timestamp indicating when the pattern file was generated(pull or merge).',
+      ),
+      'created' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'The Unix timestamp indicating when the pattern file was uploaded or pushed).',
+      ),
+    ),
+    'primary key' => array('pair_id'),
+  );
+  $schema['patterns_server_relation_index'] = array(
+    'description' => 'Patterns server relation index',
+    'fields' => array(
+      'iid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique index id',
+      ),
+      'pid' => array(
+        'type' => 'int',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'the pid of the pattern in patterns_server table',
+      ),
+      'uuuid' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'the uuuid of the pattern.',
+      ),
+      'parents' => array(
+        'type' => 'text',
+        'size' => 'medium',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'description' => 'A serialized array containing the parents net of this pattern.',
+      ),
+      'children' => array(
+        'type' => 'text',
+        'size' => 'medium',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'description' => 'A serialized array containing the children net of this pattern.',
+      ),
+      'updated' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'The Unix timestamp indicating when the parents and children net are updated.',
+      ),
+    ),
+    'primary key' => array('iid'),
+    'unique keys' => array('uuuid' => array('uuuid')),
+  );
   return $schema;
 }
 

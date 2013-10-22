@@ -136,6 +136,7 @@ function patterns_server_form_validate(&$form, &$form_state) {
 function patterns_server_form_submit(&$form, &$form_state) {
   $patterns_server = entity_ui_form_submit_build_entity($form, $form_state);
   $patterns_server->save();
+  //dsm($patterns_server);
 
   if (user_access('administer patterns server')) {
     $form_state['redirect'] = 'admin/patterns_server';

@@ -229,6 +229,15 @@ function patterns_server_menu() {
     'access arguments' => array('view patterns server'),
   );
 
+  //for relations among pattern files.
+  $items['patterns_server/get_random_history_tree'] = array(
+    'title' => 'Patterns Server Get a random histroy tree',
+    'description' => 'just fetch a random history tree from the index table',
+    'page callback' => '_patterns_server_get_random_history_tree_ajax',
+    'access arguments' => array('view patterns server'),
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
@@ -239,6 +248,8 @@ function patterns_server_menu() {
  * the page contain three part: search, most recent, most liked.
  */
 function _patterns_server_all_list_page() {
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.tree.js');
+  //_patterns_server_get_random_history_tree_ajax();
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
   $searchform = drupal_get_form('patterns_server_search');
   $list = drupal_render($searchform);
