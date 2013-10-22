@@ -283,3 +283,22 @@ function _patterns_server_get_random_history_tree_ajax() {
     ));
   }
 }
+
+/**
+ * get pattern from db with uuuid 
+ * if success, return a object contain all information of a pattern.
+ * if failed, return FALSE.
+ */
+function patterns_server_get_pattern_by_uuuid($uuuid) {
+  $pid = db_select('patterns_server', 'ps')
+    ->fields('ps', array())
+    ->condition('uuuid', $uuuid)
+    ->execute()
+    ->fetchObject();
+  if ($pid != FALSE) {
+    $pid = $pid->pid;
+    $pe = entity_object_load($pid, 'patterns_server');
+    return $pe;
+  }
+  return FALSE;
+}
