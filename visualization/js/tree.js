@@ -11,6 +11,7 @@
 
 var d3Tree = (function() {
     var trees = [],
+        data,
         minWidth = 200,
         minHeight = 40,
         minLeafRadius = 2.0,
@@ -218,7 +219,8 @@ var d3Tree = (function() {
 
 
     return {
-        build: function(data, location, w, h, isZoomed) {
+        build: function(treeData, location, w, h, isZoomed) {
+            data = treeData;
             var width = w || jQuery(location).width(),
                 height = h || jQuery(location).height(),
                 nbSquares = Math.ceil(Math.sqrt(data.length));
