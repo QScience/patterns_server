@@ -273,7 +273,19 @@ var d3Tree = (function() {
                 jQuery(location).css({
                     cursor: 'move'
                 });
-                svgDiv.draggable();
+                svgDiv.draggable({
+                    drag: function(event, ui) {
+                        debugger;
+                        var mouseLeft = (event.pageX <= jQuery(location).offset().left),
+                            mouseRight = (event.pageX >= jQuery(location).offset().left + jQuery(location).width()),
+                            mouseTop = (event.pageY <= jQuery(location).offset().top),
+                            mouseBottom = (event.pageY >= jQuery(location).offset().top + jQuery(location).height());
+                        if (mouseLeft || mouseRight || mouseTop || mouseBottom) { //Mouse out of the location div
+                            return false;
+                        }
+                        return true;
+                    }
+                });
             }
         },
 
