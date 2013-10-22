@@ -241,10 +241,10 @@ var d3Tree = (function() {
                     width: jQuery(location).width() / 2,
                     marginLeft: jQuery(location).width() / 4,
                 })
-                .on('mouseover', function() {
+                .bind('mouseover', function() {
                     clearTimeout(bubbleTimeOut);
                 })
-                .on('mouseout', function() {
+                .bind('mouseout', function() {
                     bubbleTimeOut = setTimeout(function() {
                         bubbleDiv.hide();
                     }, bubbleShowDuration);
@@ -255,7 +255,7 @@ var d3Tree = (function() {
                 width: width * nbSquares + 'px',
                 height: height * nbSquares + 'px',
             })
-                .on('mousedown', function() {
+                .bind('mousedown', function() {
                     clearTimeout(bubbleTimeOut);
                     bubbleDiv.hide();
                 });

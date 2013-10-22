@@ -24,7 +24,7 @@ function patterns_server_entity_info() {
     'entity keys' => array(
       'id' => 'pid',
       'label' => 'title',
-    ),
+      ),
     'entity class' => 'PatternsServerEntity',
     'uri callback' => 'entity_class_uri',
     'controller class' => 'PatternsServerEntityController',
@@ -32,7 +32,7 @@ function patterns_server_entity_info() {
       'path' => 'admin/patterns_server',
       'controller class' => 'PatternsServerEntityUIController',
       'file' => 'includes/patterns_server.admin.inc',
-    ),
+      ),
     'module' => 'patterns_server',
     'access callback' => 'patterns_server_admin_access',
     'fieldable' => TRUE,
@@ -42,23 +42,23 @@ function patterns_server_entity_info() {
         'admin' => array(
           'path' => 'admin/patterns_server',
           'access arguments' => array('administer patterns server'),
+          ),
         ),
       ),
-    ),
 
     'view modes' => array(
       'full pattern' => array(
         'label' => t('full for pattern'),
         'custom settings' => FALSE,
-      ),
+        ),
       'teaser pattern' => array(
         'label' => t('teaser for pattern'),
         'custom settings' => FALSE,
+        ),
       ),
-    ),
-  );
+    );
 
-  return $return;
+return $return;
 }
 
 /**
@@ -81,14 +81,14 @@ function patterns_server_permission() {
   return array(
     'administer patterns server' => array(
       'title' => t('Administer Patterns Server'),
-    ),
+      ),
     'view patterns server' => array(
       'title' => t('View Patterns Server list and page'),
-    ),
+      ),
     'upload patterns server' => array(
       'title' => t('Upload pattern file to Patterns Server'),
-    ),
-  );
+      ),
+    );
 }
 
 /**
@@ -98,10 +98,10 @@ function patterns_server_block_info() {
   $blocks = array();
   $blocks['patterns_server_prolific_author'] = array(
     'info' => t('Most Prolific authors in Patterns Server'),
-  );
+    );
   $blocks['patterns_server_hottest_tags'] = array(
     'info' => t('Hottest tags in Patterns Server'),
-  );
+    );
   return $blocks;
 }
 
@@ -112,13 +112,13 @@ function patterns_server_block_view($delta='') {
   $block = array();
   switch ($delta) {
     case 'patterns_server_prolific_author':
-      $block['subject'] = t('Most Prolific Authors:');
-      $block['content'] = _patterns_server_block_most_prolific_author();
-      break;
+    $block['subject'] = t('Most Prolific Authors:');
+    $block['content'] = _patterns_server_block_most_prolific_author();
+    break;
     case 'patterns_server_hottest_tags':
-      $block['subject'] = t('Most Popular Tags:');
-      $block['content'] = _patterns_server_block_hottest_tags();
-      break;
+    $block['subject'] = t('Most Popular Tags:');
+    $block['content'] = _patterns_server_block_hottest_tags();
+    break;
   }
   return $block;
 }
@@ -137,7 +137,7 @@ function patterns_server_menu() {
     'page callback' => '_patterns_server_all_list_page',
     'page arguments' => array(),
     'access arguments' => array('view patterns server'),
-  );
+    );
 
   //pattern's view page. "pattern/$pid"
   //if success, go to pattern/$pid page.
@@ -148,7 +148,7 @@ function patterns_server_menu() {
     'page callback' => '_patterns_server_view_page',
     'page arguments' => array(1),
     'access arguments' => array('view patterns server'),
-  );
+    );
 
   //these two are pattern's download&voting function.
   //download: if success, download a pattern file.
@@ -161,21 +161,21 @@ function patterns_server_menu() {
     'page callback' => '_patterns_server_download_pattern',
     'page arguments' => array(1),
     'access arguments' => array('view patterns server'),
-  );
+    );
   $items['pattern/%/voting'] = array(
     'title' => 'pattern voting link',
     'description' => 'pattern voting link',
     'page callback' => '_patterns_server_voting_pattern',
     'page arguments' => array(1),
     'access arguments' => array('view patterns server'),
-  );
+    );
   $items['pattern/%/undovote'] = array(
     'title' => 'pattern undovote link',
     'description' => 'pattern undovote link',
     'page callback' => '_patterns_server_undovote_pattern',
     'page arguments' => array(1),
     'access arguments' => array('view patterns server'),
-  );
+    );
 
   //four basic list table page. they all use the core function "_patterns_server_list()";
   //these four:
@@ -187,28 +187,28 @@ function patterns_server_menu() {
     'page callback' => '_patterns_server_list_basicpage',
     'page arguments' => array(1, 2),
     'access arguments' => array('view patterns server'),
-  );
+    );
   $items['pattern/category/%'] = array(
     'title' => 'all pattern in % category',
     'description' => 'all pattern files in % category',
     'page callback' => '_patterns_server_list_basicpage',
     'page arguments' => array(1, 2),
     'access arguments' => array('view patterns server'),
-  );
+    );
   $items['pattern/author/%'] = array(
     'title' => 'all pattern belong to author %',
     'description' => 'all pattern belong to author %',
     'page callback' => '_patterns_server_list_basicpage',
     'page arguments' => array(1, 2),
     'access arguments' => array('view patterns server'),
-  );
+    );
   $items['pattern/tags/%/%'] = array(
     'title' => 'all pattern with the tag %',
     'description' => 'all pattern with the tag %',
     'page callback' => '_patterns_server_list_basicpage',
     'page arguments' => array(2, 3),
     'access arguments' => array('view patterns server'),
-  );
+    );
 
   //this is search function. search text & search type.
   //actually its result is composed by the above four basic kinds of table.
@@ -218,7 +218,7 @@ function patterns_server_menu() {
     'page callback' => '_patterns_server_search',
     'page arguments' => array(2, 3),
     'access arguments' => array('view patterns server'),
-  );
+    );
 
   //not quite sure.
   $items['pattern/alltags/%'] = array(
@@ -227,7 +227,7 @@ function patterns_server_menu() {
     'page callback' => '_patterns_server_list_tags_all',
     'page arguments' => array(2),
     'access arguments' => array('view patterns server'),
-  );
+    );
 
   //for relations among pattern files.
   $items['patterns_server/get_random_history_tree'] = array(
@@ -236,7 +236,7 @@ function patterns_server_menu() {
     'page callback' => '_patterns_server_get_random_history_tree_ajax',
     'access arguments' => array('view patterns server'),
     'type' => MENU_CALLBACK,
-  );
+    );
 
   return $items;
 }
@@ -251,16 +251,21 @@ function _patterns_server_all_list_page() {
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.tree.js');
   //_patterns_server_get_random_history_tree_ajax();
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.search.js');
+  drupal_add_css(drupal_get_path('module', 'patterns_server') .'/visualization/css/tree.css');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/visualization/js/jquery-ui.min.js');
+  drupal_add_js(drupal_get_path('module', 'patterns_server') . '/visualization/js/jquery.mousewheel.js');
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/visualization/js/d3.js');
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/visualization/js/d3-layout.js');
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/visualization/js/tree.js');
+
   $searchform = drupal_get_form('patterns_server_search');
-  $list = drupal_render($searchform);
+  $list = '<div id="patterns_server-patterns-tree-visualization" style="width:100%; height:300px;"></div>';
+  $list .= drupal_render($searchform);
 
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'patterns_server')
-    ->propertyOrderBy('created', 'DESC')
-    ->execute();
+  ->propertyOrderBy('created', 'DESC')
+  ->execute();
 
   $list .= "<div id='patterns-server-all-table-wrap'>";
   $vscore = array();
@@ -349,9 +354,9 @@ function _patterns_server_download_pattern($pid) {
   }
   $downloads = $ety_obj->file_downloads + 1;
   db_update('patterns_server')
-    ->condition('pid', $ety_obj->pid)
-    ->fields(array('file_downloads' => $downloads))
-    ->execute();
+  ->condition('pid', $ety_obj->pid)
+  ->fields(array('file_downloads' => $downloads))
+  ->execute();
   drupal_add_http_header("Content-type", " text/plain; charset=utf-8");
   drupal_add_http_header("Content-Disposition", "attachment;filename=" . $ety_obj->file_name);
   print $file;
