@@ -122,7 +122,7 @@ function patterns_server_block_view($delta='') {
       $block['content'] = _patterns_server_block_hottest_tags();
       break;
     case 'patterns_server_description':
-      $block['subject'] = t('What is Patterns?');
+      $block['subject'] = t('What are Patterns?');
       $block['content'] = _patterns_server_block_description();
       break;
   }
