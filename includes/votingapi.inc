@@ -29,7 +29,15 @@ function _patterns_server_get_voting_score($pid) {
 /**
  * callback hook_menu() for /pattern/pid/voting
  */
-function _patterns_server_voting_pattern($pid) {
+function _patterns_server_voting_pattern($uuuid) {
+
+  $query = db_select('patterns_server', 'ps')
+    ->fields('ps', array('pid'))
+    ->condition('uuuid', $uuuid)
+    ->execute()
+    ->fetchObject();
+  $pid = $query->pid;
+
   $voted = _patterns_server_check_whether_voted($pid);
   if ($voted != 0) {
     drupal_goto("pattern/$pid");
@@ -43,7 +51,7 @@ function _patterns_server_voting_pattern($pid) {
   votingapi_add_votes($votes);
   votingapi_recalculate_results('patterns_server', $pid);
 
-  drupal_goto("pattern/$pid");
+  drupal_goto("pattern/$uuuid");
 }
 
 /**
@@ -51,7 +59,15 @@ function _patterns_server_voting_pattern($pid) {
  * don't care the votingapi's setting now, just delete the 
  * use's all votes on the pattern.
  */
-function _patterns_server_undovote_pattern($pid) {
+function _patterns_server_undovote_pattern($uuuid) {
+
+  $query = db_select('patterns_server', 'ps')
+    ->fields('ps', array('pid'))
+    ->condition('uuuid', $uuuid)
+    ->execute()
+    ->fetchObject();
+  $pid = $query->pid;
+
   Global $user;
   $votes = db_select('votingapi_vote')
     ->fields('votingapi_vote')
@@ -67,7 +83,7 @@ function _patterns_server_undovote_pattern($pid) {
   }
   votingapi_delete_votes($vids);
   votingapi_recalculate_results('patterns_server', $pid);
-  drupal_goto("pattern/$pid");
+  drupal_goto("pattern/$uuuid");
 }
 
 /**

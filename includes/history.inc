@@ -26,6 +26,9 @@ function patterns_server_insert_pair($parent_uuuid, $child_uuuid, $core) {
       'user' => $core['user'],
       'date' => $core['date'],
       'created' => REQUEST_TIME,
+      'title' => $core['title'],
+      'category' => $core['category'],
+      'author' => $core['author'],
       ))
     ->execute();
 }
@@ -53,25 +56,36 @@ function patterns_server_insert_pair($parent_uuuid, $child_uuuid, $core) {
  * 
  */
 function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $parent_child, $core) {
+  $ps = db_select('patterns_server', 'ps')
+    ->fields('ps', array())
+    ->condition('uuuid', $key_uuuid)
+    ->execute()
+    ->fetchObject();
+  $pid;
+  $category;
+  $title;
+  $author;
+  if ($ps === FALSE) {
+    $pid = -1;
+    $category = $core['category'];
+    $title = $core['title'];
+    $author = $core['author'];
+  }
+  else {
+    $pid = $ps->pid;
+    $category = $ps->category;
+    $title = $ps->title;
+    $author = $ps->author;
+  }
+
+  $children = array();
+  $parents = array();
+
   $query = db_select('patterns_server_relation_index', 'pi')
     ->fields('pi', array())
     ->condition('uuuid', $key_uuuid)
     ->execute()
     ->fetchObject();
-  $pid = db_select('patterns_server', 'ps')
-    ->fields('ps', array())
-    ->condition('uuuid', $key_uuuid)
-    ->execute()
-    ->fetchObject();
-  if ($pid === FALSE) {
-    $pid = -1;
-  }
-  else {
-    $pid = $pid->pid;
-  }
-
-  $children = array();
-  $parents = array();
   if ($query === FALSE) {
     if ($parent_child == 1) {
       $children[$target_uuuid] = $core;
@@ -86,6 +100,9 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
         'parents' => serialize($parents),
         'children' => serialize($children),
         'updated' => REQUEST_TIME,
+        'category' => $category,
+        'author' => $author,
+        'title' => $title,
         ))
       ->execute();
   }
@@ -108,6 +125,9 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
         'children' => $children,
         'pid' => $pid,
         'updated' => REQUEST_TIME,
+        'category' => $category,
+        'author' => $author,
+        'title' => $title,
       ))
       ->condition('uuuid', $key_uuuid)
       ->execute();

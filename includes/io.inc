@@ -38,15 +38,15 @@ function patterns_server_d2d_secure_rpc() {
   );
 
   $methods['patterns_server_fetch_pattern'] = array(
-      'arguments' => array('pid' => 'is_string'),
-      'callback' => '_patterns_server_fetch_pattern',
-      'description' => 'Returns a imploded version of the whole pattern',
+    'arguments' => array('pid' => 'is_string'),
+    'callback' => '_patterns_server_fetch_pattern',
+    'description' => 'Returns a imploded version of the whole pattern',
   );
 
   $methods['patterns_server_search'] = array(
-      'arguments' => array('token' => 'is_string', 'type' => 'is_string'),
-      'callback' => '_patterns_server_search_2',
-      'description' => 'Returns a list of patterns according to the given criteria',
+    'arguments' => array('token' => 'is_string', 'type' => 'is_string'),
+    'callback' => '_patterns_server_search_2',
+    'description' => 'Returns a list of patterns according to the given criteria',
   );
 
   return $methods;
@@ -113,11 +113,16 @@ function _patterns_server_link_client($arguments, $rpc_info) {
   if (!d2d_check_array($arguments, $check)) {
     return $errstr . 'Could not extract the credentials from the encrypted message.';
   }
-
   $user = $arguments['user'];
   $pwd = $arguments['pwd'];
 
-  $result = db_query("SELECT email, pass FROM {users} WHERE name = :name AND pass = :pass", array(':name' => $user))->fetchAssoc();
+//  require 'includes/password.inc';
+//  $pwd = user_hash_password($arguments['pwd']);
+
+  $result = db_query("SELECT mail, pass FROM {users} WHERE name = :name AND pass = :pass", array(
+    ':name' => $user,
+    ':pass' => $pwd,
+  ))->fetchAssoc();
 
   if (empty($result)) {
     return $errstr . 'Username or password incorrect.';
@@ -160,6 +165,7 @@ function _sub_patterns_server_register_client($user, $pwd, $email) {
 }
 
 /**
+ * D2D callback; saves incoming patterns to database.
  */
 function _patterns_server_incoming_patterns($arguments, $rpc_info) {
 
@@ -257,7 +263,7 @@ function _patterns_server_get_patterns_list($arguments, $rpc_info) {
   if (!d2d_check_convert_int($arguments['limit'])) {
     $error_string = 'Expected an integer value as limit';
   }
-  elseif ($arguments['limit']<=0) {
+  elseif ($arguments['limit'] <= 0) {
     $error_string = 'Limit should be a positive number';
   }
   else{

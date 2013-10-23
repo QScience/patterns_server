@@ -191,6 +191,24 @@ function patterns_server_schema() {
         'unsigned' => TRUE,
         'description' => 'The Unix timestamp indicating when the pattern file was generated(pull or merge).',
       ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The title of the parent pattern',
+      ),
+      'category' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The category of the parent pattern',
+      ),
+      'author' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The author of the parent pattern',
+      ),
       'created' => array(
         'type' => 'int',
         'not null' => TRUE,
@@ -234,6 +252,24 @@ function patterns_server_schema() {
         'not null' => TRUE,
         'serialize' => TRUE,
         'description' => 'A serialized array containing the children net of this pattern.',
+      ),
+      'category' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The category of the parent pattern',
+      ),
+      'author' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The author of the parent pattern',
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The title of the parent pattern',
       ),
       'updated' => array(
         'type' => 'int',

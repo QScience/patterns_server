@@ -15,23 +15,23 @@ function _patterns_server_upload_button() {
 /**
  * backtoserver button link and like lint in the view page.
  */
-function _patterns_server_back_like_button($pid) {
+function _patterns_server_back_like_button($pid, $uuuid) {
   $url = 'patterns_server_homepage';
   $backtoserver_link = l(t('Back To Server'), $url, array('attributes' => array('class' => array('backtoserver-button-link'))));
   $backtoserver_link = "<strong>$backtoserver_link</strong>";
 
 
-  $file_d = l(t('download'), 'pattern/' . $pid . '/download', array('attributes' => array('class' => 'download-link')));
+  $file_d = l(t('download'), 'pattern/' . $uuuid . '/download', array('attributes' => array('class' => 'download-link')));
 
   $voted = _patterns_server_check_whether_voted($pid);
   if ($voted === 1) {
-    $url = 'pattern/' . $pid . '/undovote';
-    $vote_s = l(t('undovote'), $url, array('attributes' => array('class' => array('undovote-link', "undovote-link-$pid"), 'title' => "undovote-link-$pid", 'id' => array("patterns-server-view-page-vote"))));
+    $url = 'pattern/' . $uuuid . '/undovote';
+    $vote_s = l(t('undovote'), $url, array('attributes' => array('class' => array('undovote-link', "undovote-link-$uuuid"), 'title' => "undovote-link-$uuuid", 'id' => array("patterns-server-view-page-vote"))));
     //$vote_s = '<strong class="voted-sign" id="patterns-server-view-page-vote">voted</strong>';
   }
   elseif ($voted === 0) {
-    $url = 'pattern/' . $pid . '/voting';
-    $vote_s = l(t('voting'), $url, array('attributes' => array('class' => array('voting-link', "voting-link-$pid"), 'title' => "voting-link-$pid", 'id' => array("patterns-server-view-page-vote"))));
+    $url = 'pattern/' . $uuuid . '/voting';
+    $vote_s = l(t('voting'), $url, array('attributes' => array('class' => array('voting-link', "voting-link-$uuuid"), 'title' => "voting-link-$uuuid", 'id' => array("patterns-server-view-page-vote"))));
   }
   else {
     $url = 'user/register';

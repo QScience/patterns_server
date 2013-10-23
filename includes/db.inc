@@ -297,3 +297,18 @@ function patterns_server_get_pattern_by_uuuid($uuuid) {
   }
   return FALSE;
 }
+
+/**
+ */
+function patterns_server_get_pid_by_uuuid($uuuid) {
+
+  $query = db_select('patterns_server', 'ps')
+    ->fields('ps', array('pid'))
+    ->condition('uuuid', $uuuid)
+    ->execute()
+    ->fetchObject();
+  if ($query != FALSE) {
+    return $query->pid;
+  }
+  return FALSE;
+}

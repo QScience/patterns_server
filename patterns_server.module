@@ -306,21 +306,23 @@ function _patterns_server_all_list_page() {
 }
 
 /**
- * callback hook_menu() for /pattern/pid
+ * callback hook_menu() for /pattern/uuuid
  */
-function _patterns_server_view_page($pid) {
-  $pe = entity_object_load($pid, 'patterns_server');
-  if (!$pe) {
+function _patterns_server_view_page($uuuid) {
+  $pid = patterns_server_get_pid_by_uuuid($uuuid);
+  if ($pid === FALSE) {
     drupal_set_message(t("The pattern file doesn't exist.", "error"));
     drupal_goto('patterns_server_homepage');
   }
+
+  $pe = entity_object_load($pid, 'patterns_server');
   drupal_set_title($pe->title);
   $fieldset_title = $pe->title;
 
   drupal_add_css(drupal_get_path('module', 'patterns_server') . '/styles/css/patterns_server.viewpage.css');
   drupal_add_js(drupal_get_path('module', 'patterns_server') . '/styles/js/patterns_server.viewpage.js');
 
-  $backtoserver_voting_link = _patterns_server_back_like_button($pid);
+  $backtoserver_voting_link = _patterns_server_back_like_button($pid, $uuuid);
   $content = "<div id='one_pattern_div'><fieldset><legend>$fieldset_title$backtoserver_voting_link</legend><div class='fieldset-wrapper'>";
 
   $content .= _patterns_server_view_pattern_description($pe);
@@ -330,7 +332,7 @@ function _patterns_server_view_page($pid) {
   $content .= '</ul></div>';
 
   $content .= '</div></fieldset></div>';
-  $field_view = entity_view('patterns_server', array($pid => $pe));
+  $field_view = entity_view('patterns_server', array($pid => $pe), 'full', NULL, TRUE);
   $content .= drupal_render($field_view);
 
   return $content;
@@ -339,12 +341,14 @@ function _patterns_server_view_page($pid) {
 /**
  * callback hook_menu() pattern/pid/download
  */
-function _patterns_server_download_pattern($pid) {
-  $ety_obj = entity_object_load($pid, 'patterns_server');
-  if (!$ety_obj) {
-    drupal_set_message(t("The pattern file doesn't exist."), "error");
+function _patterns_server_download_pattern($uuuid) {
+  $pid = patterns_server_get_pid_by_uuuid($uuuid);
+  if ($pid === FALSE) {
+    drupal_set_message(t("The pattern file doesn't exist.", "error"));
     drupal_goto('patterns_server_homepage');
   }
+
+  $ety_obj = entity_object_load($pid, 'patterns_server');
   $public_dir_path = variable_get('file_public_path', conf_path() . '/files');
 
   $file_path = $ety_obj->file_path;
