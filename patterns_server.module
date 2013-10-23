@@ -317,7 +317,7 @@ function _patterns_server_all_list_page() {
 function _patterns_server_view_page($uuuid) {
   $pid = patterns_server_get_pid_by_uuuid($uuuid);
   if ($pid === FALSE) {
-    drupal_set_message(t("The pattern file doesn't exist.", "error"));
+    drupal_set_message(t("The pattern file doesn't exist."), "error");
     drupal_goto('patterns_server_homepage');
   }
 
@@ -350,7 +350,7 @@ function _patterns_server_view_page($uuuid) {
 function _patterns_server_download_pattern($uuuid) {
   $pid = patterns_server_get_pid_by_uuuid($uuuid);
   if ($pid === FALSE) {
-    drupal_set_message(t("The pattern file doesn't exist.", "error"));
+    drupal_set_message(t("The pattern file doesn't exist."), "error");
     drupal_goto('patterns_server_homepage');
   }
 
@@ -407,7 +407,7 @@ function _patterns_server_list_tags_all($tid) {
   $tags_fields_name = _patterns_server_get_all_taxonomyfields_name('patterns_server');
 
   if ($tags_fields_name === FALSE) {
-    drupal_set_message(t("The pattern list doesn't exist.", "error"));
+    drupal_set_message(t("The pattern list doesn't exist."), "error");
     drupal_goto('patterns_server_homepage');
   }
 
