@@ -102,7 +102,7 @@ function patterns_server_block_info() {
     'info' => t('Hottest tags in Patterns Server'),
     );
   $blocks['patterns_server_description'] = array(
-    'info' => t('What is Patterns?'),
+    'info' => t('What are Patterns?'),
   );
   return $blocks;
 }
