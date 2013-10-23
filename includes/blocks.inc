@@ -165,7 +165,7 @@ function _patterns_server_block_description() {
   $s .= "</strong></p>";
 
   $s .= "<p>";
-  $s .= "Patterns are tiny configuration files that help you manage your configuration in the open source content management system ";
+  $s .= "Patterns are tiny configuration files that help you manage and keep up to date your web site in the open source content management system ";
   $s .= l("Drupal", "http://www.drupal.org");
   $s .= ".";
   $s .= "</p>";
