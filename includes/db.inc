@@ -252,7 +252,7 @@ function _patterns_server_get_random_history_tree_ajax() {
   $tree = array();
 
   $queryDB = db_select('patterns_server_relation_index', 'pi')
-  ->fields('pi', array('uuuid', 'parents', 'children', 'author', 'title', 'category'))
+  ->fields('pi', array('uuuid', 'parents', 'children', 'author', 'title', 'category', 'd2did', 'host', 'user'))
   ->execute()
   ->fetchAll();
 
@@ -262,11 +262,14 @@ function _patterns_server_get_random_history_tree_ajax() {
     $tree[$query->uuuid]['author'] = $query->author;
     $tree[$query->uuuid]['title'] = $query->title;
     $tree[$query->uuuid]['category'] = $query->category;
+    $tree[$query->uuuid]['user'] = $query->user;
+    $tree[$query->uuuid]['d2did'] = $query->d2did;
+    $tree[$query->uuuid]['host'] = $query->host;
     foreach($children as $uuuid => $child) {
       $tree[$query->uuuid]['children'][$uuuid] = $child;
     }
   }
-  
+
   if (count($tree) > 0) {
     drupal_json_output(array(
       'success' => TRUE,

@@ -15,9 +15,9 @@
         curr = {
           id: count,
           name: data[iter].title,
-          author: data[iter].user,
+          author: data[iter].author,
           category: data[iter].category,
-          author_link: startUrl + 'user/' + data[iter].uid,
+          author_link: startUrl + 'user/' + data[iter].user,
           d2did_link: data[iter].host,
           pattern_link: startUrl + 'pattern/' + d2did,
           children: formatForTree(data[iter].children, true),
