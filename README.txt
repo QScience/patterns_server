@@ -24,3 +24,7 @@ It relies on D2D to exchange the information in a distributed and secure way.
 * Users with 'administer patternentity' permission have full administration access (via "admin/patterns_server").
 * Users with 'upload patternentity' permission can upload pattern files,  accessing "admin/patterns_server/add".
 * Users with 'view patternentity' permission can view the main patterns server page.
+
+ -- Demo Files --
+
+ In the visualization folder, there you can find some demo of how to use the visualization mechanism. (Check index.html for a working example.)

@@ -4,7 +4,7 @@
 (function($) {
   $(document).ready(function() {
 
-    var formatForTree = function(data) {
+    var formatForTree = function(data, child) {
       var iter,
         result = [],
         curr,
@@ -12,18 +12,17 @@
         startUrl = Drupal.settings.basePath + (Drupal.settings.clean_url === "1" ? '' : '?q=');
 
       for (iter in data) {
-        if (Object.prototype.toString.call(data[iter]) !== '[object Array]') {
-          curr = {
-            id: count,
-            name: data[iter].title,
-            author: data[iter].author,
-            category: data[iter].category,
-            author_link: startUrl + 'user/' + data[iter].user,
-            d2did_link: data[iter].host,
-            pattern_link: startUrl + 'pattern/' + iter,
-            children: formatForTree(data[iter].children),
-          };
-
+        curr = {
+          id: count,
+          name: data[iter].title,
+          author: data[iter].author,
+          category: data[iter].category,
+          author_link: startUrl + 'user/' + data[iter].user,
+          d2did_link: data[iter].host,
+          pattern_link: startUrl + 'pattern/' + iter,
+          children: formatForTree(data[iter].children, true),
+        };
+        if (!!child || curr.children.length > 0) {
           result.push(curr);
           count++;
         }
@@ -34,7 +33,7 @@
 
     //pattern files tree
     var POST_URL = Drupal.settings.basePath + (Drupal.settings.clean_url === "1" ? '' : '?q=') + 'patterns_server/get_random_history_tree';
-    console.log(POST_URL);
+
     $.ajax({
       url: POST_URL,
       success: function(data) {
