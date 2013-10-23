@@ -15,11 +15,11 @@
         curr = {
           id: count,
           name: data[iter].title,
-          author: data[iter].author,
+          author: data[iter].user,
           category: data[iter].category,
-          author_link: startUrl + 'user/' + data[iter].user,
+          author_link: startUrl + 'user/' + data[iter].uid,
           d2did_link: data[iter].host,
-          pattern_link: startUrl + 'pattern/' + iter,
+          pattern_link: startUrl + 'pattern/' + d2did,
           children: formatForTree(data[iter].children, true),
         };
         if (!!child || curr.children.length > 0) {
@@ -41,7 +41,7 @@
           var treeData = formatForTree(data.tree);
           d3Tree.build(treeData, '#patterns_server-patterns-tree-visualization');
         } else {
-          alert('Server error.');
+          alert('It seems that you do not have any shared patterns in your database.');
         }
       },
       error: function(jqXHR, exception) {
