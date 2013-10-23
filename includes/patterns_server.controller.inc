@@ -57,8 +57,8 @@ class PatternsServerEntityController extends EntityAPIController {
               return $a;
             }
           else {
-            $parent_core['user'] = $entity->uploader;
-            $parent_core['pid'] = $entity->pid;
+            $parent_core['user'] = $exist->uploader;
+            $parent_core['pid'] = $exist->pid;
           }
         }
         else {
