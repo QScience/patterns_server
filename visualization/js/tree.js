@@ -225,8 +225,6 @@ var d3Tree = (function() {
             var width = w || jQuery(location).width(),
                 height = h || jQuery(location).height(),
                 nbSquares = Math.ceil(Math.sqrt(data.length));
-            // width = width / nbSquares > minWidth ? width / nbSquares : minWidth;
-            // height = height / nbSquares > minHeight ? height / nbSquares : minHeight;
             width = width / nbSquares;
             height = height / nbSquares;
             jQuery(location)

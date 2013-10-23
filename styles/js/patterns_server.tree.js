@@ -8,20 +8,25 @@
       var iter,
         result = [],
         curr,
-        count = 0;
+        count = 0,
+        startUrl = Drupal.settings.basePath + (Drupal.settings.clean_url === "1" ? '' : '?q=');
 
       for (iter in data) {
-        curr = {
-          id: count,
-          name: iter,
-          author: data[iter].user,
-          d2did: data.d2did,
-          patternId: iter,
-          children: formatForTree(data[iter].children),
-        };
+        if (Object.prototype.toString.call(data[iter]) !== '[object Array]') {
+          curr = {
+            id: count,
+            name: data[iter].title,
+            author: data[iter].author,
+            category: data[iter].category,
+            author_link: startUrl + 'user/' + data[iter].user,
+            d2did_link: data[iter].host,
+            pattern_link: startUrl + 'pattern/' + iter,
+            children: formatForTree(data[iter].children),
+          };
 
-        result.push(curr);
-        count++;
+          result.push(curr);
+          count++;
+        }
       }
 
       return result;

@@ -101,6 +101,9 @@ function patterns_server_block_info() {
   $blocks['patterns_server_hottest_tags'] = array(
     'info' => t('Hottest tags in Patterns Server'),
     );
+  $blocks['patterns_server_description'] = array(
+    'info' => t('What is Patterns?'),
+  );
   return $blocks;
 }
 
@@ -111,13 +114,17 @@ function patterns_server_block_view($delta='') {
   $block = array();
   switch ($delta) {
     case 'patterns_server_prolific_author':
-    $block['subject'] = t('Most Prolific Authors:');
-    $block['content'] = _patterns_server_block_most_prolific_author();
-    break;
+      $block['subject'] = t('Most Prolific Authors:');
+      $block['content'] = _patterns_server_block_most_prolific_author();
+      break;
     case 'patterns_server_hottest_tags':
-    $block['subject'] = t('Most Popular Tags:');
-    $block['content'] = _patterns_server_block_hottest_tags();
-    break;
+      $block['subject'] = t('Most Popular Tags:');
+      $block['content'] = _patterns_server_block_hottest_tags();
+      break;
+    case 'patterns_server_description':
+      $block['subject'] = t('What is Patterns?');
+      $block['content'] = _patterns_server_block_description();
+      break;
   }
   return $block;
 }
