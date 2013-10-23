@@ -106,7 +106,7 @@ var d3Tree = (function() {
                     clearTimeout(bubbleTimeOut);
                     bubbleDiv
                         .show()
-                        .html('<h3><a href="' + n.pattern_link + '" target="_blank">' + n.name + '</a></h3><p align="justify">Pattern created on <u><a href="' + n.d2did_link.replace('xmlrpc.php', '') + '" target="_blank">' + n.d2did_link.replace(new RegExp('xmlrpc.php|http://', 'g'), '') + '</a></u>, by <b><a href="' + n.author_link + '" target="_blank">' + n.author + '</a></b> in category <i><a href="' + n.category + '" target="_blank">' + n.category.substr(n.category.lastIndexOf('/')+1) + '</a></i>. </p>');
+                        .html('<h3><a href="' + n.pattern_link + '" target="_blank">' + n.name + '</a></h3><p align="justify">Pattern created on <u><a href="' + n.d2did_link.replace('/xmlrpc.php', '') + '" target="_blank">' + n.d2did_link.replace(new RegExp('/xmlrpc.php|http://', 'g'), '') + '</a></u>, by <b><a href="' + n.author_link + '" target="_blank">' + n.author + '</a></b> in category <i><a href="' + n.category + '" target="_blank">' + n.category.substr(n.category.lastIndexOf('/')+1) + '</a></i>. </p>');
                 }).
             on('mouseout', function() {
                 bubbleTimeOut = setTimeout(function() {
