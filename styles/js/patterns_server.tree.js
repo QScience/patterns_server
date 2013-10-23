@@ -16,10 +16,10 @@
           id: count,
           name: data[iter].title,
           author: data[iter].author,
-          category: data[iter].category,
-          author_link: startUrl + 'user/' + data[iter].user,
+          category: startUrl + 'pattern/category/' + data[iter].category,
+          author_link: startUrl + 'pattern/author/' + data[iter].author,
           d2did_link: data[iter].host,
-          pattern_link: startUrl + 'pattern/' + data[iter].d2did,
+          pattern_link: startUrl + 'pattern/' + iter,
           children: formatForTree(data[iter].children, true),
         };
         if (!!child || curr.children.length > 0) {

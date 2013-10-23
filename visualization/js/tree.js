@@ -106,7 +106,7 @@ var d3Tree = (function() {
                     clearTimeout(bubbleTimeOut);
                     bubbleDiv
                         .show()
-                        .html('<h3><a href="' + n.pattern_link + '" target="_blank">' + n.name + '</a></h3><p align="justify">Pattern by <b><a href="' + n.author_link + '" target="_blank">' + n.author + '</a></b>, in the <i>' + n.category + '</i> category and on <u><a href="' + n.d2did_link + '" target="_blank">this D2D instance</a></u>. </p>');
+                        .html('<h3><a href="' + n.pattern_link + '" target="_blank">' + n.name + '</a></h3><p align="justify">Pattern created on <u><a href="' + n.d2did_link.replace('xmlrpc.php', '') + '" target="_blank">' + n.d2did_link.replace(new RegExp('xmlrpc.php|http://', 'g'), '') + '</a></u>, by <b><a href="' + n.author_link + '" target="_blank">' + n.author + '</a></b> in category <i><a href="' + n.category + '" target="_blank">' + n.category.substr(n.category.lastIndexOf('/')+1) + '</a></i>. </p>');
                 }).
             on('mouseout', function() {
                 bubbleTimeOut = setTimeout(function() {
@@ -280,7 +280,6 @@ var d3Tree = (function() {
                 });
                 svgDiv.draggable({
                     drag: function(event, ui) {
-                        debugger;
                         var mouseLeft = (event.pageX <= jQuery(location).offset().left),
                             mouseRight = (event.pageX >= jQuery(location).offset().left + jQuery(location).width()),
                             mouseTop = (event.pageY <= jQuery(location).offset().top),
