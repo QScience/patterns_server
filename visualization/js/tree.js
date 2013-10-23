@@ -106,7 +106,7 @@ var d3Tree = (function() {
                     clearTimeout(bubbleTimeOut);
                     bubbleDiv
                         .show()
-                        .html('<h3><a href="' + n.pattern_link + '" target="_blank">' + n.name + '</a></h3><p align="justify">Pattern by <b><a href="' + n.d2did_link + '" target="_blank">' + n.author + '</a></b>, in the <i>' + n.category + '</i> category and on <u><a href="' + n.d2did_link + '" target="_blank">this D2D instance</a></u>. </p>');
+                        .html('<h3><a href="' + n.pattern_link + '" target="_blank">' + n.name + '</a></h3><p align="justify">Pattern by <b><a href="' + n.author_link + '" target="_blank">' + n.author + '</a></b>, in the <i>' + n.category + '</i> category and on <u><a href="' + n.d2did_link + '" target="_blank">this D2D instance</a></u>. </p>');
                 }).
             on('mouseout', function() {
                 bubbleTimeOut = setTimeout(function() {
