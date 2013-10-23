@@ -165,19 +165,19 @@ function _patterns_server_block_description() {
   $s .= "</strong></p>";
 
   $s .= "<p>";
-  $s .= "Discover relevant ";
+  $s .= "Patterns are tiny configuration files that help you manage your configuration in the open source content management system ";
   $s .= l("Drupal", "http://www.drupal.org");
-  $s .= " communities, by browsing the archive of registered web sites.";
+  $s .= ".";
   $s .= "</p>";
 
   $s .= "<p>";
-  $s .= "Add them as a friend, and start sharing content, updates, and much more!";
+  $s .= "Share your own patterns, and find out which ones are more popular.";
   $s .= "</p>";
 
   $s .= "<p>";
-  $s .= "Join the Drupal2Drupal network ";
+  $s .= "Join the Patterns network ";
   $s .= l("now", "content/about");
   $s .= ".</p>";
-  
+
   return $s;
 }
