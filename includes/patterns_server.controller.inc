@@ -32,7 +32,6 @@ class PatternsServerEntityController extends EntityAPIController {
         $uuuid = $p_parent['uuuid'];
         $core = array(
           'action' => $p_parent['action'],
-          'user' => $entity->uploader,
           'date' => $p_parent['date'],
           //the next five are needed to be validated.
           'host' => $p_parent['host'],
@@ -57,7 +56,16 @@ class PatternsServerEntityController extends EntityAPIController {
               drupal_set_message(t('The parent section of this pattern has been damaged. So the parent section is ignored'), 'error');
               return $a;
             }
+          else {
+            $core['user'] = $entity->uploader;
+            $core['pid'] = $entity->pid;
+          }
         }
+        else {
+          $core['user'] = -1;
+          $core['pid'] = -1;
+        }
+
         patterns_server_insert_pair($uuuid, $child_uuuid, $core);
         patterns_server_update_index($uuuid, $child_uuuid, $p_parent['action'], 1, $core);
         patterns_server_update_index($child_uuuid, $uuuid, $p_parent['action'], 0, $core);

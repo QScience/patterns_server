@@ -56,36 +56,13 @@ function patterns_server_insert_pair($parent_uuuid, $child_uuuid, $core) {
  * 
  */
 function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $parent_child, $core) {
-  $ps = db_select('patterns_server', 'ps')
-    ->fields('ps', array())
-    ->condition('uuuid', $key_uuuid)
-    ->execute()
-    ->fetchObject();
-  $pid;
-  $category;
-  $title;
-  $author;
-  $user;
-  $host;
-  $d2did;
-  if ($ps === FALSE) {
-    $pid = -1;
-    $category = $core['category'];
-    $title = $core['title'];
-    $author = $core['author'];
-    $user = -1;
-    $host = $core['host'];
-    $d2did = $core['d2did'];
-  }
-  else {
-    $pid = $ps->pid;
-    $category = $ps->category;
-    $title = $ps->title;
-    $author = $ps->author;
-    $user = $ps->uploader;
-    $host = $ps->host;
-    $d2did = $ps->d2did;
-  }
+  $pid = $core['pid'];
+  $user = $core['user'];
+  $category = $core['category'];
+  $title = $core['title'];
+  $author = $core['author'];
+  $host = $core['host'];
+  $d2did = $core['d2did'];
 
   $children = array();
   $parents = array();
