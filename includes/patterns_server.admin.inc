@@ -106,6 +106,10 @@ function patterns_server_form_validate(&$form, &$form_state) {
           $form_state['values']['uuuid'] = _patterns_server_generate_uuuid();
         }
 
+        $d2d_info = d2d_api_own_instance_get();
+        $form_state['values']['host'] = $d2d_info['url'];
+        $form_state['values']['d2did'] = $d2d_info['d2d_id'];
+
 
         $dir = 'public://patterns_server/';
         if (!file_prepare_directory($dir)) {

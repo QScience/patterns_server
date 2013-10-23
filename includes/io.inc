@@ -168,6 +168,8 @@ function _sub_patterns_server_register_client($user, $pwd, $email) {
  * D2D callback; saves incoming patterns to database.
  */
 function _patterns_server_incoming_patterns($arguments, $rpc_info) {
+  //watchdog("patterns_dfkdfjk", 'Action %action created.', array('%action' => $rpc_info['instance']['d2d_id']));
+  //dsm($rpc_info);
 
   if (empty($arguments)) {
     return 'Error. Empty request received.';
@@ -223,7 +225,7 @@ function _patterns_server_incoming_patterns($arguments, $rpc_info) {
         $name = $exploded_pattern['name'];
         $pattern = $exploded_pattern['content'];
         $format = $exploded_pattern['format'];
-        $result = _patterns_server_save_pattern($name, $pattern, $format, $user);
+        $result = _patterns_server_save_pattern($name, $pattern, $format, $user, $rpc_info);
         if ($result['status'] == PATTERNS_SUCCESS) {
           $saved[] = $name;
         }

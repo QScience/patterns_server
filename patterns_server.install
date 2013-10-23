@@ -128,6 +128,18 @@ function patterns_server_schema() {
         'default' => '',
         'description' => 'Identify patterns and their parent',
       ),
+      'host' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The host which the pattern comes from',
+      ),
+      'd2did' => array(
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The d2did of the host which the pattern comes from',
+      ),
     ),
     'primary key' => array('pid'),
     'unique keys' => array('file_name' => array('file_name')),

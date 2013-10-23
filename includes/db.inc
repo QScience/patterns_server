@@ -111,7 +111,7 @@ function _patterns_server_download_recode($id) {
  * @param string $uuuid (Optional)
  *   Optional argument to force the use of certain UUUID (i.e.: while clonning)
  */
-function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL, $username = NULL) {
+function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL, $username = NULL, $rpc_info = NULL) {
 
   //FOR LATER
   $uuuid = NULL;
@@ -156,6 +156,8 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
   $entity->file_path = $path;
   $entity->file_downloads = 0;
   $entity->uuuid = _patterns_server_generate_uuuid();
+  $entity->host = $rpc_info['instance']['url'];
+  $entity->d2did = $rpc_info['instance']['d2d_id'];
   $entity->save();
 
   $msg = t('Pattern was saved in %path.', array('%path' => $path, ));
@@ -165,7 +167,7 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
 /**
  *
  */
-function _patterns_server_save_pattern($name, $content, $format, $username) {
+function _patterns_server_save_pattern($name, $content, $format, $username, $rpc_info) {
 
   $status = PATTERNS_SUCCESS;
   $msg = NULL;
@@ -228,7 +230,7 @@ function _patterns_server_save_pattern($name, $content, $format, $username) {
     return patterns_results(PATTERNS_ERR, $msg);
   }
 
-  return _patterns_server_db_save_pattern($pattern, $path, $name, $format, $username);
+  return _patterns_server_db_save_pattern($pattern, $path, $name, $format, $username, $rpc_info);
 
 }
 

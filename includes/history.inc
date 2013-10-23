@@ -82,10 +82,9 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
     $category = $ps->category;
     $title = $ps->title;
     $author = $ps->author;
-    $user = $core['user'];
-    $d2d_info = d2d_api_own_instance_get();
-    $host = $d2d_info['url'];
-    $d2did = $d2d_info['d2d_id'];
+    $user = $ps->uploader;
+    $host = $ps->host;
+    $d2did = $ps->d2did;
   }
 
   $children = array();
