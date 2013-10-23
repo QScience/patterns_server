@@ -1,9 +1,7 @@
 <?php
 /**
  * @file
- * Patterns Server
- *
- *
+ * Patterns Server. Manages and visualizes Patterns entities.
  */
 
 module_load_include('inc', 'patterns_server', 'includes/utility');
@@ -12,6 +10,7 @@ module_load_include('inc', 'patterns_server', 'includes/theme');
 module_load_include('inc', 'patterns_server', 'includes/blocks');
 module_load_include('inc', 'patterns_server', 'includes/core');
 module_load_include('inc', 'patterns_server', 'includes/io');
+module_load_include('inc', 'patterns_server', 'includes/friendship');
 module_load_include('module', 'votingapi', 'votingapi');
 
 /**
@@ -103,7 +102,7 @@ function patterns_server_block_info() {
     'info' => t('Hottest tags in Patterns Server'),
     );
   $blocks['patterns_server_description'] = array(
-    'info' => t('What is Patterns?'),
+    'info' => t('What are Patterns?'),
   );
   return $blocks;
 }
@@ -123,7 +122,7 @@ function patterns_server_block_view($delta='') {
       $block['content'] = _patterns_server_block_hottest_tags();
       break;
     case 'patterns_server_description':
-      $block['subject'] = t('What is Patterns?');
+      $block['subject'] = t('What are Patterns?');
       $block['content'] = _patterns_server_block_description();
       break;
   }

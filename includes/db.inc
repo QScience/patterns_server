@@ -12,11 +12,11 @@ module_load_include('inc', 'patterns', 'includes/io/io');
 function _patterns_server_get_pattern_timeDESC_from_db($num) {
   $num = is_numeric($num)?$num:10;
   $result = db_select('patterns_server', 'p')
-                  ->fields('p', array())
-                  ->orderBy('created', 'DESC')
-                  ->range(0, $num)
-                  ->execute()
-                  ->fetchAll();
+  ->fields('p', array())
+  ->orderBy('created', 'DESC')
+  ->range(0, $num)
+  ->execute()
+  ->fetchAll();
   foreach ($result as $k => $v) {
     $result[$k] = $v;
   }
@@ -28,10 +28,10 @@ function _patterns_server_get_pattern_timeDESC_from_db($num) {
  */
 function _patterns_server_get_pattern_pid_from_db($pid) {
   $result = db_select('patterns_server', 'p')
-                  ->fields('p', array())
-                  ->condition('p.pid', $pid)
-                  ->execute()
-                  ->fetchAll();
+  ->fields('p', array())
+  ->condition('p.pid', $pid)
+  ->execute()
+  ->fetchAll();
   foreach ($result as $k => $v) {
     $result[$k] = $v;
   }
@@ -45,27 +45,27 @@ function _patterns_server_search_pattern($key, $type) {
   $or = db_or();
   switch ($type) {
     case 0:
-      $or->condition('title', '%' . db_like($key) . '%', 'LIKE');
-      break;
+    $or->condition('title', '%' . db_like($key) . '%', 'LIKE');
+    break;
     case 1:
-      $or->condition('description', '%' . db_like($key) . '%', 'LIKE');
-      break;
+    $or->condition('description', '%' . db_like($key) . '%', 'LIKE');
+    break;
     case 2:
-      $or->condition('author', '%' . db_like($key) . '%', 'LIKE');
-      break;
+    $or->condition('author', '%' . db_like($key) . '%', 'LIKE');
+    break;
     case 3:
-      $or->condition('uuuid', '%' . db_like($key) . '%', 'LIKE');
-      break;
+    $or->condition('uuuid', '%' . db_like($key) . '%', 'LIKE');
+    break;
     case 4:
-      $or->condition('pid', $key, '=');
-      break;
+    $or->condition('pid', $key, '=');
+    break;
   }
   $result = db_select('patterns_server', 'p')
-                  ->fields('p', array())
-                  ->condition($or)
-                  ->orderBy('created', 'DESC')
-                  ->execute()
-                  ->fetchAll();
+  ->fields('p', array())
+  ->condition($or)
+  ->orderBy('created', 'DESC')
+  ->execute()
+  ->fetchAll();
   foreach ($result as $k => $v) {
     $result[$k] = $v;
   }
@@ -84,15 +84,15 @@ function _patterns_server_search_pattern($key, $type) {
  */
 function _patterns_server_download_recode($id) {
   $download_origin_times = db_select('patterns_server', 'ps')
-    ->fields('ps', array('file_downloads', 'pid'))
-    ->condition('pid', $id)
-    ->execute()
-    ->fetchAssoc();
+  ->fields('ps', array('file_downloads', 'pid'))
+  ->condition('pid', $id)
+  ->execute()
+  ->fetchAssoc();
   $download_origin_times['file_downloads']  += 1;
   db_update('patterns_server')
-    ->condition('pid', $id)
-    ->fields(array('file_downloads' => $download_origin_times['file_downloads']))
-    ->execute();
+  ->condition('pid', $id)
+  ->fields(array('file_downloads' => $download_origin_times['file_downloads']))
+  ->execute();
 }
 
 /**
@@ -118,10 +118,10 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
   if (isset($pattern['info']['uuuid'])) {
     $uuuid=$pattern['info']['uuuid'];
     $pattern_data = db_select('patterns_server', 'p')
-                    ->fields('p', array('pid'))
-                    ->condition('p.uuuid', $uuuid)
-                    ->execute()
-                    ->fetchAssoc();
+    ->fields('p', array('pid'))
+    ->condition('p.uuuid', $uuuid)
+    ->execute()
+    ->fetchAssoc();
 
     if (!empty($pattern_data)) {
       $msg = t('Pattern already exist.');
@@ -131,14 +131,14 @@ function _patterns_server_db_save_pattern($pattern, $path, $name, $format = NULL
 
   $uid = user_load_by_name($username);
   $file_exist = db_select('patterns_server', 'pe')
-      ->fields('pe', array('file_name'))
-      ->condition('file_name', $name, '=')
-      ->condition('uploader', $uid->uid)
-      ->execute()
-      ->fetchAssoc();
+  ->fields('pe', array('file_name'))
+  ->condition('file_name', $name, '=')
+  ->condition('uploader', $uid->uid)
+  ->execute()
+  ->fetchAssoc();
   if (!empty($file_exist)) {
-      $msg = t('Pattern already exist.');
-      return patterns_results(PATTERNS_ERR, $msg);
+    $msg = t('Pattern already exist.');
+    return patterns_results(PATTERNS_ERR, $msg);
   }
 
   // Pattern already in the DB, data needs to be updated.
@@ -236,10 +236,10 @@ function _patterns_server_save_pattern($name, $content, $format, $username) {
  */
 function patterns_server_check_whether_uuuid_exist($uuuid) {
   $query = db_select('patterns_server', 'ps')
-    ->fields('ps', array())
-    ->condition('uuuid', $uuuid)
-    ->execute()
-    ->fetchAll();
+  ->fields('ps', array())
+  ->condition('uuuid', $uuuid)
+  ->execute()
+  ->fetchAll();
   if (count($query) > 0) {
     return TRUE;
   }
@@ -252,19 +252,24 @@ function _patterns_server_get_random_history_tree_ajax() {
   $tree = array();
 
   $queryDB = db_select('patterns_server_relation_index', 'pi')
-    ->fields('pi', array('uuuid', 'parents', 'children','pid', 'author', 'title', 'category'))
-    ->execute()
-    ->fetchAll();
+  ->fields('pi', array('uuuid', 'parents', 'children', 'author', 'title', 'category', 'd2did', 'host', 'user'))
+  ->execute()
+  ->fetchAll();
 
   foreach ($queryDB as $query) {
     $children = unserialize($query->children);
     $tree[$query->uuuid] = array();
-    if (count($children) > 0) {
-      foreach($children as $uuuid => $child) {
-        $tree[$query->uuuid]['children'][$uuuid] = $child;
-      }
+    $tree[$query->uuuid]['author'] = $query->author;
+    $tree[$query->uuuid]['title'] = $query->title;
+    $tree[$query->uuuid]['category'] = $query->category;
+    $tree[$query->uuuid]['user'] = $query->user;
+    $tree[$query->uuuid]['d2did'] = $query->d2did;
+    $tree[$query->uuuid]['host'] = $query->host;
+    foreach($children as $uuuid => $child) {
+      $tree[$query->uuuid]['children'][$uuuid] = $child;
     }
   }
+
   if (count($tree) > 0) {
     drupal_json_output(array(
       'success' => TRUE,
@@ -286,10 +291,10 @@ function _patterns_server_get_random_history_tree_ajax() {
  */
 function patterns_server_get_pattern_by_uuuid($uuuid) {
   $pid = db_select('patterns_server', 'ps')
-    ->fields('ps', array())
-    ->condition('uuuid', $uuuid)
-    ->execute()
-    ->fetchObject();
+  ->fields('ps', array())
+  ->condition('uuuid', $uuuid)
+  ->execute()
+  ->fetchObject();
   if ($pid != FALSE) {
     $pid = $pid->pid;
     $pe = entity_object_load($pid, 'patterns_server');
@@ -303,10 +308,10 @@ function patterns_server_get_pattern_by_uuuid($uuuid) {
 function patterns_server_get_pid_by_uuuid($uuuid) {
 
   $query = db_select('patterns_server', 'ps')
-    ->fields('ps', array('pid'))
-    ->condition('uuuid', $uuuid)
-    ->execute()
-    ->fetchObject();
+  ->fields('ps', array('pid'))
+  ->condition('uuuid', $uuuid)
+  ->execute()
+  ->fetchObject();
   if ($query != FALSE) {
     return $query->pid;
   }
