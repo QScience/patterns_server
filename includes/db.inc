@@ -251,17 +251,12 @@ function patterns_server_check_whether_uuuid_exist($uuuid) {
 function _patterns_server_get_random_history_tree_ajax() {
   $tree = array();
 
-  $query = db_select('patterns_server_relation_index', 'pi')
-    ->fields('pi', array('uuuid', 'parents', 'children'))
-    // ->range(0, 1)
-    // ->orderRandom()
+  $queryDB = db_select('patterns_server_relation_index', 'pi')
+    ->fields('pi', array('uuuid', 'parents', 'children','pid', 'author', 'title', 'category'))
     ->execute()
-    ->fetchObject();
-    //->fields('pi', array('uuuid', 'parents', 'children'))
-    //->condition('uuuid', '90cd9cd5-6d4f-f064-3903-90082d3723ad')
-    //->execute()
-    //->fetchObject();
-  if ($query != FALSE) {
+    ->fetchAll();
+
+  foreach ($queryDB as $query) {
     $children = unserialize($query->children);
     $tree[$query->uuuid] = array();
     if (count($children) > 0) {
