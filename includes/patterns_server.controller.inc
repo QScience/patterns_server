@@ -29,14 +29,14 @@ class PatternsServerEntityController extends EntityAPIController {
     if (isset($pattern['info']['parent']) && count($pattern['info']['parent']) > 0) {
       $p_parents = $pattern['info']['parent'];
       foreach ($p_parents as $p_parent) {
-        Global $user;
+        //Global $user;
         $uuuid = $p_parent['uuuid'];
         $core = array(
           'action' => $p_parent['action'],
           'host' => $p_parent['host'],
           'd2did' => $p_parent['d2d_id'],
           'date' => $p_parent['date'],
-          'user' => $user->uid,
+          'user' => $entity->uploader,
           'title' => $p_parent['title'],
           'category' => $p_parent['category'],
           'author' => $p_parent['author'],

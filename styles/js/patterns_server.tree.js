@@ -41,7 +41,7 @@
           var treeData = formatForTree(data.tree);
           d3Tree.build(treeData, '#patterns_server-patterns-tree-visualization');
         } else {
-          alert('It seems that you do not have any shared patterns in your database.');
+          jQuery('#patterns_server-patterns-tree-visualization').remove();
         }
       },
       error: function(jqXHR, exception) {
