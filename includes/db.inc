@@ -241,11 +241,8 @@ function patterns_server_check_whether_uuuid_exist($uuuid) {
   ->fields('ps', array())
   ->condition('uuuid', $uuuid)
   ->execute()
-  ->fetchAll();
-  if (count($query) > 0) {
-    return TRUE;
-  }
-  return FALSE;
+  ->fetchObject();
+  return $query;
 }
 
 /**

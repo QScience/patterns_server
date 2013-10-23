@@ -246,3 +246,4 @@ function patterns_server_get_index($key_uuuid) {
     ->fetchObject();
   return $query;
 }
+

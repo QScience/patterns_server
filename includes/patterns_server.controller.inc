@@ -29,18 +29,35 @@ class PatternsServerEntityController extends EntityAPIController {
     if (isset($pattern['info']['parent']) && count($pattern['info']['parent']) > 0) {
       $p_parents = $pattern['info']['parent'];
       foreach ($p_parents as $p_parent) {
-        //Global $user;
         $uuuid = $p_parent['uuuid'];
         $core = array(
           'action' => $p_parent['action'],
+          'user' => $entity->uploader,
+          'date' => $p_parent['date'],
+          //the next five are needed to be validated.
           'host' => $p_parent['host'],
           'd2did' => $p_parent['d2d_id'],
-          'date' => $p_parent['date'],
-          'user' => $entity->uploader,
           'title' => $p_parent['title'],
           'category' => $p_parent['category'],
           'author' => $p_parent['author'],
         );
+        //if the parent is in the db. actually it will need a validation.
+        //TODO validate the $p_parent and the fields in db. 
+        //if they are not same, there should be an error. means somebody change the parents section 
+        //in pattern file manually.
+        //but for now, I just assume they are same.
+
+        $exist = patterns_server_check_whether_uuuid_exist($uuuid);
+        if ($exist != FALSE) {
+          if ($exist->host != $core['host'] ||
+            $exist->d2did != $core['d2did'] ||
+            $exist->title != $core['title'] ||
+            $exist->category != $core['category'] ||
+            $exist->author != $core['author'] ) {
+              drupal_set_message(t('The parent section of this pattern has been damaged. So the parent section is ignored'), 'error');
+              return $a;
+            }
+        }
         patterns_server_insert_pair($uuuid, $child_uuuid, $core);
         patterns_server_update_index($uuuid, $child_uuuid, $p_parent['action'], 1, $core);
         patterns_server_update_index($child_uuuid, $uuuid, $p_parent['action'], 0, $core);
