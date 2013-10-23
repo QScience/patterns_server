@@ -55,7 +55,13 @@ function patterns_server_insert_pair($parent_uuuid, $child_uuuid, $core) {
  * there is no need to check the existence.
  * 
  */
-function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $parent_child, $core) {
+function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $parent_child, $parent_core, $child_core = array()) {
+  if ($parent_child == 1) {
+    $core = $parent_core;
+  }
+  else {
+    $core = $child_core;
+  }
   $pid = $core['pid'];
   $user = $core['user'];
   $category = $core['category'];
@@ -63,6 +69,7 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
   $author = $core['author'];
   $host = $core['host'];
   $d2did = $core['d2did'];
+  
 
   $children = array();
   $parents = array();
@@ -74,10 +81,10 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
     ->fetchObject();
   if ($query === FALSE) {
     if ($parent_child == 1) {
-      $children[$target_uuuid] = $core;
+      $children[$target_uuuid] = $child_core;
     }
     else {
-      $parents[$target_uuuid] = $core;
+      $parents[$target_uuuid] = $parent_core;
     }
     db_insert('patterns_server_relation_index')
       ->fields(array(
@@ -98,13 +105,13 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
   else {
     if ($parent_child == 1) {
       $children = unserialize($query->children);
-      $children[$target_uuuid] = $core;
+      $children[$target_uuuid] = $child_core;
       $children = serialize($children);
       $parents = $query->parents;
     }
     else {
       $parents = unserialize($query->parents);
-      $parents[$target_uuuid] = $core;
+      $parents[$target_uuuid] = $parent_core;
       $parents = serialize($parents);
       $children = $query->children;
     }

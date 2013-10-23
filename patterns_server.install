@@ -193,8 +193,9 @@ function patterns_server_schema() {
       ),
       'user' => array(
         'type' => 'int',
-        'not null' => TRUE,
-        'unsigned' => TRUE,
+        'length' => 50,
+        'default' => 0,
+        'nut null' => TRUE,
         'description' => 'the uid of the user which uploads or pushes the pattern file',
       ),
       'date' => array(

@@ -30,7 +30,7 @@ class PatternsServerEntityController extends EntityAPIController {
       $p_parents = $pattern['info']['parent'];
       foreach ($p_parents as $p_parent) {
         $uuuid = $p_parent['uuuid'];
-        $core = array(
+        $parent_core = array(
           'action' => $p_parent['action'],
           'date' => $p_parent['date'],
           //the next five are needed to be validated.
@@ -48,27 +48,36 @@ class PatternsServerEntityController extends EntityAPIController {
 
         $exist = patterns_server_check_whether_uuuid_exist($uuuid);
         if ($exist != FALSE) {
-          if ($exist->host != $core['host'] ||
-            $exist->d2did != $core['d2did'] ||
-            $exist->title != $core['title'] ||
-            $exist->category != $core['category'] ||
-            $exist->author != $core['author'] ) {
+          if ($exist->host != $parent_core['host'] ||
+            $exist->d2did !=  $parent_core['d2did'] ||
+            $exist->title !=  $parent_core['title'] ||
+            $exist->category != $parent_core['category'] ||
+            $exist->author != $parent_core['author'] ) {
               drupal_set_message(t('The parent section of this pattern has been damaged. So the parent section is ignored'), 'error');
               return $a;
             }
           else {
-            $core['user'] = $entity->uploader;
-            $core['pid'] = $entity->pid;
+            $parent_core['user'] = $entity->uploader;
+            $parent_core['pid'] = $entity->pid;
           }
         }
         else {
-          $core['user'] = -1;
-          $core['pid'] = -1;
+          $parent_core['user'] = -1;
+          $parent_core['pid'] = -1;
         }
 
-        patterns_server_insert_pair($uuuid, $child_uuuid, $core);
-        patterns_server_update_index($uuuid, $child_uuuid, $p_parent['action'], 1, $core);
-        patterns_server_update_index($child_uuuid, $uuuid, $p_parent['action'], 0, $core);
+        $child_core = array();
+        $child_core['host'] = $entity->host;
+        $child_core['d2did'] = $entity->d2did;
+        $child_core['title'] = $entity->title;
+        $child_core['category'] = $entity->category;
+        $child_core['author'] = $entity->author;
+        $child_core['pid'] = $entity->pid;
+        $child_core['user'] = $entity->uploader;
+
+        patterns_server_insert_pair($uuuid, $child_uuuid, $parent_core);
+        patterns_server_update_index($uuuid, $child_uuuid, $p_parent['action'], 1, $parent_core, $child_core);
+        patterns_server_update_index($child_uuuid, $uuuid, $p_parent['action'], 0, $parent_core, $child_core);
       }
     }
 
