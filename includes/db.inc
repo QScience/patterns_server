@@ -252,7 +252,7 @@ function _patterns_server_get_random_history_tree_ajax() {
   $tree = array();
 
   $queryDB = db_select('patterns_server_relation_index', 'pi')
-    ->fields('pi', array('uuuid', 'parents', 'children','pid'))
+    ->fields('pi', array('uuuid', 'parents', 'children','pid', 'author', 'title', 'category'))
     ->execute()
     ->fetchAll();
 

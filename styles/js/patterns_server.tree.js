@@ -15,12 +15,12 @@
         if (Object.prototype.toString.call(data[iter]) !== '[object Array]') {
           curr = {
             id: count,
-            name: iter,
-            author: 'to be completed',
-            category: 'to be completed',
+            name: data[iter].title,
+            author: data[iter].author,
+            category: data[iter].category,
             author_link: startUrl + 'user/' + data[iter].user,
             d2did_link: data[iter].host,
-            pattern_link: startUrl + 'pattern/' + data[iter].pid,
+            pattern_link: startUrl + 'pattern/' + iter,
             children: formatForTree(data[iter].children),
           };
 
