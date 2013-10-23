@@ -65,17 +65,27 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
   $category;
   $title;
   $author;
+  $user;
+  $host;
+  $d2did;
   if ($ps === FALSE) {
     $pid = -1;
     $category = $core['category'];
     $title = $core['title'];
     $author = $core['author'];
+    $user = -1;
+    $host = $core['host'];
+    $d2did = $core['d2did'];
   }
   else {
     $pid = $ps->pid;
     $category = $ps->category;
     $title = $ps->title;
     $author = $ps->author;
+    $user = $core['user'];
+    $d2d_info = d2d_api_own_instance_get();
+    $host = $d2d_info['url'];
+    $d2did = $d2d_info['d2d_id'];
   }
 
   $children = array();
@@ -103,6 +113,9 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
         'category' => $category,
         'author' => $author,
         'title' => $title,
+        'user' => $user,
+        'host' => $host,
+        'd2did' => $d2did,
         ))
       ->execute();
   }
@@ -128,6 +141,9 @@ function patterns_server_update_index($key_uuuid, $target_uuuid, $action, $paren
         'category' => $category,
         'author' => $author,
         'title' => $title,
+        'user' => $user,
+        'host' => $host,
+        'd2did' => $d2did,
       ))
       ->condition('uuuid', $key_uuuid)
       ->execute();
