@@ -155,3 +155,29 @@ function _patterns_server_get_all_taxonomyfields_name($entity_type) {
     return $tags_table_db;
   }
 }
+
+/**
+ */
+function _patterns_server_block_description() {
+
+  $s = "<p><strong>";
+  $s .= "Welcome to Patterns Server!";
+  $s .= "</strong></p>";
+
+  $s .= "<p>";
+  $s .= "Discover relevant ";
+  $s .= l("Drupal", "http://www.drupal.org");
+  $s .= " communities, by browsing the archive of registered web sites.";
+  $s .= "</p>";
+
+  $s .= "<p>";
+  $s .= "Add them as a friend, and start sharing content, updates, and much more!";
+  $s .= "</p>";
+
+  $s .= "<p>";
+  $s .= "Join the Drupal2Drupal network ";
+  $s .= l("now", "content/about");
+  $s .= ".</p>";
+  
+  return $s;
+}
