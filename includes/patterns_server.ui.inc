@@ -108,7 +108,7 @@ class PatternsServerEntityUIController extends EntityDefaultUIController {
     //$row[] = $ety_obj->file_path;
     $row[] = l(t('download'), '/pattern/' . $id . '/download');
     $usr_obj = user_load($ety_obj->uploader);
-    if (is_object($usr_obj) {
+    if (is_object($usr_obj)) {
       if ($usr_obj->uid == 0) {
         $row[] = l(t('anonymous'), '/pattern/uploader/' . $ety_obj->uploader);
       }
